@@ -1,0 +1,104 @@
+<mvc:View
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.AgreementList"
+    xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Panel expandable="false" width="auto" class="sapUiSmallMargin">
+		<headerToolbar>
+			<OverflowToolbar style="Clear">
+				<Title text="{i18n>agreements}" />
+				<ToolbarSpacer />
+				<Button icon="sap-icon://add" press="onAdd" visible="{control>/partners/agreements/hasAvailable}" />
+				<Button icon="sap-icon://save" press="onSave" visible="{control>/partners/agreements/hasChanges}" />
+				<Button icon="sap-icon://cancel" press="onCancel" visible="{control>/partners/agreements/hasChanges}" />
+			</OverflowToolbar>
+		</headerToolbar>
+		<content>
+			<IconTabBar backgroundDesign="Transparent">
+				<items>
+					<IconTabFilter icon="sap-icon://inbox" text="{i18n>inbound}">
+						<Table growing="true" growingThreshold="10" inset="false"
+							items="{
+								path: 'control>/partners/agreements/newConfiguration/inbound',
+								templateShareable: false
+							}"
+							mode="SingleSelectMaster" selectionChange="onSelect">
+							<columns>
+								<Column>
+									<Text text="{i18n>x12Type}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>x12Version}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>extendedPreProcessing}" />
+								</Column>
+								<Column
+									hAlign="End">
+									<Text text="{i18n>actions}" />
+								</Column>
+							</columns>
+							<ColumnListItem vAlign="Middle">
+								<cells>
+									<Text text="{control>x12Type}" />
+									<Text text="{control>x12Version}" />
+									<Switch change="onChange" state="{control>DoExtendedPreProcessing}" type="AcceptReject" />
+									<VBox>
+										<HBox justifyContent="End">
+											<Button binding="{control>Message}" icon="sap-icon://delete" press="onDelete" />
+										</HBox>
+									</VBox>
+								</cells>
+							</ColumnListItem>
+						</Table>
+					</IconTabFilter>
+					<IconTabFilter icon="sap-icon://outbox" text="{i18n>outbound}">
+						<Table growing="true" growingThreshold="10" inset="false"
+							items="{
+								path: 'control>/partners/agreements/newConfiguration/outbound',
+								templateShareable: false
+							}"
+							mode="SingleSelectMaster" selectionChange="onSelect">
+							<columns>
+								<Column>
+									<Text text="{i18n>x12Type}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>x12Version}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>extendedPostProcessing}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>archive}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>acknowledgementRequired}" />
+								</Column>
+								<Column
+									hAlign="End">
+									<Text text="{i18n>actions}" />
+								</Column>
+							</columns>
+							<ColumnListItem vAlign="Middle">
+								<cells>
+									<Text text="{control>x12Type}" />
+									<Text text="{control>x12Version}" />
+									<Switch change="onChange" state="{control>DoExtendedPostProcessing}" type="AcceptReject" />
+									<Switch change="onChange" enabled="{control>canChangeArchive}" state="{control>ArchiveMessage}" 
+										type="AcceptReject" />
+									<Switch change="onChange" state="{control>AcknowledgementRequired}" type="AcceptReject" />
+									<VBox>
+										<HBox justifyContent="End">
+											<Button binding="{control>Message}" icon="sap-icon://delete" press="onDelete" />
+										</HBox>
+									</VBox>
+								</cells>
+							</ColumnListItem>
+						</Table>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
+		</content>
+	</Panel>
+</mvc:View>

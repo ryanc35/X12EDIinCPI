@@ -1,0 +1,203 @@
+{
+  "_version": "1.58.0",
+  "sap.app": {
+    "id": "com.at.pd.edi.attr.pdediattr",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.11.4",
+      "toolsId": "95bb6878-849c-4f67-a185-a28da0f2a0e0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/api/v1",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "control": {
+        "uri": "model/control.json",
+        "type": "JSON"
+      }
+    }
+  },
+  "sap.cloud": {
+    "service": "comatpdediattrpdediattr"
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": false,
+      "phone": false
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "handleValidation": true,
+    "dependencies": {
+      "minUI5Version": "1.120.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.at.pd.edi.attr.pdediattr.i18n.i18n"
+        }
+      },
+      "control": {
+        "dataSource": "control",
+        "type": "sap.ui.model.json.JSONModel"
+      },
+      "messages": {
+        "dataSource": "mainService",
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultUpdateMethod": "Put",
+          "defaultCountMode": "None",
+          "metadataUrlParams": {},
+          "refreshAfterChange": true
+        }
+      },
+      "partner": {
+        "dataSource": "mainService",
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "None",
+          "defaultUpdateMethod": "Put",
+          "metadataUrlParams": {},
+          "refreshAfterChange": true
+        }
+      },
+      "partners": {
+        "dataSource": "mainService",
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "None",
+          "defaultUpdateMethod": "Put",
+          "metadataUrlParams": {},
+          "refreshAfterChange": true
+        }
+      },
+      "self": {
+        "dataSource": "mainService",
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "None",
+          "defaultUpdateMethod": "Put",
+          "metadataUrlParams": {},
+          "refreshAfterChange": true
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "rootView": {
+      "viewName": "com.at.pd.edi.attr.pdediattr.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    },
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"path": "com.at.pd.edi.attr.pdediattr.view",
+				"controlId": "pageContainer",
+				"controlAggregation": "pages",
+				"type": "View",
+				"viewType": "XML",
+				"async": true
+			},
+			"routes": [
+				{
+					"name": "home",
+					"pattern": "",
+					"target": "home"
+				},
+				{
+					"name": "self",
+					"pattern": "self",
+					"target": "self"
+				},
+				{
+					"name": "partners",
+					"pattern": "partners",
+					"target": "partners"
+				},
+        {
+					"name": "message",
+					"pattern": "message",
+					"target": "message"
+				},
+        {
+          "name": "partner",
+          "pattern": "partner",
+          "target": "partner"
+        }
+			],
+			"targets": {
+				"home": {
+					"level": 0,
+					"name": "App"
+				},
+				"self": {
+          "level": 1,
+					"name": "Self",
+          "transition": "fade"
+				},
+				"partners": {
+          "level": 1,
+					"name": "PartnerList",
+          "transition": "fade"
+				},
+				"message": {
+          "level": 2,
+					"name": "MessageDetail",
+          "transition": "fade"
+				},
+				"partner": {
+          "level": 2,
+					"name": "PartnerDetail",
+          "transition": "fade"
+				}
+			}
+		}
+  }
+}

@@ -1,0 +1,68 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc">
+	
+	<Dialog title="{i18n>addAgreement}">
+		<content>
+			<IconTabBar id="agreementTabs" backgroundDesign="Transparent">
+				<items>
+					<IconTabFilter icon="sap-icon://inbox" key="inbound" text="{i18n>inbound}" 
+						visible="{= ${control>/partners/agreements/available/inbound}.length > 0}">
+						<f:SimpleForm adjustLabelSpan="false" columnsL="1" columnsXL="1" editable="true" 
+							emptySpanXL="0" labelSpanL="2" labelSpanS="2" labelSpanXL="2" layout="ColumnLayout" 
+							singleContainerFullSize="false">
+							<Label text="{i18n>message}" />
+							<Select editable="true" selectedKey="{control>/partners/available/newEntry/inboundMessage}"
+								items="{
+									path: 'control>/partners/agreements/available/inbound'
+							}">
+								<items>
+									<core:Item text="{control>Message}" />
+								</items>
+							</Select>
+							<Label text="{i18n>extendedPreProcessing}" />
+							<Switch state="{control>/partners/agreements/newEntry/DoExtendedPreProcessing}" 
+								type="AcceptReject" />
+						</f:SimpleForm>
+					</IconTabFilter>
+					<IconTabFilter icon="sap-icon://outbox" key="outbound" text="{i18n>outbound}"
+						visible="{= ${control>/partners/agreements/available/outbound}.length > 0}">
+						<f:SimpleForm adjustLabelSpan="false" columnsL="1" columnsXL="1" editable="true" 
+							emptySpanXL="0" labelSpanL="2" labelSpanS="2" labelSpanXL="2" layout="ColumnLayout" 
+							singleContainerFullSize="false">
+							<Label text="{i18n>message}" />
+							<Select editable="true" selectedKey="{control>/partners/available/newEntry/outboundMessage}"
+								items="{
+									path: 'control>/partners/agreements/available/outbound'
+							}">
+								<items>
+									<core:Item text="{control>Message}" />
+								</items>
+							</Select>
+							<Label text="{i18n>extendedPostProcessing}" />
+							<Switch state="{control>/partners/agreements/newEntry/DoExtendedPostProcessing}" 
+								type="AcceptReject" />
+							<Label text="{i18n>acknowledgementRequired}" />
+							<Switch state="{control>/partners/agreements/newEntry/AcknowledgementRequired}" 
+								type="AcceptReject" />
+							<Label text="{i18n>archive}" />
+							<Switch state="{control>/partners/agreements/newEntry/ArchiveMessage}" 
+								type="AcceptReject" />
+						</f:SimpleForm>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
+		</content>
+		<footer>
+			<Toolbar>
+				<content>
+					<ToolbarSpacer />
+					<Button icon="sap-icon://add"  press="onAddAgreement" />
+					<Button icon="sap-icon://cancel" press="_closeDialog" />
+				</content>
+			</Toolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

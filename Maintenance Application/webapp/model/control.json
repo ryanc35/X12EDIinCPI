@@ -1,0 +1,1597 @@
+{
+	"alternativePartners": {
+		"agency": "SAP SE",
+		"elements": [
+			"sap_idoc_id-display",
+			"sap_idoc_id-change"
+		],
+		"mode": "",
+		"scheme": "IDOC"
+	},
+	"createPartnerDialog": {
+		"clientId": "",
+		"id": "",
+		"mode": ""
+	},
+	"defaultVersion": "004010",
+	"hex": {
+		"#x09": "tab",
+		"#x0a": "lineFeed",
+		"#x0b": "verticalTab",
+		"#x0d": "carriageReturn",
+		"#x3c": "lessThan",
+		"#x3e": "greaterThan"
+	},
+	"maps": {
+		"list": []
+	},
+	"message": {
+		"mode": "",
+		"newConfiguration": {},
+		"originalConfiguration": {},
+		"type": ""
+	},
+	"navigation": [
+		{
+			"key": "self",
+			"title": "Self"
+		},
+		{
+			"key": "partners",
+			"title": "Partners"
+		}
+	],
+	"partners": {
+		"agreements": {
+			"available": {
+				"inbound": [],
+				"outbound": []
+			},
+			"hasAvailable": false,
+			"hasChanges": false,
+			"newConfiguration": {},
+			"newEntry": {},
+			"newEntryCopy": {
+				"AcknowledgementRequired": true,
+				"ArchiveMessage": false,
+				"DoExtendedPostProcessing": false,
+				"DoExtendedPreProcessing": false,
+				"inboundMessage": "",
+				"outboundMessage": ""
+			},
+			"originalConfiguration": {}
+		},
+		"alternativePartnerExists": false,
+		"alternativePartnerId": "",
+		"defaults": [
+			{
+				"name": "x12_qualifier",
+				"value": ""
+			},
+			{
+				"name": "x12_id",
+				"value": ""
+			},
+			{
+				"name": "AdapterType",
+				"value": "AS2"
+			},
+			{
+				"name": "PartnerType",
+				"value": "KU"
+			},
+			{
+				"name": "x12_element_separator",
+				"value": "*"
+			},
+			{
+				"name": "x12_segment_terminator",
+				"value": "~"
+			},
+			{
+				"name": "x12_composite_separator",
+				"value": "+"
+			},
+			{
+				"name": "x12_repetition_separator",
+				"value": "^"
+			},
+			{
+				"name": "AS2_id",
+				"value": ""
+			},
+			{
+				"name": "ReceiverUrl",
+				"value": ""
+			},
+			{
+				"name": "PublicKeyAlias",
+				"value": ""
+			},
+			{
+				"name": "SAP_AS2_Outbound_Compress_Message",
+				"value": "true"
+			},
+			{
+				"name": "AS2_inbound_decrypt_message",
+				"value": "true"
+			},
+			{
+				"name": "AS2_inbound_verify_signature",
+				"value": "notRequired"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Encrypt_Message",
+				"value": "true"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Encryption_Algorithm",
+				"value": "AES256"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Sign_Message",
+				"value": "true"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Signing_Algorithm",
+				"value": "SHA512"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Type",
+				"value": "Synchronous"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Request_Signing",
+				"value": "true"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Signing_Algorithm",
+				"value": "SHA512"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Verify_Signature",
+				"value": "true"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Request_Mic",
+				"value": "true"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Verify_Mic",
+				"value": "true"
+			},
+			{
+				"name": "Mdn_Url",
+				"value": ""
+			},
+			{
+				"name": "host",
+				"value": ""
+			},
+			{
+				"name": "directory",
+				"value": ""
+			},
+			{
+				"name": "credentials",
+				"value": ""
+			},
+			{
+				"name": "SAP_FtpEncryption",
+				"value": "ftps"
+			}
+		],
+		"list": [],
+		"mode": "",
+		"pid": "",
+		"resetControls": [
+			"AdapterType-change",
+			"AS2_inbound_decrypt_message-change",
+			"SAP_AS2_Outbound_Encrypt_Message-change",
+			"SAP_AS2_Outbound_Mdn_Type-change",
+			"SAP_AS2_Outbound_Mdn_Request_Signing-change",
+			"SAP_AS2_Outbound_Mdn_Request_Mic-change"
+		],
+		"inputs": [
+			"x12_qualifier-change",
+			"x12_id-change",
+			"AS2_id-change",
+			"ReceiverUrl-change",
+			"PublicKeyAlias-change",
+			"host-change",
+			"directory-change",
+			"credentials-change"
+		],
+		"stringParameters": [
+			{
+				"name": "x12_qualifier",
+				"id": "x12_qualifier-display"
+			},
+			{
+				"name": "x12_qualifier",
+				"id": "x12_qualifier-change"
+			},
+			{
+				"name": "x12_id",
+				"id": "x12_id-display"
+			},
+			{
+				"name": "x12_id",
+				"id": "x12_id-change"
+			},
+			{
+				"name": "AdapterType",
+				"id": "AdapterType-display"
+			},
+			{
+				"name": "AdapterType",
+				"id": "AdapterType-change",
+				"hasTriggerKeys": [],
+				"jsonTarget": "/partners/view/adapter"
+			},
+			{
+				"name": "PartnerType",
+				"id": "PartnerType-display"
+			},
+			{
+				"name": "PartnerType",
+				"id": "PartnerType-change"
+			},
+			{
+				"name": "x12_element_separator",
+				"id": "x12_element_separator-display"
+			},
+			{
+				"name": "x12_element_separator",
+				"id": "x12_element_separator-change"
+			},
+			{
+				"name": "x12_segment_terminator",
+				"id": "x12_segment_terminator-display"
+			},
+			{
+				"name": "x12_segment_terminator",
+				"id": "x12_segment_terminator-change"
+			},
+			{
+				"name": "x12_composite_separator",
+				"id": "x12_composite_separator-display"
+			},
+			{
+				"name": "x12_composite_separator",
+				"id": "x12_composite_separator-change"
+			},
+			{
+				"name": "x12_repetition_separator",
+				"id": "x12_repetition_separator-display"
+			},
+			{
+				"name": "x12_repetition_separator",
+				"id": "x12_repetition_separator-change"
+			},
+			{
+				"name": "ReceiverUrl",
+				"id": "ReceiverUrl-display"
+			},
+			{
+				"name": "ReceiverUrl",
+				"id": "ReceiverUrl-change"
+			},
+			{
+				"name": "AS2_id",
+				"id": "AS2_id-display"
+			},
+			{
+				"name": "AS2_id",
+				"id": "AS2_id-change"
+			},
+			{
+				"name": "PublicKeyAlias",
+				"id": "PublicKeyAlias-display"
+			},
+			{
+				"name": "PublicKeyAlias",
+				"id": "PublicKeyAlias-change"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Compress_Message",
+				"id": "SAP_AS2_Outbound_Compress_Message-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Compress_Message",
+				"id": "SAP_AS2_Outbound_Compress_Message-change"
+			},
+			{
+				"name": "AS2_inbound_decrypt_message",
+				"id": "AS2_inbound_decrypt_message-display"
+			},
+			{
+				"name": "AS2_inbound_decrypt_message",
+				"id": "AS2_inbound_decrypt_message-change",
+				"attachModelContextChange": true,
+				"dependents": [
+					{
+						"id": "AS2_inbound_verify_signature-change",
+						"value": "None"
+					}
+				],
+				"jsonTarget": "/partners/view/decryptMessage"
+			},
+			{
+				"name": "AS2_inbound_verify_signature",
+				"id": "AS2_inbound_verify_signature-display"
+			},
+			{
+				"name": "AS2_inbound_verify_signature",
+				"id": "AS2_inbound_verify_signature-change"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Encrypt_Message",
+				"id": "SAP_AS2_Outbound_Encrypt_Message-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Encrypt_Message",
+				"id": "SAP_AS2_Outbound_Encrypt_Message-change",
+				"attachModelContextChange": true,
+				"dependents": [
+					{
+						"id": "SAP_AS2_Outbound_Sign_Message-change",
+						"value": false
+					}
+				],
+				"jsonTarget": "/partners/view/encryptMessage"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Sign_Message",
+				"id": "SAP_AS2_Outbound_Sign_Message-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Sign_Message",
+				"id": "SAP_AS2_Outbound_Sign_Message-change",
+				"attachModelContextChange": true,
+				"jsonTarget": "/partners/view/signMessage"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Signing_Algorithm",
+				"id": "SAP_AS2_Outbound_Signing_Algorithm-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Signing_Algorithm",
+				"id": "SAP_AS2_Outbound_Signing_Algorithm-change"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Encryption_Algorithm",
+				"id": "SAP_AS2_Outbound_Encryption_Algorithm-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Encryption_Algorithm",
+				"id": "SAP_AS2_Outbound_Encryption_Algorithm-change"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Type",
+				"id": "SAP_AS2_Outbound_Mdn_Type-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Type",
+				"id": "SAP_AS2_Outbound_Mdn_Type-change",
+				"attachModelContextChange": true,
+				"dependents": [
+					{
+						"id": "SAP_AS2_Outbound_Mdn_Request_Signing-change",
+						"value": false
+					},
+					{
+						"id": "SAP_AS2_Outbound_Mdn_Request_Mic-change",
+						"false": false
+					}
+				],
+				"jsonTarget": "/partners/view/mdnType",
+				"hasTriggerKeys": [
+					"None"
+				]
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Request_Signing",
+				"id": "SAP_AS2_Outbound_Mdn_Request_Signing-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Request_Signing",
+				"id": "SAP_AS2_Outbound_Mdn_Request_Signing-change",
+				"attachModelContextChange": true,
+				"dependents": [
+					{
+						"id": "SAP_AS2_Outbound_Mdn_Verify_Signature-change",
+						"value": false
+					}
+				],
+				"jsonTarget": "/partners/view/signMdn"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Signing_Algorithm",
+				"id": "SAP_AS2_Outbound_Mdn_Signing_Algorithm-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Signing_Algorithm",
+				"id": "SAP_AS2_Outbound_Mdn_Signing_Algorithm-change"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Verify_Signature",
+				"id": "SAP_AS2_Outbound_Mdn_Verify_Signature-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Verify_Signature",
+				"id": "SAP_AS2_Outbound_Mdn_Verify_Signature-change"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Request_Mic",
+				"id": "SAP_AS2_Outbound_Mdn_Request_Mic-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Request_Mic",
+				"id": "SAP_AS2_Outbound_Mdn_Request_Mic-change",
+				"attachModelContextChange": true,
+				"dependents": [
+					{
+						"id": "SAP_AS2_Outbound_Mdn_Verify_Mic-change",
+						"state": false
+					}
+				],
+				"jsonTarget": "/partners/view/requestMic"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Verify_Mic",
+				"id": "SAP_AS2_Outbound_Mdn_Verify_Mic-display"
+			},
+			{
+				"name": "SAP_AS2_Outbound_Mdn_Verify_Mic",
+				"id": "SAP_AS2_Outbound_Mdn_Verify_Mic-change"
+			},
+			{
+				"name": "Mdn_Url",
+				"id": "Mdn_Url-display"
+			},
+			{
+				"name": "Mdn_Url",
+				"id": "Mdn_Url-change"
+			},
+			{
+				"name": "host",
+				"id": "host-display"
+			},
+			{
+				"name": "host",
+				"id": "host-change"
+			},
+			{
+				"name": "SAP_FtpEncryption",
+				"id": "SAP_FtpEncryption-display"
+			},
+			{
+				"name": "SAP_FtpEncryption",
+				"id": "SAP_FtpEncryption-change"
+			},
+			{
+				"name": "directory",
+				"id": "directory-display"
+			},
+			{
+				"name": "directory",
+				"id": "directory-change"
+			},
+			{
+				"name": "credentials",
+				"id": "credentials-display"
+			},
+			{
+				"name": "credentials",
+				"id": "credentials-change"
+			}
+		],
+		"view": {
+			"adapter": "",
+			"decryptMessage": false,
+			"encryptMessage": false,
+			"mdnType": "None",
+			"requestMic": false,
+			"signMdn": false,
+			"signMessage": false
+		}
+	},
+	"selectedKey": "self",
+	"self": {
+		"defaults": [
+			{
+				"name": "x12_qualifier",
+				"value": ""
+			},
+			{
+				"name": "x12_id",
+				"value": ""
+			},
+			{
+				"name": "AdapterType",
+				"value": "IDOC"
+			},
+			{
+				"name": "IsArchivingActive",
+				"value": "false"
+			},
+			{
+				"name": "Is997DatastoreActive",
+				"value": "false"
+			}
+		],
+		"exists": false,
+		"mode": "display",
+		"pid": "AT",
+		"inputs": [
+			"x12_qualifier-change",
+			"x12_id-change"
+		],
+		"stringParameters": [
+			{
+				"name": "x12_qualifier",
+				"mode": "display"
+			},
+			{
+				"name": "x12_qualifier",
+				"mode": "change"
+			},
+			{
+				"name": "x12_id",
+				"mode": "display"
+			},
+			{
+				"name": "x12_id",
+				"mode": "change"
+			},
+			{
+				"name": "AdapterType",
+				"mode": "display"
+			},
+			{
+				"name": "AdapterType",
+				"mode": "change"
+			},
+			{
+				"name": "IsArchivingActive",
+				"mode": "display"
+			},
+			{
+				"name": "IsArchivingActive",
+				"mode": "change"
+			},
+			{
+				"name": "Is997DatastoreActive",
+				"mode": "display"
+			},
+			{
+				"name": "Is997DatastoreActive",
+				"mode": "change"
+			}
+		]
+	},
+	"true": true,
+	"x12": {
+		"types": [
+			{
+				"type": "100"
+			},
+			{
+				"type": "101"
+			},
+			{
+				"type": "102"
+			},
+			{
+				"type": "103"
+			},
+			{
+				"type": "104"
+			},
+			{
+				"type": "105"
+			},
+			{
+				"type": "106"
+			},
+			{
+				"type": "107"
+			},
+			{
+				"type": "108"
+			},
+			{
+				"type": "109"
+			},
+			{
+				"type": "110"
+			},
+			{
+				"type": "111"
+			},
+			{
+				"type": "112"
+			},
+			{
+				"type": "113"
+			},
+			{
+				"type": "114"
+			},
+			{
+				"type": "120"
+			},
+			{
+				"type": "121"
+			},
+			{
+				"type": "124"
+			},
+			{
+				"type": "125"
+			},
+			{
+				"type": "126"
+			},
+			{
+				"type": "127"
+			},
+			{
+				"type": "128"
+			},
+			{
+				"type": "129"
+			},
+			{
+				"type": "130"
+			},
+			{
+				"type": "131"
+			},
+			{
+				"type": "132"
+			},
+			{
+				"type": "133"
+			},
+			{
+				"type": "135"
+			},
+			{
+				"type": "138"
+			},
+			{
+				"type": "139"
+			},
+			{
+				"type": "140"
+			},
+			{
+				"type": "141"
+			},
+			{
+				"type": "142"
+			},
+			{
+				"type": "143"
+			},
+			{
+				"type": "144"
+			},
+			{
+				"type": "146"
+			},
+			{
+				"type": "147"
+			},
+			{
+				"type": "148"
+			},
+			{
+				"type": "149"
+			},
+			{
+				"type": "150"
+			},
+			{
+				"type": "151"
+			},
+			{
+				"type": "152"
+			},
+			{
+				"type": "153"
+			},
+			{
+				"type": "154"
+			},
+			{
+				"type": "155"
+			},
+			{
+				"type": "157"
+			},
+			{
+				"type": "158"
+			},
+			{
+				"type": "159"
+			},
+			{
+				"type": "160"
+			},
+			{
+				"type": "161"
+			},
+			{
+				"type": "163"
+			},
+			{
+				"type": "170"
+			},
+			{
+				"type": "175"
+			},
+			{
+				"type": "176"
+			},
+			{
+				"type": "179"
+			},
+			{
+				"type": "180"
+			},
+			{
+				"type": "185"
+			},
+			{
+				"type": "186"
+			},
+			{
+				"type": "187"
+			},
+			{
+				"type": "188"
+			},
+			{
+				"type": "189"
+			},
+			{
+				"type": "190"
+			},
+			{
+				"type": "191"
+			},
+			{
+				"type": "194"
+			},
+			{
+				"type": "195"
+			},
+			{
+				"type": "196"
+			},
+			{
+				"type": "197"
+			},
+			{
+				"type": "198"
+			},
+			{
+				"type": "199"
+			},
+			{
+				"type": "200"
+			},
+			{
+				"type": "201"
+			},
+			{
+				"type": "202"
+			},
+			{
+				"type": "203"
+			},
+			{
+				"type": "204"
+			},
+			{
+				"type": "205"
+			},
+			{
+				"type": "206"
+			},
+			{
+				"type": "210"
+			},
+			{
+				"type": "211"
+			},
+			{
+				"type": "212"
+			},
+			{
+				"type": "213"
+			},
+			{
+				"type": "214"
+			},
+			{
+				"type": "215"
+			},
+			{
+				"type": "216"
+			},
+			{
+				"type": "217"
+			},
+			{
+				"type": "218"
+			},
+			{
+				"type": "219"
+			},
+			{
+				"type": "220"
+			},
+			{
+				"type": "222"
+			},
+			{
+				"type": "223"
+			},
+			{
+				"type": "224"
+			},
+			{
+				"type": "225"
+			},
+			{
+				"type": "227"
+			},
+			{
+				"type": "228"
+			},
+			{
+				"type": "240"
+			},
+			{
+				"type": "242"
+			},
+			{
+				"type": "244"
+			},
+			{
+				"type": "245"
+			},
+			{
+				"type": "248"
+			},
+			{
+				"type": "249"
+			},
+			{
+				"type": "250"
+			},
+			{
+				"type": "251"
+			},
+			{
+				"type": "252"
+			},
+			{
+				"type": "255"
+			},
+			{
+				"type": "256"
+			},
+			{
+				"type": "259"
+			},
+			{
+				"type": "260"
+			},
+			{
+				"type": "261"
+			},
+			{
+				"type": "262"
+			},
+			{
+				"type": "263"
+			},
+			{
+				"type": "264"
+			},
+			{
+				"type": "265"
+			},
+			{
+				"type": "266"
+			},
+			{
+				"type": "267"
+			},
+			{
+				"type": "268"
+			},
+			{
+				"type": "269"
+			},
+			{
+				"type": "270"
+			},
+			{
+				"type": "271"
+			},
+			{
+				"type": "272"
+			},
+			{
+				"type": "273"
+			},
+			{
+				"type": "274"
+			},
+			{
+				"type": "275"
+			},
+			{
+				"type": "276"
+			},
+			{
+				"type": "277"
+			},
+			{
+				"type": "278"
+			},
+			{
+				"type": "280"
+			},
+			{
+				"type": "283"
+			},
+			{
+				"type": "284"
+			},
+			{
+				"type": "285"
+			},
+			{
+				"type": "286"
+			},
+			{
+				"type": "288"
+			},
+			{
+				"type": "290"
+			},
+			{
+				"type": "300"
+			},
+			{
+				"type": "301"
+			},
+			{
+				"type": "303"
+			},
+			{
+				"type": "304"
+			},
+			{
+				"type": "309"
+			},
+			{
+				"type": "310"
+			},
+			{
+				"type": "311"
+			},
+			{
+				"type": "312"
+			},
+			{
+				"type": "313"
+			},
+			{
+				"type": "315"
+			},
+			{
+				"type": "317"
+			},
+			{
+				"type": "319"
+			},
+			{
+				"type": "322"
+			},
+			{
+				"type": "323"
+			},
+			{
+				"type": "324"
+			},
+			{
+				"type": "325"
+			},
+			{
+				"type": "326"
+			},
+			{
+				"type": "350"
+			},
+			{
+				"type": "352"
+			},
+			{
+				"type": "353"
+			},
+			{
+				"type": "354"
+			},
+			{
+				"type": "355"
+			},
+			{
+				"type": "356"
+			},
+			{
+				"type": "357"
+			},
+			{
+				"type": "358"
+			},
+			{
+				"type": "359"
+			},
+			{
+				"type": "361"
+			},
+			{
+				"type": "362"
+			},
+			{
+				"type": "404"
+			},
+			{
+				"type": "410"
+			},
+			{
+				"type": "412"
+			},
+			{
+				"type": "414"
+			},
+			{
+				"type": "417"
+			},
+			{
+				"type": "418"
+			},
+			{
+				"type": "419"
+			},
+			{
+				"type": "420"
+			},
+			{
+				"type": "421"
+			},
+			{
+				"type": "422"
+			},
+			{
+				"type": "423"
+			},
+			{
+				"type": "424"
+			},
+			{
+				"type": "425"
+			},
+			{
+				"type": "426"
+			},
+			{
+				"type": "429"
+			},
+			{
+				"type": "431"
+			},
+			{
+				"type": "432"
+			},
+			{
+				"type": "433"
+			},
+			{
+				"type": "434"
+			},
+			{
+				"type": "435"
+			},
+			{
+				"type": "436"
+			},
+			{
+				"type": "437"
+			},
+			{
+				"type": "440"
+			},
+			{
+				"type": "451"
+			},
+			{
+				"type": "452"
+			},
+			{
+				"type": "453"
+			},
+			{
+				"type": "455"
+			},
+			{
+				"type": "456"
+			},
+			{
+				"type": "460"
+			},
+			{
+				"type": "463"
+			},
+			{
+				"type": "466"
+			},
+			{
+				"type": "468"
+			},
+			{
+				"type": "470"
+			},
+			{
+				"type": "475"
+			},
+			{
+				"type": "485"
+			},
+			{
+				"type": "486"
+			},
+			{
+				"type": "490"
+			},
+			{
+				"type": "492"
+			},
+			{
+				"type": "494"
+			},
+			{
+				"type": "500"
+			},
+			{
+				"type": "501"
+			},
+			{
+				"type": "503"
+			},
+			{
+				"type": "504"
+			},
+			{
+				"type": "511"
+			},
+			{
+				"type": "517"
+			},
+			{
+				"type": "521"
+			},
+			{
+				"type": "527"
+			},
+			{
+				"type": "536"
+			},
+			{
+				"type": "540"
+			},
+			{
+				"type": "561"
+			},
+			{
+				"type": "567"
+			},
+			{
+				"type": "568"
+			},
+			{
+				"type": "601"
+			},
+			{
+				"type": "602"
+			},
+			{
+				"type": "603"
+			},
+			{
+				"type": "620"
+			},
+			{
+				"type": "622"
+			},
+			{
+				"type": "625"
+			},
+			{
+				"type": "650"
+			},
+			{
+				"type": "715"
+			},
+			{
+				"type": "753"
+			},
+			{
+				"type": "754"
+			},
+			{
+				"type": "805"
+			},
+			{
+				"type": "806"
+			},
+			{
+				"type": "810"
+			},
+			{
+				"type": "811"
+			},
+			{
+				"type": "812"
+			},
+			{
+				"type": "813"
+			},
+			{
+				"type": "814"
+			},
+			{
+				"type": "815"
+			},
+			{
+				"type": "816"
+			},
+			{
+				"type": "818"
+			},
+			{
+				"type": "819"
+			},
+			{
+				"type": "820"
+			},
+			{
+				"type": "821"
+			},
+			{
+				"type": "822"
+			},
+			{
+				"type": "823"
+			},
+			{
+				"type": "824"
+			},
+			{
+				"type": "826"
+			},
+			{
+				"type": "827"
+			},
+			{
+				"type": "828"
+			},
+			{
+				"type": "829"
+			},
+			{
+				"type": "830"
+			},
+			{
+				"type": "831"
+			},
+			{
+				"type": "832"
+			},
+			{
+				"type": "833"
+			},
+			{
+				"type": "834"
+			},
+			{
+				"type": "835"
+			},
+			{
+				"type": "836"
+			},
+			{
+				"type": "837"
+			},
+			{
+				"type": "838"
+			},
+			{
+				"type": "839"
+			},
+			{
+				"type": "840"
+			},
+			{
+				"type": "841"
+			},
+			{
+				"type": "842"
+			},
+			{
+				"type": "843"
+			},
+			{
+				"type": "844"
+			},
+			{
+				"type": "845"
+			},
+			{
+				"type": "846"
+			},
+			{
+				"type": "847"
+			},
+			{
+				"type": "848"
+			},
+			{
+				"type": "849"
+			},
+			{
+				"type": "850"
+			},
+			{
+				"type": "851"
+			},
+			{
+				"type": "852"
+			},
+			{
+				"type": "853"
+			},
+			{
+				"type": "854"
+			},
+			{
+				"type": "855"
+			},
+			{
+				"type": "856"
+			},
+			{
+				"type": "857"
+			},
+			{
+				"type": "858"
+			},
+			{
+				"type": "859"
+			},
+			{
+				"type": "860"
+			},
+			{
+				"type": "861"
+			},
+			{
+				"type": "862"
+			},
+			{
+				"type": "863"
+			},
+			{
+				"type": "864"
+			},
+			{
+				"type": "865"
+			},
+			{
+				"type": "866"
+			},
+			{
+				"type": "867"
+			},
+			{
+				"type": "868"
+			},
+			{
+				"type": "869"
+			},
+			{
+				"type": "870"
+			},
+			{
+				"type": "871"
+			},
+			{
+				"type": "872"
+			},
+			{
+				"type": "873"
+			},
+			{
+				"type": "874"
+			},
+			{
+				"type": "875"
+			},
+			{
+				"type": "876"
+			},
+			{
+				"type": "877"
+			},
+			{
+				"type": "878"
+			},
+			{
+				"type": "879"
+			},
+			{
+				"type": "880"
+			},
+			{
+				"type": "881"
+			},
+			{
+				"type": "882"
+			},
+			{
+				"type": "883"
+			},
+			{
+				"type": "884"
+			},
+			{
+				"type": "885"
+			},
+			{
+				"type": "886"
+			},
+			{
+				"type": "887"
+			},
+			{
+				"type": "888"
+			},
+			{
+				"type": "889"
+			},
+			{
+				"type": "890"
+			},
+			{
+				"type": "891"
+			},
+			{
+				"type": "892"
+			},
+			{
+				"type": "893"
+			},
+			{
+				"type": "894"
+			},
+			{
+				"type": "895"
+			},
+			{
+				"type": "896"
+			},
+			{
+				"type": "897"
+			},
+			{
+				"type": "920"
+			},
+			{
+				"type": "924"
+			},
+			{
+				"type": "925"
+			},
+			{
+				"type": "926"
+			},
+			{
+				"type": "928"
+			},
+			{
+				"type": "940"
+			},
+			{
+				"type": "943"
+			},
+			{
+				"type": "944"
+			},
+			{
+				"type": "945"
+			},
+			{
+				"type": "947"
+			},
+			{
+				"type": "980"
+			},
+			{
+				"type": "990"
+			},
+			{
+				"type": "993"
+			},
+			{
+				"type": "996"
+			},
+			{
+				"type": "997"
+			},
+			{
+				"type": "998"
+			},
+			{
+				"type": "999"
+			}
+		],
+		"versions": [
+			"002001",
+			"002002",
+			"002003",
+			"002040",
+			"002042",
+			"003010",
+			"003020",
+			"003030",
+			"003040",
+			"003050",
+			"003060",
+			"003070",
+			"004010",
+			"004020",
+			"004030",
+			"004040",
+			"004050",
+			"004060",
+			"005010",
+			"005020",
+			"005030",
+			"005040",
+			"005050",
+			"006010",
+			"006020",
+			"006030",
+			"006040",
+			"006050",
+			"007010",
+			"007020",
+			"007030",
+			"007040",
+			"007050",
+			"007060",
+			"008010",
+			"008020",
+			"008030",
+			"008040"
+		]
+	}
+}

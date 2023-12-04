@@ -1,0 +1,56 @@
+<mvc:View 
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.MapList"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Panel expandable="false" width="auto" class="sapUiSmallMargin">
+		<headerToolbar>
+			<OverflowToolbar style="Clear">
+				<Title text="{i18n>mapArtifacts}" />
+				<ToolbarSpacer />
+				<Button icon="sap-icon://add" press="onAdd" />
+			</OverflowToolbar>
+		</headerToolbar>
+		<content>
+			<Table id="mapList" growing="true" growingThreshold="25" inset="false"
+				items="{
+					path: 'control>/maps/list',
+					templateShareable: false
+				}"
+				mode="SingleSelectMaster" selectionChange="onSelect">
+				<columns>
+					<Column>
+						<Text text="{i18n>direction}" />
+					</Column>
+					<Column>
+						<Text text="{i18n>idoc}" />
+					</Column>
+					<Column>
+						<Text text="{i18n>x12Type}" />
+					</Column>
+					<Column>
+						<Text text="{i18n>x12Version}" />
+					</Column>
+					<Column
+						hAlign="End">
+						<Text text="{i18n>actions}" />
+					</Column>
+				</columns>
+				<ColumnListItem vAlign="Middle">
+					<cells>
+						<Text text="{= ${control>direction} === 'inbound' ? ${i18n>inbound} : ${i18n>outbound} }" />
+						<Text text="{control>idoc}" />
+						<Text text="{control>x12Type}" />
+						<Text text="{control>x12Version}" />
+						<VBox>
+							<HBox justifyContent="End">
+								<Button binding="{control>id}" icon="sap-icon://delete" press="onDelete" />
+							</HBox>
+						</VBox>
+					</cells>
+				</ColumnListItem>
+			</Table>
+		</content>
+	</Panel>
+</mvc:View>

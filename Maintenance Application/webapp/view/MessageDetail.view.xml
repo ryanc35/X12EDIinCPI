@@ -1,0 +1,13 @@
+<mvc:View
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.MessageDetail"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Page navButtonPress="onBack" showNavButton="true" title="{i18n>messageConfiguration}">
+		<content>
+        	<core:Fragment fragmentName="com.at.pd.edi.attr.pdediattr.view.MessageDisplay" type="XML" />
+			<core:Fragment fragmentName="com.at.pd.edi.attr.pdediattr.view.MessageChange" type="XML" />
+		</content>
+	</Page>
+</mvc:View>

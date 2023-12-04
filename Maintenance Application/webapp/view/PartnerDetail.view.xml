@@ -1,0 +1,22 @@
+<mvc:View
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.PartnerDetail"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		title="{control>/partners/pid} {i18n>configuration}"
+		showNavButton="true"
+		navButtonPress="onBack">
+
+		<headerContent>
+			<Button icon="sap-icon://edit" press="onEdit" visible="{= ${control>/partners/mode} === 'display'}" />
+			<Button icon="sap-icon://save" press="onSave" visible="{= ${control>/partners/mode} === 'change'}" />
+			<Button icon="sap-icon://cancel" press="onCancel" visible="{= ${control>/partners/mode} === 'change'}" />
+		</headerContent>
+		<content>
+        	<core:Fragment fragmentName="com.at.pd.edi.attr.pdediattr.view.PartnerDisplay" type="XML" />
+			<core:Fragment fragmentName="com.at.pd.edi.attr.pdediattr.view.PartnerChange" type="XML" />
+			<mvc:XMLView viewName="com.at.pd.edi.attr.pdediattr.view.AgreementList" />
+		</content>
+	</Page>
+</mvc:View>

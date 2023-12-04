@@ -1,0 +1,38 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc">
+	
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/message/mode} === 'display'}">
+		<f:SimpleForm adjustLabelSpan="false" editable="true" emptySpanXL="0"
+			columnsL="3" columnsM="2" columnsXL="3" labelSpanL="4" labelSpanM="8"
+			labelSpanS="12" labelSpanXL="4" layout="ResponsiveGridLayout" singleContainerFullSize="false">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>generalSettings}"/>
+					<ToolbarSpacer />
+					<Button icon="sap-icon://edit" press="onEdit" visible="true" />
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>type}" />
+				<Label text="{i18n>messageType}" />
+				<Text text="{control>/message/type}" />
+				<core:Title text="{i18n>inbound}" />
+				<Label text="{i18n>active}" />
+				<Switch enabled="false" state="{control>/message/originalConfiguration/isInboundActive}" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>target}" />
+				<Text text="{control>/message/originalConfiguration/target}" visible="{= ${control>/message/type} !== '997'}" />
+				<core:Title text="{i18n>outbound}" />
+				<Label text="{i18n>active}" />
+				<Switch enabled="false" state="{control>/message/originalConfiguration/isOutboundActive}" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>archive}" />
+				<Switch enabled="false" state="{control>/message/originalConfiguration/enableArchive}" type="AcceptReject">
+				</Switch>
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+</core:FragmentDefinition>

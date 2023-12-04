@@ -1,0 +1,59 @@
+<mvc:View 
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.PartnerList"
+    xmlns="sap.m"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Page title="{i18n>partner} {i18n>configuration}">	
+		<headerContent>
+			<Button icon="sap-icon://refresh" press="onRefresh" />
+			<Button icon="sap-icon://add" press="onAdd" />
+		</headerContent>
+		<content>
+			<fb:FilterBar id="filterbar" filterBarExpanded="false" showFilterConfiguration="false" showGoOnFB="false" useToolbar="true">
+				<fb:filterGroupItems>
+					<fb:FilterGroupItem groupName="Group1" label="{i18n>partner}" name="partner" visibleInFilterBar="true">
+						<fb:control>
+							<Input id="partnerFilter" liveChange="onFilterChange" placeholder="{i18n>partnerSearch}" value="" />
+						</fb:control>
+					</fb:FilterGroupItem>
+				</fb:filterGroupItems>
+			</fb:FilterBar>
+			<VBox class="sapUiSmallMargin">
+				<Table id="partnerList" growing="true" growingThreshold="25" inset="false"
+        			items="{
+						path: 'control>/partners/list',
+						sorter: {
+							path: 'Pid'
+						},
+						templateShareable: false
+					}"
+					mode="SingleSelectMaster" selectionChange="onSelect">
+					<columns>
+						<Column width="20em">
+							<Text text="{i18n>partner}" />
+						</Column>
+						<Column hAlign="End" />
+						<Column hAlign="End">
+							<Text text="{i18n>actions}" />
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem vAlign="Middle" visible="{= ${control>Pid} === ${control>/self/pid} ? false : true}">
+							<cells>
+								<ObjectIdentifier
+									title="{control>Pid}" />
+								<Text/>
+								<VBox>
+									<HBox justifyContent="End">
+										<Button binding="{control>/}" icon="sap-icon://delete" press="onDelete" />
+									</HBox>
+								</VBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

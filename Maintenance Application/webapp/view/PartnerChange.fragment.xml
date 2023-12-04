@@ -1,0 +1,359 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc">
+
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'change'}">
+		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="4" editable="true"
+			emptySpanXL="0" labelSpanL="4" labelSpanM="8" labelSpanS="12" labelSpanXL="4"
+			layout="ResponsiveGridLayout" singleContainerFullSize="false">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>generalSettings}"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>x12Identification}" />
+				<Label text="{i18n>x12Qualifier}" />
+				<Input id="x12_qualifier-change" liveChange="triggerEnterKey" placeholder="{i18n>x12QualifierHint}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '^[A-Z0-9]{2}$'						
+						}
+					}" />
+				<Label text="{i18n>x12Identifier}" />
+				<Input id="x12_id-change" liveChange="triggerEnterKey"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '^[A-Z0-9]{1,15}$'						
+						}
+					}" />
+				<core:Title text="{i18n>communication}" />
+				<Label text="{i18n>adapter}" />
+				<Select id="AdapterType-change" change="onSelect" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="AS2" key="AS2"/>
+						<core:Item text="SFTP" key="SFTP"/>
+						<core:Item text="FTP" key="FTP"/>
+					</items>
+				</Select>
+				<core:Title text="{i18n>idocIdentification}" />
+				<Label text="{i18n>partnerType}" />
+				<Select id="PartnerType-change" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="{i18n>customer}" key="KU"/>
+						<core:Item text="{i18n>supplier}" key="LI"/>
+						<core:Item text="{i18n>bank}" key="BK"/>
+						<core:Item text="{i18n>logicalSystem}" key="LS"/>
+					</items>
+				</Select>
+				<Label text="{i18n>idocId}" />
+				<Text id="sap_idoc_id-change" text="{partners>Id}" visible="{control>/partners/alternativePartnerExists}" />
+				<Button icon="sap-icon://add" press="onAdd" 
+					visible="{= ${control>/partners/alternativePartnerExists} === false }" width="1em" />
+				<Button icon="sap-icon://edit" press="onReplace" 
+					visible="{control>/partners/alternativePartnerExists}" width="1em" />
+				<core:Title text="{i18n>x12Settings}" />
+				<Label text="{i18n>elementSeparator}" />
+				<Select id="x12_element_separator-change" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="*" key="*"/>
+						<core:Item text=":" key=":"/>
+						<core:Item text="," key=","/>
+						<core:Item text="." key="."/>
+						<core:Item text="|" key="|"/>
+						<core:Item text="+" key="+"/>
+						<core:Item text=";" key=";"/>
+					</items>
+				</Select>
+				<Label text="{i18n>segmentTerminator}" />
+				<Select id="x12_segment_terminator-change" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="~" key="~"/>
+						<core:Item text="Carriage Return" key="#x0d"/>
+						<core:Item text="Line Feed" key="#x0a"/>
+						<core:Item text="Tab" key="#x09"/>
+						<core:Item text="Vertical Tab" key="#x0b"/>
+					</items>
+				</Select>
+				<Label text="{i18n>compositeSeparator}" />
+				<Select id="x12_composite_separator-change" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="\" key="\"/>
+						<core:Item text=":" key=":"/>
+						<core:Item text="," key=","/>
+						<core:Item text="." key="."/>
+						<core:Item text="|" key="|"/>
+						<core:Item text="+" key="+"/>
+						<core:Item text=";" key=";"/>
+						<core:Item text="&lt;" key="#x3c"/>
+						<core:Item text="&gt;" key="#x3e"/>
+					</items>
+				</Select>
+				<Label text="{i18n>repetitionSeparator}" />
+				<Select id="x12_repetition_separator-change" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="^" key="^"/>
+						<core:Item text=":" key=":"/>
+						<core:Item text="," key=","/>
+						<core:Item text="." key="."/>
+						<core:Item text="|" key="|"/>
+						<core:Item text="+" key="+"/>
+						<core:Item text=";" key=";"/>
+						<core:Item text="&lt;" key="#x3c"/>
+						<core:Item text="&gt;" key="#x3e"/>
+					</items>
+				</Select>
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'change'}">
+		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="3"
+			emptySpanXL="0" editable="true" labelSpanM="12" labelSpanXL="4" layout="ColumnLayout"
+			visible="{= ${control>/partners/view/adapter} === 'AS2'}">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>communicationSettings}"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>general}" />
+				<Label text="{i18n>as2Id}" />
+				<Input id="AS2_id-change" liveChange="triggerEnterKey"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '\\S+$'						
+						}
+					}"/>
+				<Label text="{i18n>as2Url}" />
+				<Input id="ReceiverUrl-change" liveChange="triggerEnterKey"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '^http(s)*:\/\/.+$'						
+						}
+					}"/>
+				<Label text="{i18n>publicKeyAlias}" />
+				<Input id="PublicKeyAlias-change" liveChange="triggerEnterKey" placeholder="{i18n>publicKeyAliasHint}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '\\S+$'						
+						}
+					}"/>
+				<Label text="{i18n>compressMessage}" />
+				<Switch id="SAP_AS2_Outbound_Compress_Message-change"
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<core:Title text="{i18n>encryption}" />
+				<Label text="{i18n>decryptMessage}" />
+				<Switch id="AS2_inbound_decrypt_message-change" change="onSwitch"
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>verifySignature}" />
+				<Select id="AS2_inbound_verify_signature-change" enabled="{control>/partners/view/decryptMessage}" 
+					selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="Not Required" key="notRequired"/>
+						<core:Item text="Trusted Certificate" key="trustedCertificate"/>
+						<core:Item text="Trusted Root Certificate" key="trustedRootCertificate"/>
+					</items>
+				</Select>
+				<Label text="{i18n>encryptMessage}" />
+				<Switch id="SAP_AS2_Outbound_Encrypt_Message-change" change="onSwitch" 
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>encryptionAlgorithm}" />
+				<Select id="SAP_AS2_Outbound_Encryption_Algorithm-change" enabled="{control>/partners/view/encryptMessage}" 
+					selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="3DES" key="3DES"/>
+						<core:Item text="AES128" key="AES128"/>
+						<core:Item text="AES192" key="AES192"/>
+						<core:Item text="AES256" key="AES256"/>
+						<core:Item text="RC2" key="RC2"/>
+					</items>
+				</Select>
+				<Label text="{i18n>signMessage}" />
+				<Switch id="SAP_AS2_Outbound_Sign_Message-change" change="onSwitch" 
+					enabled="{control>/partners/view/encryptMessage}" 
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>signingAlgorithm}" />
+				<Select id="SAP_AS2_Outbound_Signing_Algorithm-change" 
+					enabled="{= ${control>/partners/view/encryptMessage} &amp;&amp; ${control>/partners/view/signMessage} }" 
+					selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="SHA1" key="SHA1"/>
+						<core:Item text="SHA224" key="SHA224"/>
+						<core:Item text="SHA256" key="SHA256"/>
+						<core:Item text="SHA384" key="SHA384"/>
+						<core:Item text="SHA512" key="SHA512"/>
+						<core:Item text="MD5" key="MD5"/>
+					</items>
+				</Select>
+				<core:Title text="{i18n>mdn}" />
+				<Label text="{i18n>mdnType}" />
+				<Select id="SAP_AS2_Outbound_Mdn_Type-change" change="onSelect" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="Synchronous" key="Synchronous"/>
+						<core:Item text="Asynchronous" key="Asynchronous"/>
+						<core:Item text="None" key="None"/>
+					</items>
+				</Select>
+				<Label text="{i18n>mdnRequestSigning}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Request_Signing-change" change="onSwitch" 
+					enabled="{= ${control>/partners/view/mdnType} !== 'None' }" 
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnSigningAlgorithm}" />
+				<Select id="SAP_AS2_Outbound_Mdn_Signing_Algorithm-change" enabled="{control>/partners/view/signMdn}" 
+					selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="SHA1" key="SHA1"/>
+						<core:Item text="SHA224" key="SHA224"/>
+						<core:Item text="SHA256" key="SHA256"/>
+						<core:Item text="SHA384" key="SHA384"/>
+						<core:Item text="SHA512" key="SHA512"/>
+						<core:Item text="MD5" key="MD5"/>
+					</items>
+				</Select>
+				<Label text="{i18n>mdnVerifySignature}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Verify_Signature-change" enabled="{control>/partners/view/signMdn}"
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnRequestMic}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Request_Mic-change" change="onSwitch" 
+					enabled="{= ${control>/partners/view/mdnType} !== 'None' }" 
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnVerifyMic}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Verify_Mic-change" enabled="{control>/partners/view/requestMic}"
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnUrl}" visible="{= ${control>/partners/view/mdnType} === 'Asynchronous' }" />
+				<Input id="Mdn_Url-change" liveChange="triggerEnterKey"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '^http(s)*:\/\/.+$'						
+						}
+					}"
+					visible="{= ${control>/partners/view/mdnType} === 'Asynchronous' }"/>
+			</f:content>
+		</f:SimpleForm>
+		<f:SimpleForm adjustLabelSpan="false" columnsM="2" columnsL="2" columnsXL="2" editable="true"
+			emptySpanXL="0" labelSpanM="12" labelSpanXL="4" layout="ColumnLayout"
+			singleContainerFullSize="false" visible="{= ${control>/partners/view/adapter} !== 'AS2'}">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>communicationSettings}"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>general}" />
+				<Label text="{i18n>host}" />
+				<Input id="host-change" liveChange="triggerEnterKey" placeholder="{i18n>sftpHostHint}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '\\S+$'						
+						}
+					}" />
+				<Label text="{i18n>directory}" />
+				<Input id="directory-change" liveChange="triggerEnterKey" placeholder="{i18n>directoryHint}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '[^\\\/].+$'						
+						}
+					}" />
+				<Label text="{i18n>credentials}" />
+				<Input id="credentials-change" liveChange="triggerEnterKey" placeholder="{i18n>credentialsHint}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '\\S+$'						
+						}
+					}" />
+				<core:Title text="{i18n>encryption}" />
+				<Label text="{i18n>ftpEncryption}" />
+				<Select id="SAP_FtpEncryption-change" selectedKey="{partner>Value}">
+					<items>
+						<core:Item text="Implicit" key="ftps"/>
+						<core:Item text="Explicit" key="ftpes"/>
+					</items>
+				</Select>
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+</core:FragmentDefinition>

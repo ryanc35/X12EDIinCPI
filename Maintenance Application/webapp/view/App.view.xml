@@ -1,0 +1,35 @@
+<mvc:View
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.App"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:tnt="sap.tnt"
+	height="100%">
+
+	<tnt:ToolPage id="App">
+		<tnt:header/>
+		<tnt:subHeader>
+			<tnt:ToolHeader>
+				<IconTabHeader items="{path: 'control>/navigation'}" select=".onItemSelect"
+						selectedKey="{control>/selectedKey}" mode="Inline">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow" shrinkable="true" />
+					</layoutData>
+					<items>
+						<IconTabFilter items="{items}" key="{control>key}" text="{control>title}">
+							<items>
+								<IconTabFilter key="{control>key}" text="{control>title}" />
+							</items>
+						</IconTabFilter>
+					</items>
+				</IconTabHeader>
+			</tnt:ToolHeader>
+		</tnt:subHeader>
+		<tnt:mainContents>
+			<NavContainer id="pageContainer">
+				<pages>
+					<mvc:XMLView viewName="com.at.pd.edi.attr.pdediattr.view.PartnerList" />
+				</pages>
+			</NavContainer>
+		</tnt:mainContents>
+	</tnt:ToolPage>
+</mvc:View>

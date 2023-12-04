@@ -1,0 +1,68 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc">
+
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/self/mode} === 'change'}">
+		<f:SimpleForm adjustLabelSpan="false" columnsM="2" columnsL="3" columnsXL="3"
+			editable="true" emptySpanXL="0" labelSpanL="4" labelSpanM="8" labelSpanS="12"
+			labelSpanXL="4" layout="ResponsiveGridLayout" singleContainerFullSize="false">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>generalSettings}"/>
+					<ToolbarSpacer />
+					<Button icon="sap-icon://save" press="onSave" visible="true" />
+					<Button icon="sap-icon://cancel" press="onCancel" visible="true" />
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>x12Identification}" />
+				<Label text="{i18n>x12Qualifier}" />
+				<Input id="x12_qualifier-change" liveChange="triggerEnterKey" placeholder="{i18n>x12QualifierHint}"
+					value="{
+						path: 'self>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '^[A-Z0-9]{2}$'
+						}
+					}"/>
+				<Label text="{i18n>x12Identifier}" />
+				<Input id="x12_id-change" liveChange="triggerEnterKey"
+					value="{
+						path: 'self>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '^[A-Z0-9]{1,15}$'						
+						}
+					}"/>
+				<core:Title text="{i18n>communication}" />
+				<Label text="{i18n>adapter}" />
+				<Text id="AdapterType-change" text="{self>Value}" />
+				<core:Title text="{i18n>featureFlags}" />
+				<Label text="{i18n>archive}" />
+				<Switch id="IsArchivingActive-change" enabled="true"
+					state="{ 
+						parts: [
+							'self>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>datastore}" />
+				<Switch id="Is997DatastoreActive-change" enabled="true"
+					state="{ 
+						parts: [
+							'self>Value',
+							'control>/true'
+						],
+						type: 'custom.model.type.StringyBoolean'
+					}" 
+					type="AcceptReject">
+				</Switch>
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+</core:FragmentDefinition>

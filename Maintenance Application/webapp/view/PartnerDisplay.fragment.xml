@@ -1,0 +1,130 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc">
+
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'display'}">
+		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="4" editable="true"
+			emptySpanXL="0" labelSpanL="4" labelSpanM="8" labelSpanS="12" labelSpanXL="4"
+			layout="ResponsiveGridLayout" singleContainerFullSize="false">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>generalSettings}"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>x12Identification}" />
+				<Label text="{i18n>x12Qualifier}" />
+				<Text id="x12_qualifier-display" text="{partner>Value}" />
+				<Label text="{i18n>x12Identifier}" />
+				<Text id="x12_id-display" text="{partner>Value}" />
+				<core:Title text="{i18n>communication}" />
+				<Label text="{i18n>adapter}" />
+				<Text id="AdapterType-display" text="{partner>Value}" />
+				<core:Title text="{i18n>idocIdentification}" />
+				<Label text="{i18n>partnerType}" />
+				<Text id="PartnerType-display" text="{partner>Value}" />
+				<Label text="{i18n>idocId}" />
+				<Text id="sap_idoc_id-display" text="{partners>Id}" />
+				<core:Title text="{i18n>x12Settings}" />
+				<Label text="{i18n>elementSeparator}" />
+				<Text id="x12_element_separator-display" text="{partner>Value}" />
+				<Label text="{i18n>segmentTerminator}" />
+				<Text id="x12_segment_terminator-display" text="{ path: 'partner>Value', formatter: '._formatString' }" />
+				<Label text="{i18n>compositeSeparator}" />
+				<Text id="x12_composite_separator-display" text="{ path: 'partner>Value', formatter: '._formatString' }" />
+				<Label text="{i18n>repetitionSeparator}" />
+				<Text id="x12_repetition_separator-display" text="{ path: 'partner>Value', formatter: '._formatString' }" />
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'display'}">
+		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="3"
+			emptySpanXL="0" editable="true" labelSpanM="12" labelSpanXL="4" layout="ColumnLayout"
+			visible="{= ${control>/partners/view/adapter} === 'AS2'}">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>communicationSettings}"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>general}" />
+				<Label text="{i18n>as2Id}" />
+				<Text id="AS2_id-display" text="{partner>Value}" />
+				<Label text="{i18n>as2Url}" />
+				<Text id="ReceiverUrl-display" text="{partner>Value}" />
+				<Label text="{i18n>publicKeyAlias}" />
+				<Text id="PublicKeyAlias-display" text="{partner>Value}" />
+				<Label text="{i18n>compressMessage}" />
+				<Switch id="SAP_AS2_Outbound_Compress_Message-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<core:Title text="{i18n>encryption}" />
+				<Label text="{i18n>decryptMessage}" />
+				<Switch id="AS2_inbound_decrypt_message-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>verifySignature}" />
+				<Text id="AS2_inbound_verify_signature-display" text="{ path: 'partner>Value', formatter: '._formatVerifySignature' }" />
+				<Label text="{i18n>encryptMessage}" />
+				<Switch id="SAP_AS2_Outbound_Encrypt_Message-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>encryptionAlgorithm}" />
+				<Text id="SAP_AS2_Outbound_Encryption_Algorithm-display" text="{partner>Value}" />
+				<Label text="{i18n>signMessage}" />
+				<Switch id="SAP_AS2_Outbound_Sign_Message-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>signingAlgorithm}" />
+				<Text id="SAP_AS2_Outbound_Signing_Algorithm-display" text="{partner>Value}" />
+				<core:Title text="{i18n>mdn}" />
+				<Label text="{i18n>mdnType}" />
+				<Text id="SAP_AS2_Outbound_Mdn_Type-display" text="{partner>Value}" />
+				<Label text="{i18n>mdnRequestSigning}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Request_Signing-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnSigningAlgorithm}" />
+				<Text id="SAP_AS2_Outbound_Mdn_Signing_Algorithm-display" text="{partner>Value}" />
+				<Label text="{i18n>mdnVerifySignature}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Verify_Signature-display" enabled="false"
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnRequestMic}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Request_Mic-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnVerifyMic}" />
+				<Switch id="SAP_AS2_Outbound_Mdn_Verify_Mic-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
+				<Label text="{i18n>mdnUrl}" visible="{= ${control>/partners/mdnType} === 'Asynchronous' }" />
+				<Text id="Mdn_Url-display" text="{partner>Value}"
+					visible="{= ${control>/partners/view/mdnType} === 'Asynchronous' }"/>
+			</f:content>
+		</f:SimpleForm>
+		<f:SimpleForm adjustLabelSpan="false" columnsM="2" columnsL="2" columnsXL="2" editable="true" 
+			emptySpanXL="0"  labelSpanM="12" labelSpanXL="4" layout="ColumnLayout" 
+			singleContainerFullSize="false" visible="{= ${control>/partners/view/adapter} !== 'AS2'}">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>communicationSettings}"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>general}" />
+				<Label text="{i18n>host}" />
+				<Text id="host-display" text="{partner>Value}" />
+				<Label text="{i18n>directory}" />
+				<Text id="directory-display" text="{partner>Value}" />
+				<Label text="{i18n>credentials}" />
+				<Text id="credentials-display" text="{partner>Value}" />
+				<core:Title text="{i18n>encryption}" />
+				<Label text="{i18n>ftpEncryption}" />
+				<Text id="SAP_FtpEncryption-display" text="{partner>Value}" />
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+</core:FragmentDefinition>

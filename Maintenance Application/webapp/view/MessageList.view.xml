@@ -1,0 +1,47 @@
+<mvc:View 
+	controllerName="com.at.pd.edi.attr.pdediattr.controller.MessageList"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<Panel expandable="false" width="auto" class="sapUiSmallMargin">
+		<headerToolbar>
+			<OverflowToolbar style="Clear">
+				<Title text="{i18n>supportedMessages}" />
+				<ToolbarSpacer />
+				<Button icon="sap-icon://add" press="onAdd" />
+			</OverflowToolbar>
+		</headerToolbar>
+		<content>
+			<Table id="messageList" growing="true" growingThreshold="25" inset="false"
+				mode="SingleSelectMaster" selectionChange="onSelect">
+				<columns>
+					<Column width="20em">
+						<Text text="{i18n>message}" />
+					</Column>
+					<Column hAlign="End">
+						<Text text="{i18n>directions}" />
+					</Column>
+					<Column hAlign="End">
+						<Text text="{i18n>actions}" />
+					</Column>
+				</columns>
+				<dependents>
+					<ColumnListItem id="messageItemTemplate" vAlign="Middle">
+						<cells>
+							<ObjectIdentifier
+								title="{messages>Id}" />
+							<Text
+								text="{ path: 'messages>Value', formatter: '._formatDirection' }" />
+							<VBox>
+								<HBox justifyContent="End">
+									<Button binding="{messages>/Id}" icon="sap-icon://delete" press="onDelete" />
+								</HBox>
+							</VBox>
+						</cells>
+					</ColumnListItem>
+				</dependents>
+			</Table>
+		</content>
+	</Panel>
+</mvc:View>

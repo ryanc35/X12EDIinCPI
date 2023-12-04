@@ -1,0 +1,41 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc">
+
+	<VBox class="sapUiSmallMargin" visible="{= ${control>/self/mode} === 'display'}">
+		<f:SimpleForm adjustLabelSpan="false" columnsM="2" columnsL="3" columnsXL="3"
+			editable="true" emptySpanXL="0" labelSpanL="4" labelSpanM="8" labelSpanS="12"
+			labelSpanXL="4" layout="ResponsiveGridLayout" singleContainerFullSize="false">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>generalSettings}"/>
+					<ToolbarSpacer />
+					<Button icon="sap-icon://add" press="onAdd"  visible="{= ${control>/self/exists} === false}" />
+					<Button icon="sap-icon://edit" press="onEdit" 
+						visible="{= ${control>/self/mode} === 'display' &amp;&amp; ${control>/self/exists} === true}" />
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<core:Title text="{i18n>x12Identification}" />
+				<Label text="{i18n>x12Qualifier}" />
+				<Text id="x12_qualifier-display" text="{self>Value}" />
+				<Label text="{i18n>x12Identifier}" />
+				<Text id="x12_id-display" text="{self>Value}" />
+				<core:Title text="{i18n>communication}" />
+				<Label text="{i18n>adapter}" />
+				<Text id="AdapterType-display" text="{self>Value}" />
+				<core:Title text="{i18n>featureFlags}" />
+					<Label text="{i18n>archive}" />
+					<Switch id="IsArchivingActive-display" enabled="false"
+							state="{= ${self>Value} === 'true' ? true : false }" type="AcceptReject">
+					</Switch>
+					<Label text="{i18n>datastore}" />
+					<Switch id="Is997DatastoreActive-display" enabled="false"
+							state="{= ${self>Value} === 'true' ? true : false }" type="AcceptReject">
+					</Switch>
+			</f:content>
+		</f:SimpleForm>
+	</VBox>
+</core:FragmentDefinition>

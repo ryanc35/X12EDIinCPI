@@ -89,11 +89,23 @@ sap.ui.define([
 
 
                 // Add all default entries for string parameters
-                for(const field of this._partners.defaults) {
+                for(const field of this._partners.defaults.stringParameters) {
                     oDataModel.create("/StringParameters", {
                         Pid: dialogEntry.id,
                         Id: field.name,
                         Value: field.value
+                    }, {
+                        groupId: "deferred"
+                    });
+                }
+
+                // Add all default entries for binary parameters
+                for(const field of this._partners.defaults.binaryParameters) {
+                    oDataModel.create("/BinaryParameters", {
+                        Pid: dialogEntry.id,
+                        Id: field.name,
+                        ContentType: field.contentType,
+                        Value: window.btoa(field.value)
                     }, {
                         groupId: "deferred"
                     });

@@ -13,11 +13,7 @@ sap.ui.define([
 	   * Displaying data from the right model
 	   */
 	  formatValue: function(parts) {
-		if(parts[1]) {
-			return parts[1].toString() === parts[0] ? true : false;
-		} else {
-			return false;
-		}
+		return parts[1].toString() === parts[0] ? true : false;
 	  },
   
 	  /**

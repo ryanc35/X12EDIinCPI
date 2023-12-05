@@ -22,7 +22,7 @@ sap.ui.define([
                 this._partners = this._controlModel.getProperty("/partners");
 
                 // Get model for binding batch complete listener for late arrangement 
-                // of UI data visibility (adapter specific)
+                // of UI data visibility (adapter specific and missing parameters)
                 const oDataModel = this._getModel();
                 oDataModel.attachBatchRequestCompleted(this._batchCompleteListener.bind(this));
 
@@ -276,7 +276,7 @@ sap.ui.define([
                 oEvent.getSource().onsapenter(oEvent);
             },
 
-            // Report load completion and detach
+            // Report load completion and handle missing data
             _batchCompleteListener: function(oEvent) {
                 // Set adapter into control model for conditional display
                 const oDataModel = this._getModel(),
@@ -291,7 +291,7 @@ sap.ui.define([
                     if(message.technicalDetails.statusCode === "404") {
                         const target = message.getTarget(),
                         id = target.match(/(?<=Id=')[^']+/)[0],
-                        defaults = this._partners.defaults.find((n) => n.name === id);
+                        defaults = this._partners.defaults.stringParameters.find((n) => n.name === id);
                         oDataModel.create("/StringParameters", {
                             Pid: target.match(/(?<=Pid=')[^']+/)[0],
                             Id: id,

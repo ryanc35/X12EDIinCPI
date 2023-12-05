@@ -147,38 +147,30 @@ sap.ui.define([
                 // Read agreement information
                 const key = "/BinaryParameters(Pid='" + this._controlModel.getProperty("/partners/pid")
                                                          + "',Id='Agreements')/Value",
-                    sValue = this._getModel().getProperty(key),
-                    JSONObject = JSON.parse(window.atob(sValue)),
-                    inbound = JSONObject.Agreements.Inbound,
-                    outbound = JSONObject.Agreements.Outbound;
+                    oDataModel = this._getModel(),
+                    sValue = oDataModel.getProperty(key);
 
-                // Parse inbound information
-                for(var message of inbound) {
-                    message = this._getX12Parts(message);
-                    message.DoExtendedPreProcessing = message.DoExtendedPreProcessing === "true";
+                if(!sValue) { 
+                    // Entry is missing so create it
+                    const partners = this._controlModel.getProperty("/partners"),
+                        defaults = partners.defaults.binaryParameters.find((n) => n.name === "Agreements");
+                    oDataModel.create("/BinaryParameters", {
+                        Pid: this._controlModel.getProperty("/partners/pid"),
+                        Id: defaults.name,
+                        ContentType: defaults.contentType,
+                        Value: window.btoa(defaults.value)
+                    }, {
+                        success: function(oData, oError) {
+                            this._parseAgreements(JSON.parse(window.atob(oData.Value)));
+                        }.bind(this),
+                        error: function(oError) {
+                            MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
+                        }.bind(this)
+                    });
+                } else {
+                    const JSONObject = JSON.parse(window.atob(sValue));
+                    this._parseAgreements(JSONObject);
                 }
-
-                // Parse outbound information
-                for(var message of outbound) {
-                    message = this._getX12Parts(message);
-                    message.DoExtendedPostProcessing = message.DoExtendedPostProcessing === "true";
-                    message.AcknowledgementRequired = message.AcknowledgementRequired === "true";
-                    message.ArchiveMessage = message.ArchiveMessage === "false" 
-                                                ? false : this._getArchiveActive(message.x12Type);
-                    message.canChangeArchive = this._getArchiveActive(message.x12Type);
-                }
-
-                // Record configuration into JSON model after cloning
-                const newConfiguration = {
-                    inbound: inbound,
-                    outbound: outbound
-                },
-                    originalConfiguration = JSON.parse(JSON.stringify(newConfiguration));
-                this._controlModel.setProperty("/partners/agreements/newConfiguration", newConfiguration);
-                this._controlModel.setProperty("/partners/agreements/originalConfiguration", originalConfiguration);
-
-                // Determine if there are any available agreements
-                this._controlModel.setProperty("/partners/agreements/hasAvailable", this._determineHasAvailableAgreements());
             },
 
             // Save current agreements
@@ -278,6 +270,40 @@ sap.ui.define([
                     this._oDialog = oDialog;
                     this._oDialog.open();
                 }.bind(this));
+            },
+
+            // Parse agreements data for display in UI
+            _parseAgreements(JSONObject) {
+                const inbound = JSONObject.Agreements.Inbound,
+                outbound = JSONObject.Agreements.Outbound;
+
+                // Parse inbound information
+                for(var message of inbound) {
+                    message = this._getX12Parts(message);
+                    message.DoExtendedPreProcessing = message.DoExtendedPreProcessing === "true";
+                }
+
+                // Parse outbound information
+                for(var message of outbound) {
+                    message = this._getX12Parts(message);
+                    message.DoExtendedPostProcessing = message.DoExtendedPostProcessing === "true";
+                    message.AcknowledgementRequired = message.AcknowledgementRequired === "true";
+                    message.ArchiveMessage = message.ArchiveMessage === "false" 
+                                                ? false : this._getArchiveActive(message.x12Type);
+                    message.canChangeArchive = this._getArchiveActive(message.x12Type);
+                }
+
+                // Record configuration into JSON model after cloning
+                const newConfiguration = {
+                    inbound: inbound,
+                    outbound: outbound
+                },
+                    originalConfiguration = JSON.parse(JSON.stringify(newConfiguration));
+                this._controlModel.setProperty("/partners/agreements/newConfiguration", newConfiguration);
+                this._controlModel.setProperty("/partners/agreements/originalConfiguration", originalConfiguration);
+
+                // Determine if there are any available agreements
+                this._controlModel.setProperty("/partners/agreements/hasAvailable", this._determineHasAvailableAgreements());
             },
 
             // Prepare payload for saving

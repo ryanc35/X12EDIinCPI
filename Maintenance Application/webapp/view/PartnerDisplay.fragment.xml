@@ -123,7 +123,7 @@
 				<Text id="credentials-display" text="{partner>Value}" />
 				<core:Title text="{i18n>encryption}" />
 				<Label text="{i18n>ftpEncryption}" />
-				<Text id="SAP_FtpEncryption-display" text="{partner>Value}" />
+				<Text id="SAP_FtpEncryption-display" text="{= ${partner>Value} === 'ftps' ? ${i18n>implicit} : ${i18n>explicit} }" />
 			</f:content>
 		</f:SimpleForm>
 	</VBox>

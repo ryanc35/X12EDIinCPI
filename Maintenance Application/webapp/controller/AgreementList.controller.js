@@ -201,6 +201,18 @@ sap.ui.define([
                 });
             },
 
+            // Record selection into JSON model
+            onSelect: function(oEvent) {
+                const direction = this._oView.byId("agreementTabs").getSelectedKey(),
+                    key = oEvent.getParameter("selectedItem").getText();
+                
+                if(direction === "inbound") {
+                    this._controlModel.setProperty("/partners/agreements/newEntry/inboundMessage", key);
+                } else {
+                    this._controlModel.setProperty("/partners/agreements/newEntry/outboundMessage", key);
+                }
+            },
+
             // Close agreement dialog
             _closeDialog: function() {
                 this._oDialog.close();

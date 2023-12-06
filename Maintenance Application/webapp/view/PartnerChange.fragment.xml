@@ -2,7 +2,8 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
 	xmlns:f="sap.ui.layout.form"
-    xmlns:mvc="sap.ui.core.mvc">
+    xmlns:mvc="sap.ui.core.mvc"
+	xmlns:u="sap.ui.unified">
 
 	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'change'}">
 		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="4" editable="true"
@@ -52,12 +53,13 @@
 						<core:Item text="{i18n>logicalSystem}" key="LS"/>
 					</items>
 				</Select>
-				<Label text="{i18n>idocId}" />
+				<Label text="{i18n>idocId}" visible="{control>/partners/alternativePartnerExists}" />
 				<Text id="sap_idoc_id-change" text="{partners>Id}" visible="{control>/partners/alternativePartnerExists}" />
-				<Button icon="sap-icon://add" press="onAdd" 
-					visible="{= ${control>/partners/alternativePartnerExists} === false }" width="1em" />
-				<Button icon="sap-icon://edit" press="onReplace" 
+				<Button icon="sap-icon://edit" press="onReplaceAlternativePartnerDialog" 
 					visible="{control>/partners/alternativePartnerExists}" width="1em" />
+				<Label text="{i18n>idocId}" visible="{= ${control>/partners/alternativePartnerExists} === false }" />
+				<Button icon="sap-icon://add" press="onAddAlternativePartnerDialog" 
+					visible="{= ${control>/partners/alternativePartnerExists} === false }" width="1em" />
 				<core:Title text="{i18n>x12Settings}" />
 				<Label text="{i18n>elementSeparator}" />
 				<Select id="x12_element_separator-change" selectedKey="{partner>Value}">
@@ -150,6 +152,8 @@
 							search: '\\S+$'						
 						}
 					}"/>
+				<u:FileUploader buttonOnly="true" change="triggerCertificateUpload" fileType="cer" icon="sap-icon://upload" 
+					iconOnly="true" />
 				<Label text="{i18n>compressMessage}" />
 				<Switch id="SAP_AS2_Outbound_Compress_Message-change"
 					state="{ 

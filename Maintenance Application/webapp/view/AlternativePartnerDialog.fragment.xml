@@ -28,7 +28,7 @@
 						visible="{= ${control>/alternativePartners/mode} === 'create' }" />
             		<Button icon="sap-icon://save" press="onChangeAlternativePartner"
 						visible="{= ${control>/alternativePartners/mode} === 'change' }" />
-            		<Button icon="sap-icon://cancel" press="onCancelAlternativePartnerDialog" />
+            		<Button icon="sap-icon://cancel" press="onCloseDialog" />
 				</content>
 			</Toolbar>
 		</footer>

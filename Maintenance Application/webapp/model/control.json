@@ -190,6 +190,17 @@
 				}
 			]
 		},
+		"hasCertificate": false,
+		"inputs": [
+			"x12_qualifier-change",
+			"x12_id-change",
+			"AS2_id-change",
+			"ReceiverUrl-change",
+			"PublicKeyAlias-change",
+			"host-change",
+			"directory-change",
+			"credentials-change"
+		],
 		"list": [],
 		"mode": "",
 		"pid": "",
@@ -200,16 +211,6 @@
 			"SAP_AS2_Outbound_Mdn_Type-change",
 			"SAP_AS2_Outbound_Mdn_Request_Signing-change",
 			"SAP_AS2_Outbound_Mdn_Request_Mic-change"
-		],
-		"inputs": [
-			"x12_qualifier-change",
-			"x12_id-change",
-			"AS2_id-change",
-			"ReceiverUrl-change",
-			"PublicKeyAlias-change",
-			"host-change",
-			"directory-change",
-			"credentials-change"
 		],
 		"stringParameters": [
 			{

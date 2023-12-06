@@ -26,23 +26,15 @@ sap.ui.define([
                 const oDataModel = this._getModel();
                 oDataModel.attachBatchRequestCompleted(this._batchCompleteListener.bind(this));
 
-                // Instantiate dialog object for possible alternative partner creation flow
+                // Instantiate dialog object for possible alternative partner updates
                 this._pDialog ??= this.loadFragment({
-                    name: "com.at.pd.edi.attr.pdediattr.view.AlternativePartnerCreate",
+                    name: "com.at.pd.edi.attr.pdediattr.view.AlternativePartnerDialog",
                     type: "XML"
                 }); 
 
                 // Add handler for route pattern match - populate root JSON context
                 const route = this.getOwnerComponent().getRouter().getRoute("partner");
                 route.attachPatternMatched(this.onPatternMatched, this);
-            },
-
-            // Open add dialog
-            onAdd: function() {
-                // Set mode
-                this._controlModel.setProperty("/alternativePartners/mode", "create");
-                this._controlModel.setProperty("/partners/alternativePartnerId", "");
-                this._openDialog();
             },
 
             // Attempt to create alternative partner
@@ -95,6 +87,15 @@ sap.ui.define([
                 });
             },
 
+
+            // Open add alternative partner dialog
+            onAddAlternativePartnerDialog: function() {
+                // Set mode
+                this._controlModel.setProperty("/alternativePartners/mode", "create");
+                this._controlModel.setProperty("/partners/alternativePartnerId", "");
+                this._openDialog();
+            },
+
             // Handle attachment for notification to UI upon initial loading of data
             onAfterRendering: function() {
                 // Read data and bind properties
@@ -132,11 +133,6 @@ sap.ui.define([
                 } else {
                     this._toggleMode();
                 }
-            },
-
-            // Cancel self partner creation
-            onCancelAlternativePartnerDialog: function() {
-                this._oDialog.close();
             },
 
             // Remove existing alternative and create new entity
@@ -199,6 +195,11 @@ sap.ui.define([
                 });
             },
 
+            // Cancel open dialog (alternative partner or certificate upload)
+            onCloseDialog: function() {
+                this._oDialog.close();
+            },
+
             // Initial context without defaulting (changing) values for dependencies
             onContextChange: function(oEvent) {
                 const oSource = oEvent.getSource();
@@ -210,10 +211,22 @@ sap.ui.define([
                 this._toggleMode();
             },
 
+            // Open certificate dialog
+            onOpenCertificateDialog: function() {
+                this._openDialog(this._pDialogCertificate);
+            },
+
             // Bind partner data for loading
             onPatternMatched: function (oEvent) {
                 // Set root context
                 this._partners = this._controlModel.getProperty("/partners");
+
+                // Read certificate
+                const key = "/BinaryParameters(Pid='" + this._controlModel.getProperty("/partners/pid")
+                                                         + "',Id='SenderPublicKey')/Value",
+                    oDataModel = this.getOwnerComponent().getModel("partners"),
+                    sValue = oDataModel.getProperty(key);
+                this._controlModel.setProperty("/partners/hasCertificate", sValue ? true : false);
 
                 // Unbind IDoc ID every time so it isn't carried to a partner
                 // where one has not been created yet
@@ -228,7 +241,7 @@ sap.ui.define([
             },
 
             // Open dialog for alternative partner replacement
-            onReplace: function() {
+            onReplaceAlternativePartnerDialog: function() {
                 // Set mode
                 this._controlModel.setProperty("/alternativePartners/mode", "change");
                 this._controlModel.setProperty("/partners/alternativePartnerId", "");
@@ -269,6 +282,57 @@ sap.ui.define([
             // Record adjustments for dependent visibility
             onSwitch: function(oEvent) {
                 this._handleEvent(oEvent);
+            },
+
+            // Trigger upload of certificate
+            triggerCertificateUpload: function(oEvent) {
+                const file = oEvent.getParameter("files")[0],
+                    oReader = new FileReader();
+
+                // Read file stream
+                oReader.onload = function(file) {
+                    // Get core base64 content
+                    const fullCert = file.currentTarget.result,
+                        // Remove both Windows based new lines and Mac/Unix based new lines
+                        oneLineCert = fullCert.toString().replaceAll("\r\n", "").replaceAll("\n", ""),
+                        onlyBase64 = 
+                            oneLineCert.match(/(?<=-----BEGIN CERTIFICATE-----)(.+)(?=-----END CERTIFICATE-----)/)[0];
+
+                    // Get model and submit create or update
+                    const oDataModel = this.getOwnerComponent().getModel("partners"),
+                        exists = this._controlModel.getProperty("/partners/hasCertificate");
+                    if(!exists) {
+                        oDataModel.create("/BinaryParameters", {
+                            Pid: this._partners.pid,
+                            Id: "SenderPublicKey",
+                            ContentType: "crt",
+                            Value: onlyBase64
+                        }, {
+                            success: function(oData, oResponse) {
+                                this._controlModel.setProperty("/partners/hasCertificate", true);
+                            }.bind(this),
+                            error: function(oError) {
+                                MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
+                            }.bind(this)
+                        });
+                    } else {
+                        const key = "/BinaryParameters(Pid='" + this._partners.pid +
+                                                        "',Id='SenderPublicKey')"
+                        oDataModel.update(key, {
+                            ContentType: "crt",
+                            Value: onlyBase64
+                        }, {
+                            success: function(oData, oResponse) {
+                                this._controlModel.setProperty("/partners/hasCertificate", true);
+                            }.bind(this),
+                            error: function(oError) {
+                                MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
+                            }.bind(this),
+                            merge: false
+                        });
+                    }
+                }.bind(this)
+                oReader.readAsText(file);
             },
 
             // Trigger enter for validation to ensue
@@ -432,7 +496,7 @@ sap.ui.define([
                 }
             },
 
-            // Open dialog for alternative partner
+            // Open dialog for alternative partner updates
             _openDialog: function() {
                 // Display dialog
                 this._pDialog.then(function(oDialog) {

@@ -47,17 +47,17 @@
 				"inbound": [],
 				"outbound": []
 			},
-			"hasAvailable": false,
+			"direction": "inbound",
 			"hasChanges": false,
 			"newConfiguration": {},
 			"newEntry": {},
 			"newEntryCopy": {
 				"AcknowledgementRequired": true,
 				"ArchiveMessage": false,
+				"canChangeArchive": false,
 				"DoExtendedPostProcessing": false,
 				"DoExtendedPreProcessing": false,
-				"inboundMessage": "",
-				"outboundMessage": ""
+				"Message": ""
 			},
 			"originalConfiguration": {}
 		},

@@ -6,54 +6,45 @@
 	
 	<Dialog title="{i18n>addAgreement}">
 		<content>
-			<IconTabBar id="agreementTabs" backgroundDesign="Transparent">
-				<items>
-					<IconTabFilter icon="sap-icon://inbox" key="inbound" text="{i18n>inbound}" 
-						visible="{= ${control>/partners/agreements/available/inbound}.length > 0}">
-						<f:SimpleForm adjustLabelSpan="false" columnsL="1" columnsXL="1" editable="true" 
-							emptySpanXL="0" labelSpanL="2" labelSpanS="2" labelSpanXL="2" layout="ColumnLayout" 
-							singleContainerFullSize="false">
-							<Label text="{i18n>message}" />
-							<Select editable="true" selectedKey="{control>/partners/available/newEntry/inboundMessage}"
-								items="{
-									path: 'control>/partners/agreements/available/inbound'
-							}">
-								<items>
-									<core:Item text="{control>Message}" />
-								</items>
-							</Select>
-							<Label text="{i18n>extendedPreProcessing}" />
-							<Switch state="{control>/partners/agreements/newEntry/DoExtendedPreProcessing}" 
-								type="AcceptReject" />
-						</f:SimpleForm>
-					</IconTabFilter>
-					<IconTabFilter icon="sap-icon://outbox" key="outbound" text="{i18n>outbound}"
-						visible="{= ${control>/partners/agreements/available/outbound}.length > 0}">
-						<f:SimpleForm adjustLabelSpan="false" columnsL="1" columnsXL="1" editable="true" 
-							emptySpanXL="0" labelSpanL="2" labelSpanS="2" labelSpanXL="2" layout="ColumnLayout" 
-							singleContainerFullSize="false">
-							<Label text="{i18n>message}" />
-							<Select editable="true" selectedKey="{control>/partners/available/newEntry/outboundMessage}"
-								items="{
-									path: 'control>/partners/agreements/available/outbound'
-							}">
-								<items>
-									<core:Item text="{control>Message}" />
-								</items>
-							</Select>
-							<Label text="{i18n>extendedPostProcessing}" />
-							<Switch state="{control>/partners/agreements/newEntry/DoExtendedPostProcessing}" 
-								type="AcceptReject" />
-							<Label text="{i18n>acknowledgementRequired}" />
-							<Switch state="{control>/partners/agreements/newEntry/AcknowledgementRequired}" 
-								type="AcceptReject" />
-							<Label text="{i18n>archive}" />
-							<Switch state="{control>/partners/agreements/newEntry/ArchiveMessage}" 
-								type="AcceptReject" />
-						</f:SimpleForm>
-					</IconTabFilter>
-				</items>
-			</IconTabBar>
+			<f:SimpleForm adjustLabelSpan="false" columnsM="1" columnsL="1" columnsXL="1" editable="true" 
+				emptySpanXL="0" labelSpanL="2" labelSpanS="2" labelSpanXL="2" layout="ColumnLayout" 
+				singleContainerFullSize="false">
+				<Label text="{i18n>message}" visible="{= ${control>/partners/agreements/direction} === 'inbound' }" />
+				<Select change="onSelect" editable="true"
+					items="{
+						path: 'control>/partners/agreements/available/inbound'
+					}"
+					selectedKey="{control>/partners/agreements/newEntry/message}"
+					visible="{= ${control>/partners/agreements/direction} === 'inbound' }">
+					<items>
+						<core:Item text="{control>Message}" />
+					</items>
+				</Select>
+				<Label text="{i18n>message}" visible="{= ${control>/partners/agreements/direction} === 'outbound' }" />
+				<Select change="onSelect" editable="true"
+					items="{
+						path: 'control>/partners/agreements/available/outbound'
+					}"
+					selectedKey="{control>/partners/available/newEntry/outboundMessage}"
+					visible="{= ${control>/partners/agreements/direction} === 'outbound' }">
+					<items>
+						<core:Item text="{control>Message}" />
+					</items>
+				</Select>
+				<Label text="{i18n>extendedPreProcessing}" />
+				<Switch state="{control>/partners/agreements/newEntry/DoExtendedPreProcessing}" 
+					type="AcceptReject" visible="{= ${control>/partners/agreements/direction} === 'inbound' }" />
+				<Label text="{i18n>extendedPostProcessing}" />
+				<Switch state="{control>/partners/agreements/newEntry/DoExtendedPostProcessing}" 
+					type="AcceptReject" visible="{= ${control>/partners/agreements/direction} === 'outbound' }" />
+				<Label text="{i18n>acknowledgementRequired}" />
+				<Switch state="{control>/partners/agreements/newEntry/AcknowledgementRequired}" 
+					type="AcceptReject" visible="{= ${control>/partners/agreements/direction} === 'outbound' }" />
+				<Label text="{i18n>archive}" />
+				<Switch enabled="{control>/partners/agreements/newEntry/canChangeArchive}" 
+					state="{control>/partners/agreements/newEntry/ArchiveMessage}" type="AcceptReject"
+					visible="{= ${control>/partners/agreements/direction} === 'outbound' }" />
+			</f:SimpleForm>
 		</content>
 		<footer>
 			<Toolbar>

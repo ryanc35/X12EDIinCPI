@@ -8,21 +8,22 @@
 			<OverflowToolbar style="Clear">
 				<Title text="{i18n>agreements}" />
 				<ToolbarSpacer />
-				<Button icon="sap-icon://add" press="onAdd" visible="{control>/partners/agreements/hasAvailable}" />
+				<Button icon="sap-icon://add" press="onAdd" 
+					visible="{= ( ${control>/partners/agreements/direction} === 'inbound' &amp;&amp; ${control>/partners/agreements/available/inbound}.length > 0 ) || 
+								( ${control>/partners/agreements/direction} === 'outbound' &amp;&amp; ${control>/partners/agreements/available/outbound}.length > 0 ) }" />
 				<Button icon="sap-icon://save" press="onSave" visible="{control>/partners/agreements/hasChanges}" />
 				<Button icon="sap-icon://cancel" press="onCancel" visible="{control>/partners/agreements/hasChanges}" />
 			</OverflowToolbar>
 		</headerToolbar>
 		<content>
-			<IconTabBar backgroundDesign="Transparent">
+			<IconTabBar id="agreementTabs" backgroundDesign="Transparent" select="onSwitch">
 				<items>
-					<IconTabFilter icon="sap-icon://inbox" text="{i18n>inbound}">
+					<IconTabFilter icon="sap-icon://inbox" key="inbound" text="{i18n>inbound}">
 						<Table growing="true" growingThreshold="10" inset="false"
 							items="{
 								path: 'control>/partners/agreements/newConfiguration/inbound',
 								templateShareable: false
-							}"
-							mode="SingleSelectMaster" selectionChange="onSelect">
+							}">
 							<columns>
 								<Column>
 									<Text text="{i18n>x12Type}" />
@@ -52,13 +53,12 @@
 							</ColumnListItem>
 						</Table>
 					</IconTabFilter>
-					<IconTabFilter icon="sap-icon://outbox" text="{i18n>outbound}">
+					<IconTabFilter icon="sap-icon://outbox" key="outbound" text="{i18n>outbound}">
 						<Table growing="true" growingThreshold="10" inset="false"
 							items="{
 								path: 'control>/partners/agreements/newConfiguration/outbound',
 								templateShareable: false
-							}"
-							mode="SingleSelectMaster" selectionChange="onSelect">
+							}">
 							<columns>
 								<Column>
 									<Text text="{i18n>x12Type}" />

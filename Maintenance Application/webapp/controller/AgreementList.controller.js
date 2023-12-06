@@ -29,30 +29,20 @@ sap.ui.define([
 
             // Open add dialog
             onAdd: function() {
-                // Generate list of available agreements
-                const availableList = this._getAvailableAgreements();
-                var available = {
-                    inbound: [],
-                    outbound: []
-                };
-                for(const possibleAgreement of availableList) {
-                    if(possibleAgreement.direction === "inbound") {
-                        available.inbound.push({
-                            Message: possibleAgreement.message
-                        });
-                    } else {
-                        available.outbound.push({
-                            Message: possibleAgreement.message
-                        });
-                    }
-                }
-                this._controlModel.setProperty("/partners/agreements/available", available);
-                const newEntry = this._controlModel.getProperty("/partners/agreements/newEntryCopy");
-                if(available.inbound.length > 0) { 
-                    newEntry.inboundMessage = available.inbound[0].Message; 
-                }
-                if(available.outbound.length > 0) { 
-                    newEntry.outboundMessage = available.outbound[0].Message; 
+                // Generate list of available agreements for chosen direction
+                const direction = this._controlModel.getProperty("/partners/agreements/direction"),
+                    available = this._controlModel.getProperty("/partners/agreements/available"),
+                    newEntry = this._controlModel.getProperty("/partners/agreements/newEntryCopy");
+
+                if(direction === "inbound") {
+                    newEntry.Message = available.inbound[0].Message;
+                } else {
+                    newEntry.Message = available.outbound[0].Message;
+                    const message = {
+                        Message: available.outbound[0].Message
+                    };
+                    newEntry.canChangeArchive = newEntry.ArchiveMessage = 
+                        this._getArchiveActive(this._getX12Parts(message).x12Type);
                 }
                 this._controlModel.setProperty("/partners/agreements/newEntry", 
                                                 JSON.parse(JSON.stringify(newEntry)));
@@ -73,12 +63,12 @@ sap.ui.define([
                     Message: ""
                 };
                 if(key === "inbound") {
-                    message.Message = entry.inboundMessage;
+                    message.Message = entry.Message;
                     message = this._getX12Parts(message);
                     message.DoExtendedPreProcessing = entry.DoExtendedPreProcessing;
                     configuration.inbound.push(message);
                 } else {
-                    message.Message = entry.outboundMessage;
+                    message.Message = entry.Message;
                     message = this._getX12Parts(message);
                     message.DoExtendedPostProcessing = entry.DoExtendedPostProcessing;
                     message.AcknowledgementRequired = entry.AcknowledgementRequired;
@@ -90,7 +80,7 @@ sap.ui.define([
                 // Push changes to control model and re-determine if there are any availble
                 this._controlModel.setProperty("/partners/agreements/newConfiguration", configuration);
                 this._controlModel.setProperty("/partners/agreements/hasChanges", true);
-                this._controlModel.setProperty("/partners/agreements/hasAvailable", this._determineHasAvailableAgreements());
+                this._populateAvailableAgreements();
                 this._closeDialog();
             },
 
@@ -104,7 +94,7 @@ sap.ui.define([
                 const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
                 this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
                 this._controlModel.setProperty("/partners/agreements/hasChanges", false);
-                this._controlModel.setProperty("/partners/agreements/hasAvailable", this._determineHasAvailableAgreements());
+                this._populateAvailableAgreements();
             },
 
             // Cancel agreement addition
@@ -168,6 +158,7 @@ sap.ui.define([
                         }.bind(this)
                     });
                 } else {
+                    this._controlModel.setProperty("/partners/agreements/direction", "inbound");
                     const JSONObject = JSON.parse(window.atob(sValue));
                     this._parseAgreements(JSONObject);
                 }
@@ -190,11 +181,13 @@ sap.ui.define([
                         const configuration = JSON.parse(JSON.stringify(this._agreements.newConfiguration));
                         this._controlModel.setProperty("/partners/agreements/originalConfiguration", configuration);
                         this._controlModel.setProperty("/partners/agreements/hasChanges", false);
+                        this._populateAvailableAgreements();
                     }.bind(this),
                     error: function (oError) {
                         const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
                         this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
                         this._controlModel.setProperty("/partners/agreements/hasChanges", false);
+                        this._populateAvailableAgreements();
                         MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
                     }.bind(this),
                     merge: false
@@ -206,21 +199,25 @@ sap.ui.define([
                 const direction = this._oView.byId("agreementTabs").getSelectedKey(),
                     key = oEvent.getParameter("selectedItem").getText();
                 
-                if(direction === "inbound") {
-                    this._controlModel.setProperty("/partners/agreements/newEntry/inboundMessage", key);
-                } else {
-                    this._controlModel.setProperty("/partners/agreements/newEntry/outboundMessage", key);
+                this._controlModel.setProperty("/partners/agreements/newEntry/Message", key);
+                if(direction === "outbound") {
+                    const message = {
+                        Message: key
+                    };
+                    const archiveActive = this._getArchiveActive(this._getX12Parts(message).x12Type);
+                    this._controlModel.setProperty("/partners/agreements/newEntry/ArchiveMessage", archiveActive);
+                    this._controlModel.setProperty("/partners/agreements/newEntry/canChangeArchive", archiveActive);
                 }
+            },
+        
+            // Switch of direction choice
+            onSwitch: function(oEvent) {
+                this._controlModel.setProperty("/partners/agreements/direction", oEvent.getParameter("selectedKey"));
             },
 
             // Close agreement dialog
             _closeDialog: function() {
                 this._oDialog.close();
-            },
-
-            // Determine if there are any available agreements
-            _determineHasAvailableAgreements: function() {
-                return this._getAvailableAgreements().length > 0;
             },
 
             // Determine if archiving is active for an outbound message type
@@ -314,8 +311,30 @@ sap.ui.define([
                 this._controlModel.setProperty("/partners/agreements/newConfiguration", newConfiguration);
                 this._controlModel.setProperty("/partners/agreements/originalConfiguration", originalConfiguration);
 
-                // Determine if there are any available agreements
-                this._controlModel.setProperty("/partners/agreements/hasAvailable", this._determineHasAvailableAgreements());
+                // Populate available agreements
+                this._populateAvailableAgreements();
+            },
+
+            // Determine if there are any available agreements
+            _populateAvailableAgreements: function() {
+                // Populate available agreements into JSON model for dynamic add button
+                const availableList = this._getAvailableAgreements();
+                var available = {
+                    inbound: [],
+                    outbound: []
+                };
+                for(const possibleAgreement of availableList) {
+                    if(possibleAgreement.direction === "inbound") {
+                        available.inbound.push({
+                            Message: possibleAgreement.message
+                        });
+                    } else {
+                        available.outbound.push({
+                            Message: possibleAgreement.message
+                        });
+                    }
+                }
+                this._controlModel.setProperty("/partners/agreements/available", available);
             },
 
             // Prepare payload for saving

@@ -2,8 +2,7 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
 	xmlns:f="sap.ui.layout.form"
-    xmlns:mvc="sap.ui.core.mvc"
-	xmlns:u="sap.ui.unified">
+    xmlns:mvc="sap.ui.core.mvc">
 
 	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'change'}">
 		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="4" editable="true"
@@ -152,8 +151,6 @@
 							search: '\\S+$'						
 						}
 					}"/>
-				<u:FileUploader buttonOnly="true" change="triggerCertificateUpload" fileType="cer" icon="sap-icon://upload" 
-					iconOnly="true" />
 				<Label text="{i18n>compressMessage}" />
 				<Switch id="SAP_AS2_Outbound_Compress_Message-change"
 					state="{ 

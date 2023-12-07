@@ -16,12 +16,11 @@ sap.ui.define([
             onInit: function () {
                 // Initialize core parameters
                 this._controlModel = this.getOwnerComponent().getModel("control");
-                this._self = this._controlModel.getProperty("/self");
                 this._i18nBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
                 this._oView = this.getView();
 
-                // Create partners model
-                const oDataModel = this.getOwnerComponent().getModel("partners");
+                // Get model and load properties
+                const oDataModel = this._getModel();
                 oDataModel.setDeferredGroups(["changes", "deferred"]);
                 oDataModel.attachBatchRequestSent(function() {
                     this.getOwnerComponent().loadStarted(this);
@@ -35,7 +34,7 @@ sap.ui.define([
                 
                     // Read list of alternative partners and agreements
                     this._getModel().read("/AlternativePartners");
-                    this._readAgreements();
+                    this._readCertificates();
                 }.bind(this));
 
                 // Instantiate dialog object for possible partner creation flow
@@ -253,19 +252,19 @@ sap.ui.define([
                 });
             },
 
-            // Get list of partner agreements for display
-            _readAgreements: function() {
+            // Get list of partner certificates
+            _readCertificates: function() {
                 // Create message model and read data
                 const oDataModel = this._getModel();
                 oDataModel.read("/BinaryParameters", {
                     filters: [new Filter({
                         path: "Id",
-                        operator: FilterOperator.Contains,
-                        value1: "'Agreements'"
+                        operator: FilterOperator.EQ,
+                        value1: "'SenderPublicKey'"
                     }), new Filter({
                         path: "ContentType",
                         operator: FilterOperator.EQ,
-                        value1: "json"
+                        value1: "crt"
                     })]
                 })
             }

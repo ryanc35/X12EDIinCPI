@@ -1,13 +1,12 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/m/MessageBox",
     "sap/ui/model/Filter", 
     "sap/ui/model/FilterOperator"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, MessageBox, Filter, FilterOperator) {
+    function (Controller, Filter, FilterOperator) {
         "use strict";
 
         return Controller.extend("com.at.pd.edi.attr.pdediattr.controller.MapList", {
@@ -22,6 +21,7 @@ sap.ui.define([
                 this._metadataLoaded ??= oDataModel.metadataLoaded();
                 this._metadataLoaded.then(function(oPromise) {
                     // Read maps during initialization
+                    this._controlModel.setProperty("/maps/direction", "inbound");
                     this._readMaps();
                 }.bind(this));
             },
@@ -39,6 +39,11 @@ sap.ui.define([
             // Item selection - get key for navigation to detail display
             onSelect: function(oEvent) {
                 // Get map key information for data retrieval
+            },
+
+            // Set direction based on tab choice
+            onSwitch: function(oEvent) {
+                this._controlModel.setProperty("/maps/direction", oEvent.getParameter("selectedKey"));
             },
 
             // Get model for view
@@ -62,30 +67,34 @@ sap.ui.define([
                     })],
                     success: function(oData, oError) {
                         // Parse map information
-                        var maps = [];
+                        const maps = {
+                            inbound: [],
+                            outbound: []
+                        };
                         for(const data of oData.results) {
                             var map = {};
                             map.id = data.Id;
                             const parts = data.Id.split("_to_");
                             var x12Parts;
                             if(parts[0].startsWith("ASC-X12_")) {
-                                map.direction = "inbound",
                                 map.idoc = parts[1],
                                 map.message = parts[0];
                                 x12Parts = parts[0].replaceAll("ASC-X12_", "").split("_");
+                                map.x12Type = x12Parts[0],
+                                map.x12Version = x12Parts[1];
+                                maps.inbound.push(map);
                             } else {
-                                map.direction = "outbound",
                                 map.idoc = parts[0],
                                 map.message = parts[1];
                                 x12Parts = parts[1].replaceAll("ASC-X12_", "").split("_");
+                                map.x12Type = x12Parts[0],
+                                map.x12Version = x12Parts[1];
+                                maps.outbound.push(map);
                             }
-                            map.x12Type = x12Parts[0],
-                            map.x12Version = x12Parts[1];
-                            maps.push(map);
                         }
 
                         // Store into JSON model for display
-                        this._controlModel.setProperty("/maps/list", maps);
+                        this._controlModel.setProperty("/maps", maps);
                     }.bind(this)
                 })
             }

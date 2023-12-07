@@ -23,7 +23,9 @@
 		"#x3e": "greaterThan"
 	},
 	"maps": {
-		"list": []
+		"direction": "inbound",
+		"inbound": [],
+		"outbound": []
 	},
 	"message": {
 		"mode": "",
@@ -48,7 +50,9 @@
 				"outbound": []
 			},
 			"direction": "inbound",
+			"extraDeletions": [],
 			"hasChanges": false,
+			"mode": "display",
 			"newConfiguration": {},
 			"newEntry": {},
 			"newEntryCopy": {

@@ -13,44 +13,82 @@
 			</OverflowToolbar>
 		</headerToolbar>
 		<content>
-			<Table id="mapList" growing="true" growingThreshold="25" inset="false"
-				items="{
-					path: 'control>/maps/list',
-					templateShareable: false
-				}"
-				mode="SingleSelectMaster" selectionChange="onSelect">
-				<columns>
-					<Column>
-						<Text text="{i18n>direction}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>idoc}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>x12Type}" />
-					</Column>
-					<Column>
-						<Text text="{i18n>x12Version}" />
-					</Column>
-					<Column
-						hAlign="End">
-						<Text text="{i18n>actions}" />
-					</Column>
-				</columns>
-				<ColumnListItem vAlign="Middle">
-					<cells>
-						<Text text="{= ${control>direction} === 'inbound' ? ${i18n>inbound} : ${i18n>outbound} }" />
-						<Text text="{control>idoc}" />
-						<Text text="{control>x12Type}" />
-						<Text text="{control>x12Version}" />
-						<VBox>
-							<HBox justifyContent="End">
-								<Button binding="{control>id}" icon="sap-icon://delete" press="onDelete" />
-							</HBox>
-						</VBox>
-					</cells>
-				</ColumnListItem>
-			</Table>
+			<IconTabBar id="mapTabs" backgroundDesign="Transparent" select="onSwitch">
+				<items>
+					<IconTabFilter icon="sap-icon://inbox" key="inbound" text="{i18n>inbound}">
+						<Table growing="true" growingThreshold="20" inset="false"
+							items="{
+								path: 'control>/maps/inbound',
+								templateShareable: false
+							}"
+							mode="SingleSelectMaster" selectionChange="onSelect">
+							<columns>
+								<Column>
+									<Text text="{i18n>x12Type}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>x12Version}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>idoc}" />
+								</Column>
+								<Column
+									hAlign="End">
+									<Text text="{i18n>actions}" />
+								</Column>
+							</columns>
+							<ColumnListItem vAlign="Middle">
+								<cells>
+									<Text text="{control>x12Type}" />
+									<Text text="{control>x12Version}" />
+									<Text text="{control>idoc}" />
+									<VBox>
+										<HBox justifyContent="End">
+											<Button binding="{control>id}" icon="sap-icon://delete" press="onDelete" />
+										</HBox>
+									</VBox>
+								</cells>
+							</ColumnListItem>
+						</Table>
+					</IconTabFilter>
+					<IconTabFilter icon="sap-icon://outbox" key="outbound" text="{i18n>outbound}">
+						<Table growing="true" growingThreshold="20" inset="false"
+							items="{
+								path: 'control>/maps/outbound',
+								templateShareable: false
+							}"
+							mode="SingleSelectMaster" selectionChange="onSelect">
+							<columns>
+								<Column>
+									<Text text="{i18n>idoc}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>x12Type}" />
+								</Column>
+								<Column>
+									<Text text="{i18n>x12Version}" />
+								</Column>
+								<Column
+									hAlign="End">
+									<Text text="{i18n>actions}" />
+								</Column>
+							</columns>
+							<ColumnListItem vAlign="Middle">
+								<cells>
+									<Text text="{control>idoc}" />
+									<Text text="{control>x12Type}" />
+									<Text text="{control>x12Version}" />
+									<VBox>
+										<HBox justifyContent="End">
+											<Button binding="{control>id}" icon="sap-icon://delete" press="onDelete" />
+										</HBox>
+									</VBox>
+								</cells>
+							</ColumnListItem>
+						</Table>
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
 		</content>
 	</Panel>
 </mvc:View>

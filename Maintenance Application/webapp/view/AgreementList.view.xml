@@ -1,7 +1,8 @@
 <mvc:View
 	controllerName="com.at.pd.edi.attr.pdediattr.controller.AgreementList"
     xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc">
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:u="sap.ui.unified">
 
 	<Panel expandable="false" width="auto" class="sapUiSmallMargin">
 		<headerToolbar>
@@ -11,8 +12,9 @@
 				<Button icon="sap-icon://add" press="onAdd" 
 					visible="{= ( ${control>/partners/agreements/direction} === 'inbound' &amp;&amp; ${control>/partners/agreements/available/inbound}.length > 0 ) || 
 								( ${control>/partners/agreements/direction} === 'outbound' &amp;&amp; ${control>/partners/agreements/available/outbound}.length > 0 ) }" />
+				<Button icon="sap-icon://edit" press="onEdit" visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>/partners/agreements/hasChanges} === false }" />
 				<Button icon="sap-icon://save" press="onSave" visible="{control>/partners/agreements/hasChanges}" />
-				<Button icon="sap-icon://cancel" press="onCancel" visible="{control>/partners/agreements/hasChanges}" />
+				<Button icon="sap-icon://cancel" press="onCancel" visible="{= ${control>/partners/agreements/mode} === 'change' || ${control>/partners/agreements/hasChanges} }" />
 			</OverflowToolbar>
 		</headerToolbar>
 		<content>
@@ -43,7 +45,13 @@
 								<cells>
 									<Text text="{control>x12Type}" />
 									<Text text="{control>x12Version}" />
-									<Switch change="onChange" state="{control>DoExtendedPreProcessing}" type="AcceptReject" />
+									<HBox>
+										<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
+											state="{control>DoExtendedPreProcessing}" type="AcceptReject" />
+										<u:FileUploader buttonOnly="true" change="onUploadExtended" fileType="xsl" 
+											icon="sap-icon://upload" iconOnly="true" 
+											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>DoExtendedPreProcessing} }" />
+									</HBox>
 									<VBox>
 										<HBox justifyContent="End">
 											<Button binding="{control>Message}" icon="sap-icon://delete" press="onDelete" />
@@ -84,10 +92,17 @@
 								<cells>
 									<Text text="{control>x12Type}" />
 									<Text text="{control>x12Version}" />
-									<Switch change="onChange" state="{control>DoExtendedPostProcessing}" type="AcceptReject" />
-									<Switch change="onChange" enabled="{control>canChangeArchive}" state="{control>ArchiveMessage}" 
-										type="AcceptReject" />
-									<Switch change="onChange" state="{control>AcknowledgementRequired}" type="AcceptReject" />
+									<HBox>
+										<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
+											state="{control>DoExtendedPostProcessing}" type="AcceptReject" />
+										<u:FileUploader buttonOnly="true" change="onUploadExtended" fileType="xsl" 
+											icon="sap-icon://upload" iconOnly="true" 
+											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>DoExtendedPostProcessing} }" />
+									</HBox>
+									<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' &amp;&amp; ${control>canChangeArchive} }" 
+										state="{control>ArchiveMessage}" type="AcceptReject" />
+									<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
+										state="{control>AcknowledgementRequired}" type="AcceptReject" />
 									<VBox>
 										<HBox justifyContent="End">
 											<Button binding="{control>Message}" icon="sap-icon://delete" press="onDelete" />

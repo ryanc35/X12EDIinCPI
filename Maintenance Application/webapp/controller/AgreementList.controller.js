@@ -1,12 +1,14 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageBox",
-    "sap/m/MessageToast"
+    "sap/m/MessageToast",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, MessageBox, MessageToast) {
+    function (Controller, MessageBox, MessageToast, Filter, FilterOperator) {
         "use strict";
 
         return Controller.extend("com.at.pd.edi.attr.pdediattr.controller.AgreementList", {
@@ -15,6 +17,10 @@ sap.ui.define([
                 this._controlModel = this.getOwnerComponent().getModel("control"),
                 this._i18nBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
                 this._oView = this.getView();
+
+                // Get model and load properties
+                const oDataModel = this._getModel();
+                oDataModel.setDeferredGroups(["changes", "deferred"]);
 
                 // Instantiate dialog object for possible alternative partner creation flow
                 this._pDialog ??= this.loadFragment({
@@ -89,12 +95,17 @@ sap.ui.define([
                 this._controlModel.setProperty("/partners/agreements/hasChanges", true);
             },
 
-            // Revert to copy of original configuration
+            // Revert to copy of original configuration (if applicable) and toggle mode
             onCancel: function() {
-                const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
-                this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
-                this._controlModel.setProperty("/partners/agreements/hasChanges", false);
-                this._populateAvailableAgreements();
+                if(this._agreements.hasChanges) {
+                    const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
+                    this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
+                    this._controlModel.setProperty("/partners/agreements/hasChanges", false);
+                    this._resetDeletions();
+                    this._populateAvailableAgreements();
+                }
+                // Always revert to display mode on cancel
+                this._controlModel.setProperty("/partners/agreements/mode", "display");
             },
 
             // Cancel agreement addition
@@ -107,61 +118,96 @@ sap.ui.define([
                 // Get identifying context for removal
                 const sPath = oEvent.getSource().getObjectBinding("control")
                                     .getContext().getPath(),
-                context = {
-                    index: sPath.match(/[^\/]+$/)[0],
-                    JSONModel: this._controlModel,
-                    path: sPath.match(/.*(?=\/.*$)/)[0]
-                };
+                    index = sPath.match(/[^\/]+$/)[0],
+                    path = sPath.match(/.*(?=\/.*$)/)[0];
 
-                // Confirm deletion first
+                // Confirm deletion first 
                 MessageBox.warning(this._i18nBundle.getText("sureQuestion"), {
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                     emphasizedAction: MessageBox.Action.OK,
                     onClose: function (sAction) {
                         if (sAction !== MessageBox.Action.CANCEL) {
-                            const agreementList = this.JSONModel.getProperty(this.path);
-                            delete agreementList[this.index];
+                            // Get parameter for processing
+                            const agreementList = this._controlModel.getProperty(path),
+                                direction = this._controlModel.getProperty("/partners/agreements/direction"),
+                                pid = this._controlModel.getProperty("/partners/pid"),
+                                deletions = this._controlModel.getProperty("/partners/agreements/extraDeletions"),
+                                message = agreementList[index].Message,
+                                id = direction === "inbound" ? "ext_" + message + "_preproc" :
+                                                                "ext_" + message + "_postproc",
+                                key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
+                                oObject = this._getModel().getObject(key);
+
+                            // Record deletion in array model and possible extra deletions
+                            // for extended maps
+                            delete agreementList[index];
                             const newAgreementList = agreementList.filter(n => true);
-                            this.JSONModel.setProperty(this.path, newAgreementList);
-                            this.JSONModel.setProperty("/partners/agreements/hasChanges", true);
+                            this._controlModel.setProperty(path, newAgreementList);
+                            this._controlModel.setProperty("/partners/agreements/hasChanges", true);
+                            deletions.push(oObject.Id);
                         }
-                    }.bind(context)
+                    }.bind(this)
                 });
+            },
+
+            // Toggle to change mode
+            onEdit: function() {
+                this._toggleMode();
             },
 
             // Read agreements for current selected partner
             onPatternMatched: function (oEvent) {
                 // Populate JSON model context
                 this._agreements = this._controlModel.getProperty("/partners/agreements");
+                this._controlModel.setProperty("/partners/agreements/hasChanges", false);
+                this._resetDeletions();
+                this._controlModel.setProperty("/partners/agreements/mode", "display");
 
-                // Read agreement information
-                const key = "/BinaryParameters(Pid='" + this._controlModel.getProperty("/partners/pid")
-                                                         + "',Id='Agreements')/Value",
-                    oDataModel = this._getModel(),
-                    sValue = oDataModel.getProperty(key);
+                const oDataModel = this._getModel();
+                oDataModel.read("/BinaryParameters(Pid='" + 
+                        this._controlModel.getProperty("/partners/pid") + "',Id='Agreements')", {
+                    success: function(oData, oResponse) {
+                        this._controlModel.setProperty("/partners/agreements/direction", "inbound");
+                        const JSONObject = JSON.parse(window.atob(oData.Value));
+                        this._parseAgreements(JSONObject);
+                    }.bind(this),
+                    error: function(oError) {
+                        // Entry is missing so create it
+                        const partners = this._controlModel.getProperty("/partners"),
+                            defaults = partners.defaults.binaryParameters.find((n) => n.name === "Agreements"),
+                            oDataModel = this._getModel();
+                        oDataModel.create("/BinaryParameters", {
+                            Pid: partners.pid,
+                            Id: defaults.name,
+                            ContentType: defaults.contentType,
+                            Value: window.btoa(defaults.value)
+                        }, {
+                            success: function(oData, oResponse) {
+                                this._parseAgreements(JSON.parse(window.atob(oData.Value)));
+                            }.bind(this),
+                            error: function(oError) {
+                                MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
+                            }.bind(this)
+                        });
+                    }.bind(this)
+                })
 
-                if(!sValue) { 
-                    // Entry is missing so create it
-                    const partners = this._controlModel.getProperty("/partners"),
-                        defaults = partners.defaults.binaryParameters.find((n) => n.name === "Agreements");
-                    oDataModel.create("/BinaryParameters", {
-                        Pid: this._controlModel.getProperty("/partners/pid"),
-                        Id: defaults.name,
-                        ContentType: defaults.contentType,
-                        Value: window.btoa(defaults.value)
-                    }, {
-                        success: function(oData, oError) {
-                            this._parseAgreements(JSON.parse(window.atob(oData.Value)));
-                        }.bind(this),
-                        error: function(oError) {
-                            MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
-                        }.bind(this)
-                    });
-                } else {
-                    this._controlModel.setProperty("/partners/agreements/direction", "inbound");
-                    const JSONObject = JSON.parse(window.atob(sValue));
-                    this._parseAgreements(JSONObject);
-                }
+                // Read any possible pre/post processing maps
+                oDataModel.read("/BinaryParameters", {
+                    filters: [new Filter({
+                        path: "Pid",
+                        operator: FilterOperator.EQ,
+                        value1: "'" + this._controlModel.getProperty("/partners/pid") + "'"
+                    }), new Filter({
+                        path: "Id",
+                        operator: FilterOperator.StartsWith,
+                        value1: "'ext_'"
+                    }), new Filter({
+                        path: "ContentType",
+                        operator: FilterOperator.EQ,
+                        value1: "xsl"
+                    })]
+                });
             },
 
             // Save current agreements
@@ -169,8 +215,30 @@ sap.ui.define([
                 // Get payload and execute update
                 const oDataModel = this._getModel(),
                     payload = this._preparePayload(),
-                    key = "/BinaryParameters(Pid='" + this._controlModel.getProperty("/partners/pid")
-                                                         + "',Id='Agreements')";
+                    pid = this._controlModel.getProperty("/partners/pid"),
+                    key = "/BinaryParameters(Pid='" + pid + "',Id='Agreements')",
+                    context = {
+                        success: function(oData, oResponse) {
+                            const configuration = JSON.parse(JSON.stringify(this._agreements.newConfiguration));
+                            this._controlModel.setProperty("/partners/agreements/originalConfiguration", configuration);
+                            this._controlModel.setProperty("/partners/agreements/hasChanges", false);
+                            this._resetDeletions();
+                            this._populateAvailableAgreements();
+                            this._controlModel.setProperty("/partners/agreements/mode", "display");
+                        }.bind(this),
+                        error: function(oError) {
+                            const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
+                            this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
+                            this._controlModel.setProperty("/partners/agreements/hasChanges", false);
+                            this._resetDeletions();
+                            this._populateAvailableAgreements();
+                            this._controlModel.setProperty("/partners/agreements/mode", "display");
+                            MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
+                        }.bind(this)
+                    };
+
+                // Evaluate if any extra deletions are required
+                const haveExtraDeletions = this._extraDeletionsRequired();
 
                 // Update agreements
                 oDataModel.update(key, {
@@ -178,20 +246,37 @@ sap.ui.define([
                     Value: payload
                 }, {
                     success: function (oData, oResponse) {
-                        const configuration = JSON.parse(JSON.stringify(this._agreements.newConfiguration));
-                        this._controlModel.setProperty("/partners/agreements/originalConfiguration", configuration);
-                        this._controlModel.setProperty("/partners/agreements/hasChanges", false);
-                        this._populateAvailableAgreements();
-                    }.bind(this),
+                        this.success(oData, oResponse);
+                    }.bind(context),
                     error: function (oError) {
-                        const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
-                        this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
-                        this._controlModel.setProperty("/partners/agreements/hasChanges", false);
-                        this._populateAvailableAgreements();
-                        MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
-                    }.bind(this),
+                        this.error(oError);
+                    }.bind(context),
+                    groupId: haveExtraDeletions ? "deferred" : undefined,
                     merge: false
                 });
+
+                // Delete extended maps that are marked inactive or where agreement was
+                // removed entirely
+                const deletions = this._controlModel.getProperty("/partners/agreements/extraDeletions");
+                for(const deletion of deletions) {
+                    const key = "/BinaryParameters(Pid='" + pid + "',Id='" + deletion + "')";
+                    oDataModel.remove(key, {
+                        groupId: "deferred"
+                    });
+                }
+
+                // Submit batch if pending changes exist
+                if(haveExtraDeletions) {
+                    oDataModel.submitChanges({
+                        groupId: "deferred",
+                        success: function (oData, oResponse) {
+                            this.success(oData, oResponse);
+                        }.bind(context),
+                        error: function (oError) {
+                            this.error(oError);
+                        }.bind(context),
+                    });
+                }            
             },
 
             // Record selection into JSON model
@@ -215,9 +300,52 @@ sap.ui.define([
                 this._controlModel.setProperty("/partners/agreements/direction", oEvent.getParameter("selectedKey"));
             },
 
+            // Upload pre-processor map
+            onUploadExtended: function(oEvent) {
+                // Get file and message key information
+                const file = oEvent.getParameter("files")[0],
+                    sPath = oEvent.getSource().getParent().getParent().getBindingContext("control").getPath(),
+                    oObject = this._controlModel.getProperty(sPath);
+
+                // Execute upload
+                this._uploadExtendedMap(file, oObject);
+            },
+
             // Close agreement dialog
             _closeDialog: function() {
                 this._oDialog.close();
+            },
+
+            // Determine if any extra deletions are required
+            _extraDeletionsRequired: function() {
+                const oDataModel = this._getModel(),
+                    pid = this._controlModel.getProperty("/partners/pid"),
+                    deletions = JSON.parse(JSON.stringify(
+                                            this._controlModel.getProperty("/partners/agreements/extraDeletions")));
+
+                // Check inbound changes first
+                for(const inbound of this._agreements.newConfiguration.inbound) {
+                    const id = "ext_" + inbound.Message + "_preproc",
+                        key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
+                        oObject = oDataModel.getObject(key);
+                    if(oObject && !inbound.DoExtendedPreProcessing) {
+                        deletions.push(oObject.Id);
+                    }
+                }
+
+                // Check outbound changes
+                for(const outbound of this._agreements.newConfiguration.outbound) {
+                    const id = "ext_" + outbound.Message + "_postproc",
+                        key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
+                        oObject = oDataModel.getObject(key);
+                    if(oObject && !inbound.DoExtendedPostProcessing) {
+                        deletions.push(oObject.Id);
+                    }
+                }
+
+                // Update model and return answer
+                this._controlModel.setProperty("/partners/agreements/extraDeletions", deletions);
+                return deletions.length > 0;
             },
 
             // Determine if archiving is active for an outbound message type
@@ -238,30 +366,37 @@ sap.ui.define([
             // Get list of available agreements
             _getAvailableAgreements: function() {
                 // Retrieve available maps
-                const maps = this._controlModel.getProperty("/maps/list").map((n) => n);
+                const inboundMaps = this._controlModel.getProperty("/maps/inbound").map((n) => n),
+                    outboundMaps = this._controlModel.getProperty("/maps/outbound").map((n) => n),
+                    remaining = {
+                        inbound: [],
+                        outbound: []
+                    };
 
                 // Parse inbound agreements
                 for(const inbound of this._agreements.newConfiguration.inbound) {
-                    const index = maps.map((n) => n.message).indexOf(inbound.Message);
+                    const index = inboundMaps.map((n) => n.message).indexOf(inbound.Message);
                     if(index > -1) {
-                        delete maps[index];
+                        delete inboundMaps[index];
                     }
                 }
+                remaining.inbound = inboundMaps.filter((n) => true);
 
                 // Parse outbound agreements
                 for(const outbound of this._agreements.newConfiguration.outbound) {
-                    const index = maps.map((n) => n.message).indexOf(outbound.Message);
+                    const index = outboundMaps.map((n) => n.message).indexOf(outbound.Message);
                     if(index > -1) {
-                        delete maps[index];
+                        delete outboundMaps[index];
                     }
                 }
+                remaining.outbound = outboundMaps.filter((n) => true);
 
-                return maps.filter((n) => true);
+                return remaining;
             },
 
             // Get model for view
             _getModel: function () {
-                return this.getOwnerComponent().getModel("partners");
+                return this.getOwnerComponent().getModel("partner");
             },
 
             // Get X12 Parts
@@ -318,21 +453,20 @@ sap.ui.define([
             // Determine if there are any available agreements
             _populateAvailableAgreements: function() {
                 // Populate available agreements into JSON model for dynamic add button
-                const availableList = this._getAvailableAgreements();
-                var available = {
-                    inbound: [],
-                    outbound: []
-                };
-                for(const possibleAgreement of availableList) {
-                    if(possibleAgreement.direction === "inbound") {
-                        available.inbound.push({
-                            Message: possibleAgreement.message
-                        });
-                    } else {
-                        available.outbound.push({
-                            Message: possibleAgreement.message
-                        });
-                    }
+                const availableList = this._getAvailableAgreements(),
+                    available = {
+                        inbound: [],
+                        outbound: []
+                    };
+                for(const possibleInbound of availableList.inbound) {
+                    available.inbound.push({
+                        Message: possibleInbound.message
+                    });
+                }
+                for(const possibleOutbound of availableList.outbound) {
+                    available.outbound.push({
+                        Message: possibleOutbound.message
+                    });
                 }
                 this._controlModel.setProperty("/partners/agreements/available", available);
             },
@@ -369,6 +503,67 @@ sap.ui.define([
 
                 // Convert to JSON string and then base64
                 return window.btoa(JSON.stringify(payload));
+            },
+
+            // Reset deletions list
+            _resetDeletions: function() {
+                this._controlModel.setProperty("/partners/agreements/extraDeletions", []);
+            },
+
+            // Toggle display/change mode
+            _toggleMode: function() {
+                // Toggle edit mode based on current value
+                const mode = this._agreements.mode === "display" ? "change" : "display";
+                this._controlModel.setProperty("/partners/agreements/mode", mode);
+            },
+
+            // Read file information and upload extended map
+            _uploadExtendedMap: function(file, oObject) {
+                const oReader = new FileReader();
+                oReader.onload = function(file) {
+                    // Get map stream and parameters required for update of extended map
+                    const mapping = file.currentTarget.result,
+                        oDataModel = this._getModel(),
+                        direction = this._controlModel.getProperty("/partners/agreements/direction"),
+                        pid = this._controlModel.getProperty("/partners/pid"),
+                        id = direction === "inbound" ? "ext_" + oObject.Message + "_preproc" :
+                                                        "ext_" + oObject.Message + "_postproc",
+                        key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
+                        oExtendedMap = oDataModel.getObject(key);
+                    
+                    // Check if extended map exists or not for create or update
+                    if(!oExtendedMap) {
+                        oDataModel.create("/BinaryParameters", {
+                            Pid: pid,
+                            Id: id,
+                            ContentType: "xsl",
+                            Value: window.btoa(mapping)
+                        }, {
+                            success: function(oData, oResonse) {
+                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
+                            }.bind(this),
+                            error: function(oError) {
+                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
+                            }.bind(this)
+                        });
+                    } else {
+                        oDataModel.update(key, {
+                            ContentType: "xsl",
+                            Value: window.btoa(mapping)
+                        }, {
+                            success: function(oData, oResonse) {
+                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
+                            }.bind(this),
+                            error: function(oError) {
+                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
+                            }.bind(this),
+                            merge: false
+                        });
+                    }  
+                }.bind(this)
+
+                // Read file
+                oReader.readAsText(file);
             }
         });
     });

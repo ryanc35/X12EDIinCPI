@@ -211,11 +211,6 @@ sap.ui.define([
                 this._toggleMode();
             },
 
-            // Open certificate dialog
-            onOpenCertificateDialog: function() {
-                this._openDialog(this._pDialogCertificate);
-            },
-
             // Bind partner data for loading
             onPatternMatched: function (oEvent) {
                 // Set root context
@@ -310,6 +305,7 @@ sap.ui.define([
                         }, {
                             success: function(oData, oResponse) {
                                 this._controlModel.setProperty("/partners/hasCertificate", true);
+                                MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
                             }.bind(this),
                             error: function(oError) {
                                 MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
@@ -324,6 +320,7 @@ sap.ui.define([
                         }, {
                             success: function(oData, oResponse) {
                                 this._controlModel.setProperty("/partners/hasCertificate", true);
+                                MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
                             }.bind(this),
                             error: function(oError) {
                                 MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));

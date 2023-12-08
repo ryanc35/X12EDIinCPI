@@ -562,8 +562,9 @@ sap.ui.define([
                     }  
                 }.bind(this)
 
-                // Read file
+                // Read file and reset value for uploader button
                 oReader.readAsText(file);
+                oEvent.getSource().setValue("");
             }
         });
     });

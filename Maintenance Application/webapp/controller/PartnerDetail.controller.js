@@ -329,7 +329,10 @@ sap.ui.define([
                         });
                     }
                 }.bind(this)
+
+                // Read file and reset value for uploader button
                 oReader.readAsText(file);
+                oEvent.getSource().setValue("");
             },
 
             // Trigger enter for validation to ensue

@@ -1,14 +1,14 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
+    "sap/ui/model/Filter", 
+    "sap/ui/model/FilterOperator",
     "sap/m/MessageBox",
-    "sap/m/MessageToast",
-    "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
+    "sap/m/MessageToast"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, MessageBox, MessageToast, Filter, FilterOperator) {
+    function (Controller, Filter, FilterOperator, MessageBox, MessageToast) {
         "use strict";
 
         return Controller.extend("com.at.pd.edi.attr.pdediattr.controller.AgreementList", {
@@ -24,7 +24,7 @@ sap.ui.define([
 
                 // Instantiate dialog object for possible alternative partner creation flow
                 this._pDialog ??= this.loadFragment({
-                    name: "com.at.pd.edi.attr.pdediattr.view.AgreementCreate",
+                    name: "com.at.pd.edi.attr.pdediattr.view.AgreementDialog",
                     type: "XML"
                 });
 
@@ -38,20 +38,17 @@ sap.ui.define([
                 // Generate list of available agreements for chosen direction
                 const direction = this._controlModel.getProperty("/partners/agreements/direction"),
                     available = this._controlModel.getProperty("/partners/agreements/available"),
-                    newEntry = this._controlModel.getProperty("/partners/agreements/newEntryCopy");
+                    newEntry = JSON.parse(JSON.stringify(
+                                            this._controlModel.getProperty("/partners/agreements/newEntryCopy")));
 
                 if(direction === "inbound") {
-                    newEntry.Message = available.inbound[0].Message;
+                    newEntry.message = available.inbound[0].message;
                 } else {
-                    newEntry.Message = available.outbound[0].Message;
-                    const message = {
-                        Message: available.outbound[0].Message
-                    };
-                    newEntry.canChangeArchive = newEntry.ArchiveMessage = 
-                        this._getArchiveActive(this._getX12Parts(message).x12Type);
+                    newEntry.message = available.outbound[0].message;
+                    newEntry.canChangeArchive = newEntry.archiveMessage = 
+                        this._getArchiveActive(this._getX12Parts(newEntry.message).x12Type);
                 }
-                this._controlModel.setProperty("/partners/agreements/newEntry", 
-                                                JSON.parse(JSON.stringify(newEntry)));
+                this._controlModel.setProperty("/partners/agreements/newEntry", newEntry);
 
                 // Open agreement creation dialog
                 this._openDialog();
@@ -62,23 +59,17 @@ sap.ui.define([
                 // Retrieve context information
                 const key = this._oView.byId("agreementTabs").getSelectedKey(),
                     configuration = this._controlModel.getProperty("/partners/agreements/newConfiguration"),
-                    entry = this._agreements.newEntry;
+                    entry = this._controlModel.getProperty("/partners/agreements/newEntry");
 
                 // Adjust model
-                var message = {
-                    Message: ""
-                };
+                var message = this._getX12Parts(entry.message);
                 if(key === "inbound") {
-                    message.Message = entry.Message;
-                    message = this._getX12Parts(message);
-                    message.DoExtendedPreProcessing = entry.DoExtendedPreProcessing;
+                    message.doExtendedPreProcessing = entry.doExtendedPreProcessing;
                     configuration.inbound.push(message);
                 } else {
-                    message.Message = entry.Message;
-                    message = this._getX12Parts(message);
-                    message.DoExtendedPostProcessing = entry.DoExtendedPostProcessing;
-                    message.AcknowledgementRequired = entry.AcknowledgementRequired;
-                    message.ArchiveMessage = entry.ArchiveMessage;
+                    message.doExtendedPostProcessing = entry.doExtendedPostProcessing;
+                    message.acknowledgementRequired = entry.acknowledgementRequired;
+                    message.archiveMessage = entry.archiveMessage;
                     message.canChangeArchive = this._getArchiveActive(message.x12Type);
                     configuration.outbound.push(message);
                 }
@@ -109,7 +100,7 @@ sap.ui.define([
             },
 
             // Cancel agreement addition
-            onCancelAddAgreement: function() {
+            onCloseDialog: function() {
                 this._closeDialog();
             },
 
@@ -132,7 +123,7 @@ sap.ui.define([
                                 direction = this._controlModel.getProperty("/partners/agreements/direction"),
                                 pid = this._controlModel.getProperty("/partners/pid"),
                                 deletions = this._controlModel.getProperty("/partners/agreements/extraDeletions"),
-                                message = agreementList[index].Message,
+                                message = agreementList[index].message,
                                 id = direction === "inbound" ? "ext_" + message + "_preproc" :
                                                                 "ext_" + message + "_postproc",
                                 key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
@@ -265,32 +256,26 @@ sap.ui.define([
                     });
                 }
 
-                // Submit batch if pending changes exist
-                if(haveExtraDeletions) {
-                    oDataModel.submitChanges({
-                        groupId: "deferred",
-                        success: function (oData, oResponse) {
-                            this.success(oData, oResponse);
-                        }.bind(context),
-                        error: function (oError) {
-                            this.error(oError);
-                        }.bind(context),
-                    });
-                }            
+                // Submit changes
+                oDataModel.submitChanges({
+                    groupId: "deferred",
+                    success: function (oData, oResponse) {
+                        this.success(oData, oResponse);
+                    }.bind(context),
+                    error: function (oError) {
+                        this.error(oError);
+                    }.bind(context),
+                });           
             },
 
             // Record selection into JSON model
             onSelect: function(oEvent) {
                 const direction = this._oView.byId("agreementTabs").getSelectedKey(),
-                    key = oEvent.getParameter("selectedItem").getText();
+                    key = oEvent.getParameter("selectedItem").getSelectedKey();
                 
-                this._controlModel.setProperty("/partners/agreements/newEntry/Message", key);
                 if(direction === "outbound") {
-                    const message = {
-                        Message: key
-                    };
-                    const archiveActive = this._getArchiveActive(this._getX12Parts(message).x12Type);
-                    this._controlModel.setProperty("/partners/agreements/newEntry/ArchiveMessage", archiveActive);
+                    const archiveActive = this._getArchiveActive(this._getX12Parts(key).x12Type);
+                    this._controlModel.setProperty("/partners/agreements/newEntry/archiveMessage", archiveActive);
                     this._controlModel.setProperty("/partners/agreements/newEntry/canChangeArchive", archiveActive);
                 }
             },
@@ -300,8 +285,8 @@ sap.ui.define([
                 this._controlModel.setProperty("/partners/agreements/direction", oEvent.getParameter("selectedKey"));
             },
 
-            // Upload pre-processor map
-            onUploadExtended: function(oEvent) {
+            // Upload extended map
+            onUpload: function(oEvent) {
                 // Get file and message key information
                 const file = oEvent.getParameter("files")[0],
                     sPath = oEvent.getSource().getParent().getParent().getBindingContext("control").getPath(),
@@ -309,6 +294,7 @@ sap.ui.define([
 
                 // Execute upload
                 this._uploadExtendedMap(file, oObject);
+                oEvent.getSource().setValue("");
             },
 
             // Close agreement dialog
@@ -325,20 +311,20 @@ sap.ui.define([
 
                 // Check inbound changes first
                 for(const inbound of this._agreements.newConfiguration.inbound) {
-                    const id = "ext_" + inbound.Message + "_preproc",
+                    const id = "ext_" + inbound.message + "_preproc",
                         key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
                         oObject = oDataModel.getObject(key);
-                    if(oObject && !inbound.DoExtendedPreProcessing) {
+                    if(oObject && !inbound.doExtendedPreProcessing) {
                         deletions.push(oObject.Id);
                     }
                 }
 
                 // Check outbound changes
                 for(const outbound of this._agreements.newConfiguration.outbound) {
-                    const id = "ext_" + outbound.Message + "_postproc",
+                    const id = "ext_" + outbound.message + "_postproc",
                         key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
                         oObject = oDataModel.getObject(key);
-                    if(oObject && !inbound.DoExtendedPostProcessing) {
+                    if(oObject && !inbound.doExtendedPostProcessing) {
                         deletions.push(oObject.Id);
                     }
                 }
@@ -375,7 +361,7 @@ sap.ui.define([
 
                 // Parse inbound agreements
                 for(const inbound of this._agreements.newConfiguration.inbound) {
-                    const index = inboundMaps.map((n) => n.message).indexOf(inbound.Message);
+                    const index = inboundMaps.map((n) => n.message).indexOf(inbound.message);
                     if(index > -1) {
                         delete inboundMaps[index];
                     }
@@ -384,7 +370,7 @@ sap.ui.define([
 
                 // Parse outbound agreements
                 for(const outbound of this._agreements.newConfiguration.outbound) {
-                    const index = outboundMaps.map((n) => n.message).indexOf(outbound.Message);
+                    const index = outboundMaps.map((n) => n.message).indexOf(outbound.message);
                     if(index > -1) {
                         delete outboundMaps[index];
                     }
@@ -401,13 +387,15 @@ sap.ui.define([
 
             // Get X12 Parts
             _getX12Parts: function(message) {
-                const x12Parts = message.Message.replaceAll("ASC-X12_", "").split("_");
-                message.x12Type = x12Parts[0];
-                message.x12Version = x12Parts[1];
-                return message;
+                const x12Parts = message.replaceAll("ASC-X12_", "").split("_");
+                return {
+                    message: message,
+                    x12Type: x12Parts[0],
+                    x12Version: x12Parts[1]
+                };
             },
 
-            // Open dialog for agreement
+            // Open dialog for agreement maintenance
             _openDialog: function() {
                 // Display dialog
                 this._pDialog.then(function(oDialog) {
@@ -419,28 +407,32 @@ sap.ui.define([
             // Parse agreements data for display in UI
             _parseAgreements(JSONObject) {
                 const inbound = JSONObject.Agreements.Inbound,
-                outbound = JSONObject.Agreements.Outbound;
+                    outbound = JSONObject.Agreements.Outbound,
+                    inboundUI = [],
+                    outboundUI = [];
 
                 // Parse inbound information
-                for(var message of inbound) {
-                    message = this._getX12Parts(message);
-                    message.DoExtendedPreProcessing = message.DoExtendedPreProcessing === "true";
+                for(const message of inbound) {
+                    var messageUI = this._getX12Parts(message.Message);
+                    messageUI.doExtendedPreProcessing = message.DoExtendedPreProcessing === "true";
+                    inboundUI.push(messageUI);
                 }
 
                 // Parse outbound information
-                for(var message of outbound) {
-                    message = this._getX12Parts(message);
-                    message.DoExtendedPostProcessing = message.DoExtendedPostProcessing === "true";
-                    message.AcknowledgementRequired = message.AcknowledgementRequired === "true";
-                    message.ArchiveMessage = message.ArchiveMessage === "false" 
-                                                ? false : this._getArchiveActive(message.x12Type);
-                    message.canChangeArchive = this._getArchiveActive(message.x12Type);
+                for(const message of outbound) {
+                    var messageUI = this._getX12Parts(message.Message);
+                    messageUI.doExtendedPostProcessing = message.DoExtendedPostProcessing === "true";
+                    messageUI.acknowledgementRequired = message.AcknowledgementRequired === "true";
+                    messageUI.archiveMessage = message.ArchiveMessage === "false" 
+                                                ? false : this._getArchiveActive(messageUI.x12Type);
+                    messageUI.canChangeArchive = this._getArchiveActive(messageUI.x12Type);
+                    outboundUI.push(messageUI);
                 }
 
                 // Record configuration into JSON model after cloning
                 const newConfiguration = {
-                    inbound: inbound,
-                    outbound: outbound
+                    inbound: inboundUI,
+                    outbound: outboundUI
                 },
                     originalConfiguration = JSON.parse(JSON.stringify(newConfiguration));
                 this._controlModel.setProperty("/partners/agreements/newConfiguration", newConfiguration);
@@ -460,12 +452,12 @@ sap.ui.define([
                     };
                 for(const possibleInbound of availableList.inbound) {
                     available.inbound.push({
-                        Message: possibleInbound.message
+                        message: possibleInbound.message
                     });
                 }
                 for(const possibleOutbound of availableList.outbound) {
                     available.outbound.push({
-                        Message: possibleOutbound.message
+                        message: possibleOutbound.message
                     });
                 }
                 this._controlModel.setProperty("/partners/agreements/available", available);
@@ -483,8 +475,8 @@ sap.ui.define([
                 // Parse inbound agreements
                 for(const inbound of this._agreements.newConfiguration.inbound) {
                     const message = {
-                        Message: inbound.Message,
-                        DoExtendedPreProcessing: inbound.DoExtendedPreProcessing.toString()
+                        Message: inbound.message,
+                        DoExtendedPreProcessing: inbound.doExtendedPreProcessing.toString()
                     };
                     payload.Agreements.Inbound.push(message);
                 }
@@ -492,11 +484,11 @@ sap.ui.define([
                 // Parse outbound agreements
                 for(const outbound of this._agreements.newConfiguration.outbound) {
                     const message = {
-                        Message: outbound.Message,
-                        DoExtendedPostProcessing: outbound.DoExtendedPostProcessing.toString(),
-                        AcknowledgementRequired: outbound.AcknowledgementRequired.toString(),
-                        ArchiveMessage: outbound.ArchiveMessage ? undefined : 
-                                            outbound.ArchiveMessage.toString()
+                        Message: outbound.message,
+                        DoExtendedPostProcessing: outbound.doExtendedPostProcessing.toString(),
+                        AcknowledgementRequired: outbound.acknowledgementRequired.toString(),
+                        ArchiveMessage: outbound.archiveMessage ? undefined : 
+                                            outbound.archiveMessage.toString()
                     };
                     payload.Agreements.Outbound.push(message);
                 }
@@ -510,6 +502,49 @@ sap.ui.define([
                 this._controlModel.setProperty("/partners/agreements/extraDeletions", []);
             },
 
+            // Save extended map to partner directory
+            _saveExtendedMap: function(file, oObject) {
+                // Get map stream and parameters required for update of extended map
+                const mapping = file.currentTarget.result,
+                    oDataModel = this._getModel(),
+                    direction = this._controlModel.getProperty("/partners/agreements/direction"),
+                    pid = this._controlModel.getProperty("/partners/pid"),
+                    id = direction === "inbound" ? "ext_" + oObject.message + "_preproc" :
+                                                    "ext_" + oObject.message + "_postproc",
+                    key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
+                    oExtendedMap = oDataModel.getObject(key);
+                
+                // Check if extended map exists or not for create or update
+                if(!oExtendedMap) {
+                    oDataModel.create("/BinaryParameters", {
+                        Pid: pid,
+                        Id: id,
+                        ContentType: "xsl",
+                        Value: window.btoa(mapping)
+                    }, {
+                        success: function(oData, oResonse) {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
+                        }.bind(this),
+                        error: function(oError) {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
+                        }.bind(this)
+                    });
+                } else {
+                    oDataModel.update(key, {
+                        ContentType: "xsl",
+                        Value: window.btoa(mapping)
+                    }, {
+                        success: function(oData, oResonse) {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
+                        }.bind(this),
+                        error: function(oError) {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
+                        }.bind(this),
+                        merge: false
+                    });
+                }  
+            },
+
             // Toggle display/change mode
             _toggleMode: function() {
                 // Toggle edit mode based on current value
@@ -521,50 +556,12 @@ sap.ui.define([
             _uploadExtendedMap: function(file, oObject) {
                 const oReader = new FileReader();
                 oReader.onload = function(file) {
-                    // Get map stream and parameters required for update of extended map
-                    const mapping = file.currentTarget.result,
-                        oDataModel = this._getModel(),
-                        direction = this._controlModel.getProperty("/partners/agreements/direction"),
-                        pid = this._controlModel.getProperty("/partners/pid"),
-                        id = direction === "inbound" ? "ext_" + oObject.Message + "_preproc" :
-                                                        "ext_" + oObject.Message + "_postproc",
-                        key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
-                        oExtendedMap = oDataModel.getObject(key);
-                    
-                    // Check if extended map exists or not for create or update
-                    if(!oExtendedMap) {
-                        oDataModel.create("/BinaryParameters", {
-                            Pid: pid,
-                            Id: id,
-                            ContentType: "xsl",
-                            Value: window.btoa(mapping)
-                        }, {
-                            success: function(oData, oResonse) {
-                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
-                            }.bind(this),
-                            error: function(oError) {
-                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
-                            }.bind(this)
-                        });
-                    } else {
-                        oDataModel.update(key, {
-                            ContentType: "xsl",
-                            Value: window.btoa(mapping)
-                        }, {
-                            success: function(oData, oResonse) {
-                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
-                            }.bind(this),
-                            error: function(oError) {
-                                MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
-                            }.bind(this),
-                            merge: false
-                        });
-                    }  
+                    // Save extended map
+                    this._saveExtendedMap(file, oObject);
                 }.bind(this)
 
                 // Read file and reset value for uploader button
                 oReader.readAsText(file);
-                oEvent.getSource().setValue("");
             }
         });
     });

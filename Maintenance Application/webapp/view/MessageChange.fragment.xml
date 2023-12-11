@@ -36,12 +36,12 @@
 				</Switch>
 				<Label text="{i18n>target}" />
 				<Input id="inboundTarget" editable="{= ${control>/message/newConfiguration/isInboundActive} === true }" 
-					placeholder="{i18n>targetExample}"
+					liveChange="triggerEnterKey" placeholder="{i18n>targetHint}"
 					value="{
 						path: 'control>/message/newConfiguration/target',
 						type: 'sap.ui.model.type.String',
 						constraints: {
-							search: '\\S+$'
+							search: '^\\S+$'
 						}
 					}"
 					visible="{= ${control>/message/type} !== '997'}" />

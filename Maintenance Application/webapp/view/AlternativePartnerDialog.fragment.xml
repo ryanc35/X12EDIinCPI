@@ -1,24 +1,42 @@
 <core:FragmentDefinition
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
 	xmlns:mvc="sap.ui.core.mvc">
 	
-	<Dialog title="{= ${control>/alternativePartners/mode} === 'create' ? ${i18n>create} : ${i18n>change} } {i18n>idocId}">
+	<Dialog class="dialogWidthLarge"
+		title="{= ${control>/alternativePartners/mode} === 'create' ? ${i18n>create} : ${i18n>change} } {i18n>idocId}">
 		<content>
-			<VBox class="sapUiSmallMargin">
-				<Label text="{i18n>idocId}" />
-				<Input id="alternativePartnerInput" liveChange="triggerEnterKey" 
-					placeholder="{i18n>alternativePartnerIdHint}"
-					value="{
-						path: 'control>/partners/alternativePartnerId',
-						type: 'sap.ui.model.type.String',
-						constraints: {
-							minLength: '1',
-							maxLength: '10',
-							search: '^[A-Z0-9_-]*$'
-						}
-					}" />
-			</VBox>
+			<f:Form editable="true">
+				<f:title/>
+				<f:layout>
+					<f:ResponsiveGridLayout adjustLabelSpan="false" emptySpanXL="0" columnsL="1"
+						columnsM="1" columnsXL="1" labelSpanL="4" labelSpanM="4" labelSpanS="4"
+						labelSpanXL="4" singleContainerFullSize="false" />
+				</f:layout>
+				<f:formContainers>
+					<f:FormContainer>
+						<f:formElements>
+							<f:FormElement label="{i18n>idocId}">
+								<f:fields>
+									<Input id="alternativePartnerInput" liveChange="triggerEnterKey" 
+										placeholder="{i18n>alternativePartnerIdHint}"
+										value="{
+											path: 'control>/partners/alternativePartnerId',
+											type: 'sap.ui.model.type.String',
+											constraints: {
+												minLength: '1',
+												maxLength: '10',
+												search: '^[A-Z0-9_-]*$'
+											}
+										}"/>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+			</f:Form>
 		</content>
 		<footer>
 			<Toolbar>

@@ -37,25 +37,23 @@
 				<Label text="{i18n>adapter}" />
 				<Select id="AdapterType-change" change="onSelect" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="AS2" key="AS2"/>
-						<core:Item text="SFTP" key="SFTP"/>
-						<core:Item text="FTP" key="FTP"/>
+						<core:Item key="AS2" text="AS2" />
+						<core:Item key="SFTP" text="SFTP" />
+						<core:Item key="FTP" text="FTP" />
 					</items>
 				</Select>
 				<core:Title text="{i18n>idocIdentification}" />
 				<Label text="{i18n>partnerType}" />
 				<Select id="PartnerType-change" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="{i18n>customer}" key="KU"/>
-						<core:Item text="{i18n>supplier}" key="LI"/>
-						<core:Item text="{i18n>bank}" key="BK"/>
-						<core:Item text="{i18n>logicalSystem}" key="LS"/>
+						<core:Item key="KU" text="{i18n>customer}" />
+						<core:Item key="LI" text="{i18n>supplier}" />
+						<core:Item key="BK" text="{i18n>bank}" />
+						<core:Item key="LS" text="{i18n>logicalSystem}" />
 					</items>
 				</Select>
 				<Label text="{i18n>idocId}" visible="{control>/partners/alternativePartnerExists}" />
 				<Text id="sap_idoc_id-change" text="{partners>Id}" visible="{control>/partners/alternativePartnerExists}" />
-				<Button icon="sap-icon://edit" press="onReplaceAlternativePartnerDialog" 
-					visible="{control>/partners/alternativePartnerExists}" width="1em" />
 				<Label text="{i18n>idocId}" visible="{= ${control>/partners/alternativePartnerExists} === false }" />
 				<Button icon="sap-icon://add" press="onAddAlternativePartnerDialog" 
 					visible="{= ${control>/partners/alternativePartnerExists} === false }" width="1em" />
@@ -63,51 +61,51 @@
 				<Label text="{i18n>elementSeparator}" />
 				<Select id="x12_element_separator-change" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="*" key="*"/>
-						<core:Item text=":" key=":"/>
-						<core:Item text="," key=","/>
-						<core:Item text="." key="."/>
-						<core:Item text="|" key="|"/>
-						<core:Item text="+" key="+"/>
-						<core:Item text=";" key=";"/>
+						<core:Item key="*" text="*" />
+						<core:Item key=":" text=":" />
+						<core:Item key="," text="," />
+						<core:Item key="." text="." />
+						<core:Item key="|" text="|" />
+						<core:Item key="+" text="+" />
+						<core:Item key=";" text=";" />
 					</items>
 				</Select>
 				<Label text="{i18n>segmentTerminator}" />
 				<Select id="x12_segment_terminator-change" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="~" key="~"/>
-						<core:Item text="Carriage Return" key="#x0d"/>
-						<core:Item text="Line Feed" key="#x0a"/>
-						<core:Item text="Tab" key="#x09"/>
-						<core:Item text="Vertical Tab" key="#x0b"/>
+						<core:Item key="~" text="~" />
+						<core:Item key="#x0d" text="Carriage Return" />
+						<core:Item key="#x0a" text="Line Feed" />
+						<core:Item key="#x09" text="Tab" />
+						<core:Item key="#x0b" text="Vertical Tab" />
 					</items>
 				</Select>
 				<Label text="{i18n>compositeSeparator}" />
 				<Select id="x12_composite_separator-change" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="\" key="\"/>
-						<core:Item text=":" key=":"/>
-						<core:Item text="," key=","/>
-						<core:Item text="." key="."/>
-						<core:Item text="|" key="|"/>
-						<core:Item text="+" key="+"/>
-						<core:Item text=";" key=";"/>
-						<core:Item text="&lt;" key="#x3c"/>
-						<core:Item text="&gt;" key="#x3e"/>
+						<core:Item key="\" text="\" />
+						<core:Item key=":" text=":" />
+						<core:Item key="," text="," />
+						<core:Item key="." text="." />
+						<core:Item key="|" text="|" />
+						<core:Item key="+" text="+" />
+						<core:Item key=";" text=";" />
+						<core:Item key="#x3c" text="&lt;" />
+						<core:Item key="#x3e" text="&gt;" />
 					</items>
 				</Select>
 				<Label text="{i18n>repetitionSeparator}" />
 				<Select id="x12_repetition_separator-change" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="^" key="^"/>
-						<core:Item text=":" key=":"/>
-						<core:Item text="," key=","/>
-						<core:Item text="." key="."/>
-						<core:Item text="|" key="|"/>
-						<core:Item text="+" key="+"/>
-						<core:Item text=";" key=";"/>
-						<core:Item text="&lt;" key="#x3c"/>
-						<core:Item text="&gt;" key="#x3e"/>
+						<core:Item key="^" text="^" />
+						<core:Item key=":" text=":" />
+						<core:Item key="," text="," />
+						<core:Item key="." text="." />
+						<core:Item key="|" text="|" />
+						<core:Item key="+" text="+" />
+						<core:Item key=";" text=";" />
+						<core:Item key="#x3c" text="&lt;" />
+						<core:Item key="#x3e" text="&gt;" />
 					</items>
 				</Select>
 			</f:content>
@@ -178,9 +176,9 @@
 				<Select id="AS2_inbound_verify_signature-change" enabled="{control>/partners/view/decryptMessage}" 
 					selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="Not Required" key="notRequired"/>
-						<core:Item text="Trusted Certificate" key="trustedCertificate"/>
-						<core:Item text="Trusted Root Certificate" key="trustedRootCertificate"/>
+						<core:Item key="notRequired" text="Not Required" />
+						<core:Item key="trustedCertificate" text="Trusted Certificate" />
+						<core:Item key="trustedRootCertificate" text="Trusted Root Certificate" />
 					</items>
 				</Select>
 				<Label text="{i18n>encryptMessage}" />
@@ -198,11 +196,11 @@
 				<Select id="SAP_AS2_Outbound_Encryption_Algorithm-change" enabled="{control>/partners/view/encryptMessage}" 
 					selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="3DES" key="3DES"/>
-						<core:Item text="AES128" key="AES128"/>
-						<core:Item text="AES192" key="AES192"/>
-						<core:Item text="AES256" key="AES256"/>
-						<core:Item text="RC2" key="RC2"/>
+						<core:Item key="3DES" text="3DES" />
+						<core:Item key="AES128" text="AES128" />
+						<core:Item key="AES192" text="AES192" />
+						<core:Item key="AES256" text="AES256" />
+						<core:Item key="RC2" text="RC2" />
 					</items>
 				</Select>
 				<Label text="{i18n>signMessage}" />
@@ -222,21 +220,21 @@
 					enabled="{= ${control>/partners/view/encryptMessage} &amp;&amp; ${control>/partners/view/signMessage} }" 
 					selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="SHA1" key="SHA1"/>
-						<core:Item text="SHA224" key="SHA224"/>
-						<core:Item text="SHA256" key="SHA256"/>
-						<core:Item text="SHA384" key="SHA384"/>
-						<core:Item text="SHA512" key="SHA512"/>
-						<core:Item text="MD5" key="MD5"/>
+						<core:Item key="SHA1" text="SHA1" />
+						<core:Item key="SHA224" text="SHA224" />
+						<core:Item key="SHA256" text="SHA256" />
+						<core:Item key="SHA384" text="SHA384" />
+						<core:Item key="SHA512" text="SHA512" />
+						<core:Item key="MD5" text="MD5" />
 					</items>
 				</Select>
 				<core:Title text="{i18n>mdn}" />
 				<Label text="{i18n>mdnType}" />
 				<Select id="SAP_AS2_Outbound_Mdn_Type-change" change="onSelect" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="Synchronous" key="Synchronous"/>
-						<core:Item text="Asynchronous" key="Asynchronous"/>
-						<core:Item text="None" key="None"/>
+						<core:Item key="Synchronous" text="{i18n>synchronous}" />
+						<core:Item key="Asynchronous" text="{i18n>asynchronous}" />
+						<core:Item key="None" text="{i18n>none}" />
 					</items>
 				</Select>
 				<Label text="{i18n>mdnRequestSigning}" />
@@ -255,12 +253,12 @@
 				<Select id="SAP_AS2_Outbound_Mdn_Signing_Algorithm-change" enabled="{control>/partners/view/signMdn}" 
 					selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="SHA1" key="SHA1"/>
-						<core:Item text="SHA224" key="SHA224"/>
-						<core:Item text="SHA256" key="SHA256"/>
-						<core:Item text="SHA384" key="SHA384"/>
-						<core:Item text="SHA512" key="SHA512"/>
-						<core:Item text="MD5" key="MD5"/>
+						<core:Item key="SHA1" text="SHA1" />
+						<core:Item key="SHA224" text="SHA224" />
+						<core:Item key="SHA256" text="SHA256" />
+						<core:Item key="SHA384" text="SHA384" />
+						<core:Item key="SHA512" text="SHA512" />
+						<core:Item key="MD5" text="MD5" />
 					</items>
 				</Select>
 				<Label text="{i18n>mdnVerifySignature}" />
@@ -350,8 +348,8 @@
 				<Label text="{i18n>ftpEncryption}" />
 				<Select id="SAP_FtpEncryption-change" selectedKey="{partner>Value}">
 					<items>
-						<core:Item text="Implicit" key="ftps"/>
-						<core:Item text="Explicit" key="ftpes"/>
+						<core:Item key="ftps" text="{i18n>implicit}" />
+						<core:Item key="ftpes" text="{i18n>explicit}" />
 					</items>
 				</Select>
 			</f:content>

@@ -23,9 +23,54 @@
 		"#x3e": "greaterThan"
 	},
 	"maps": {
+		"availableTypes": [],
+		"availableVersions": [],
 		"direction": "inbound",
+		"entry": {},
+		"entryCopy": {
+			"conversion": {
+				"name": "",
+				"type": "xsd",
+				"value": ""
+			},
+			"mapping": {
+				"name": "",
+				"type": "xsl",
+				"value": ""
+			},
+			"preProcessing": {
+				"name": "",
+				"type": "xsl",
+				"value": ""
+			},
+			"postProcessing": {
+				"name": "",
+				"type": "xsl",
+				"value": ""
+			},
+			"source": "",
+			"target": "",
+			"x12Type": "",
+			"x12Version": ""
+		},
 		"inbound": [],
-		"outbound": []
+		"inputs": [
+			"outboundSource"
+		],
+		"mode": "create",
+		"objects": [
+			"conversion",
+			"mapping",
+			"preProcessing",
+			"postProcessing"
+		],
+		"outbound": [],
+		"resetValues": [
+			"preProcessingUpload",
+			"conversionUpload",
+			"mappingUpload",
+			"postProcessingUpload"
+		]
 	},
 	"message": {
 		"mode": "",
@@ -56,12 +101,12 @@
 			"newConfiguration": {},
 			"newEntry": {},
 			"newEntryCopy": {
-				"AcknowledgementRequired": true,
-				"ArchiveMessage": false,
+				"acknowledgementRequired": true,
+				"archiveMessage": false,
 				"canChangeArchive": false,
-				"DoExtendedPostProcessing": false,
-				"DoExtendedPreProcessing": false,
-				"Message": ""
+				"doExtendedPostProcessing": false,
+				"doExtendedPreProcessing": false,
+				"message": ""
 			},
 			"originalConfiguration": {}
 		},
@@ -1568,44 +1613,120 @@
 			}
 		],
 		"versions": [
-			"002001",
-			"002002",
-			"002003",
-			"002040",
-			"002042",
-			"003010",
-			"003020",
-			"003030",
-			"003040",
-			"003050",
-			"003060",
-			"003070",
-			"004010",
-			"004020",
-			"004030",
-			"004040",
-			"004050",
-			"004060",
-			"005010",
-			"005020",
-			"005030",
-			"005040",
-			"005050",
-			"006010",
-			"006020",
-			"006030",
-			"006040",
-			"006050",
-			"007010",
-			"007020",
-			"007030",
-			"007040",
-			"007050",
-			"007060",
-			"008010",
-			"008020",
-			"008030",
-			"008040"
+			{
+				"version": "002001"
+			},
+			{
+				"version": "002002"
+			},
+			{
+				"version": "002003"
+			},
+			{
+				"version": "002040"
+			},
+			{
+				"version": "002042"
+			},
+			{
+				"version": "003010"
+			},
+			{
+				"version": "003020"
+			},
+			{
+				"version": "003030"
+			},
+			{
+				"version": "003040"
+			},
+			{
+				"version": "003050"
+			},
+			{
+				"version": "003060"
+			},
+			{
+				"version": "003070"
+			},
+			{
+				"version": "004010"
+			},
+			{
+				"version": "004020"
+			},
+			{
+				"version": "004030"
+			},
+			{
+				"version": "004040"
+			},
+			{
+				"version": "004050"
+			},
+			{
+				"version": "004060"
+			},
+			{
+				"version": "005010"
+			},
+			{
+				"version": "005020"
+			},
+			{
+				"version": "005030"
+			},
+			{
+				"version": "005040"
+			},
+			{
+				"version": "005050"
+			},
+			{
+				"version": "006010"
+			},
+			{
+				"version": "006020"
+			},
+			{
+				"version": "006030"
+			},
+			{
+				"version": "006040"
+			},
+			{
+				"version": "006050"
+			},
+			{
+				"version": "007010"
+			},
+			{
+				"version": "007020"
+			},
+			{
+				"version": "007030"
+			},
+			{
+				"version": "007040"
+			},
+			{
+				"version": "007050"
+			},
+			{
+				"version": "007060"
+			},
+			{
+				"version": "008010"
+			},
+			{
+				"version": "008020"
+			},
+			{
+				"version": "008030"
+			},
+			{
+				"version": "008040"
+			}
 		]
 	}
 }

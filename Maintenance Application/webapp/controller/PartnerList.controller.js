@@ -1,15 +1,15 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/BusyIndicator",
-    "sap/m/MessageBox",
-    "sap/m/MessageToast",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
+    "sap/ui/model/FilterOperator",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, BusyIndicator, MessageBox, MessageToast, Filter, FilterOperator) {
+    function (Controller, BusyIndicator, Filter, FilterOperator, MessageBox, MessageToast) {
         "use strict";
 
         return Controller.extend("com.at.pd.edi.attr.pdediattr.controller.PartnerList", {
@@ -39,7 +39,7 @@ sap.ui.define([
 
                 // Instantiate dialog object for possible partner creation flow
                 this._pDialog ??= this.loadFragment({
-                    name: "com.at.pd.edi.attr.pdediattr.view.PartnerCreate",
+                    name: "com.at.pd.edi.attr.pdediattr.view.PartnerDialog",
                     type: "XML"
                 });  
 
@@ -132,13 +132,9 @@ sap.ui.define([
                 // Get identifying context for removal
                 const oContext = oEvent.getSource().getObjectBinding("control")
                     .getContext(),
-                    context = {
-                        i18nText: this._i18nBundle.getText("partnerDeletionFailed"),
-                        JSONModel: this._controlModel,
-                        oDataModel: this._getModel(),
-                        Pid: oContext.getObject().Pid,
-                        sPath: oContext.getPath()
-                    };
+                    oDataModel = this._getModel(),
+                    pid = oContext.getObject().Pid,
+                    sPath = oContext.getPath();
 
                 // Confirm deletion first
                 MessageBox.warning(this._i18nBundle.getText("partnerDeleteQuestion"), {
@@ -148,26 +144,26 @@ sap.ui.define([
                         if (sAction !== MessageBox.Action.CANCEL) {
                             // Continue deleting record
                             BusyIndicator.show(0);
-                            const key = this.oDataModel.createKey("/Partners", {
-                                Pid: this.Pid
+                            const key = oDataModel.createKey("/Partners", {
+                                Pid: pid
                             });
-                            this.oDataModel.remove(key, {
+                            oDataModel.remove(key, {
                                 success: function (oData, oResponse) {
-                                    const path = this.sPath.match(/.*(?=\/.*$)/)[0],
-                                        index = this.sPath.match(/[^\/]+$/)[0],
-                                        partners = this.JSONModel.getProperty(path).map((n) => n);
+                                    const path = sPath.match(/.*(?=\/.*$)/)[0],
+                                        index = sPath.match(/[^\/]+$/)[0],
+                                        partners = this._controlModel.getProperty(path).map((n) => n);
                                     delete partners[index];
                                     const newPartners = partners.filter(n => true);
-                                    this.JSONModel.setProperty(path, newPartners);
+                                    this._controlModel.setProperty(path, newPartners);
                                     BusyIndicator.hide();
                                 }.bind(this),
                                 error: function (oError) {
                                     BusyIndicator.hide();
-                                    MessageToast.show(this.i18nText);
+                                    MessageToast.show(this._i18nBundle.getText("partnerDeletionFailed"));
                                 }.bind(this)
                             });
                         }
-                    }.bind(context)
+                    }.bind(this)
                 });
             },
 
@@ -203,7 +199,7 @@ sap.ui.define([
                 this._controlModel.setProperty("/partners/mode", "display");
 
                 // Remove selection and then navigate to detail page
-                oItem.setSelected(false);
+                oItem.getParent().removeSelections(true);
                 this.getOwnerComponent().getRouter().navTo("partner");
             },
 
@@ -215,27 +211,24 @@ sap.ui.define([
             // Load partner into model
             _loadPartners: function () {
                 // Get model
-                const oDataModel = this._getModel();
+                const oDataModel = this._getModel(),
+                    pid = this._controlModel.getProperty("/self/pid");
 
                 // Prepare binding context
                 const context = {
                     oDataModel: oDataModel,
                     success: function (oData, oResponse) {
                         // Check for matching self Id
-                        const selfId = this._controlModel.getProperty("/self/pid").toString();
                         for (let i = 0; i < oData.results.length; i++) {
-                            if (oData.results[i].Pid === selfId) {
+                            if (oData.results[i].Pid === pid) {
                                 this._controlModel.setProperty("/self/exists", true);
                                 break;
                             }
                         }
+
                         this._controlModel.setProperty("/partners/list", oData.results);
-                        this._context.oDataModel.setUseBatch(true);
-                        this.getOwnerComponent().loadComplete(this);
                     }.bind(this),
-                    error: function (oError) {
-                        this._context.oDataModel.setUseBatch(true);
-                        this.getOwnerComponent().loadComplete(this);
+                    error: function (oError) {                
                         MessageToast.show(this._i18nBundle.getText("partnerLoadFailed"));
                     }.bind(this)
                 };

@@ -2,7 +2,7 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/BusyIndicator",
     "sap/m/MessageToast",
-    "com/at/pd/edi/attr/pdediattr/model/StringyBoolean",
+    "com/at/pd/edi/attr/pdediattr/model/StringyBoolean"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
@@ -24,20 +24,24 @@ sap.ui.define([
                     this.getOwnerComponent().loadStarted(this);
                 }.bind(this)).attachBatchRequestCompleted(function(oEvent) {
                     // Check for any messages and create missing entries if status code is 404
-                    // SHOULD only happen if something has been deleted via other means
-                    const messages = oEvent.getSource().getMessagesByEntity("/StringParameters");
-                    for(const message of messages) {
-                        if(message.technicalDetails.statusCode === "404") {
-                            const target = message.getTarget(),
-                            id = target.match(/(?<=Id=')[^']+/)[0],
-                            defaults = this._self.defaults.find((n) => n.name === id);
-                            oDataModel.create("/StringParameters", {
-                                Pid: target.match(/(?<=Pid=')[^']+/)[0],
-                                Id: id,
-                                Value: defaults ? defaults.value : ""
-                            }, {
-                                groupId: "deferred"
-                            });
+                    // SHOULD only happen if something has been deleted via other means, but 
+                    // only if self partner exists
+                    const exists = this._controlModel.getProperty("/self/exists"),
+                        messages = oEvent.getSource().getMessagesByEntity("/StringParameters");
+                    if(exists) {
+                        for(const message of messages) {
+                            if(message.technicalDetails.statusCode === "404") {
+                                const target = message.getTarget(),
+                                id = target.match(/(?<=Id=')[^']+/)[0],
+                                defaults = this._self.defaults.find((n) => n.name === id);
+                                oDataModel.create("/StringParameters", {
+                                    Pid: target.match(/(?<=Pid=')[^']+/)[0],
+                                    Id: id,
+                                    Value: defaults ? defaults.value : ""
+                                }, {
+                                    groupId: "deferred"
+                                });
+                            }
                         }
                     }
                     if(oDataModel.hasPendingChanges(true)) {
@@ -48,18 +52,24 @@ sap.ui.define([
                         this.getOwnerComponent().loadComplete(this);
                     }
                 }.bind(this));
+
+                // Handle promise evaluation for metadata, control model, and
+                // partner data load completion
                 this._pMetadataLoaded ??= oDataModel.metadataLoaded();
                 this._pMetadataLoaded.then(function(oPromise) {
                     this._pControlLoaded ??= this._controlModel.dataLoaded();
                     this._pControlLoaded.then(function(oPromise) {
                         this._self = this._controlModel.getProperty("/self");
-                        this._loadProperties();
+                        this._pPartnersLoaded = this.getOwnerComponent().partnersLoaded();
+                        this._pPartnersLoaded.then(function(oPromise) {
+                            this._doElementBinding();
+                        }.bind(this));
                     }.bind(this));
                 }.bind(this));
 
                 // Instantiate dialog object in case partner information isn't created yet
                 this._pDialog ??= this.loadFragment({
-                    name: "com.at.pd.edi.attr.pdediattr.view.PartnerCreate",
+                    name: "com.at.pd.edi.attr.pdediattr.view.PartnerDialog",
                     type: "XML"
                 });
 
@@ -90,6 +100,7 @@ sap.ui.define([
                     context = {
                         success: function(oData, oError) {
                             this._controlModel.setProperty("/self/exists", true);
+                            this._doElementBinding();
                             BusyIndicator.hide();
                             this._oDialog.close();
                         }.bind(this),
@@ -130,7 +141,7 @@ sap.ui.define([
                     error: function(oError) {
                         this.error(oError);
                     }.bind(context)
-                })
+                })                    
             },
 
             // Reject pending changes
@@ -196,8 +207,19 @@ sap.ui.define([
             },
 
             // Trigger enter for validation to ensue
-            triggerEnterKey(oEvent) {
+            triggerEnterKey: function(oEvent) {
                 oEvent.getSource().onsapenter(oEvent);
+            },
+
+            // Execute element binding
+            _doElementBinding: function() {
+                // Read data and bind properties
+                for(const parameter of this._self.stringParameters) {
+                    const sPath = "/StringParameters(Pid='" + this._self.pid + "',Id='" 
+                                                            + parameter.name + "')",
+                        oField = this._oView.byId(parameter.name + "-" + parameter.mode);
+                    oField.bindElement("self>" + sPath);
+                }
             },
 
             // Get model for view
@@ -214,17 +236,6 @@ sap.ui.define([
                     }
                 }
                 return false;
-            },
-
-            // Load properties into model
-            _loadProperties: function() {
-                // Read data and bind properties
-                for(const parameter of this._self.stringParameters) {
-                    const sPath = "/StringParameters(Pid='" + this._self.pid + "',Id='" 
-                                                            + parameter.name + "')",
-                        oField = this._oView.byId(parameter.name + "-" + parameter.mode);
-                    oField.bindElement("self>" + sPath);
-                }
             },
             
             // Toggle display/change mode

@@ -1,15 +1,15 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/BusyIndicator",
-    "sap/m/MessageBox",
-    "sap/ui/model/Sorter",
     "sap/ui/model/Filter", 
-    "sap/ui/model/FilterOperator"
+    "sap/ui/model/FilterOperator",
+    "sap/m/MessageBox",
+    "sap/ui/model/Sorter"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, BusyIndicator, MessageBox, Sorter, Filter, FilterOperator) {
+    function (Controller, BusyIndicator, Filter, FilterOperator, MessageBox, Sorter) {
         "use strict";
 
         return Controller.extend("com.at.pd.edi.attr.pdediattr.controller.MessageList", {
@@ -80,10 +80,9 @@ sap.ui.define([
                 // Get identifying context for removal
                 const oContext = oEvent.getSource().getObjectBinding("messages")
                                         .getContext(),
-                    Id = oContext.getObject().Id,
+                    oDataModel = this._getModel(),
+                    sPath = oContext.getPath(),
                     context = {
-                        sPath: oContext.getPath(),
-                        oDataModel: this._getModel(),
                         success: function(oData, oResponse) {
                             BusyIndicator.hide();
                         },
@@ -101,7 +100,7 @@ sap.ui.define([
                         if(sAction !== MessageBox.Action.CANCEL) {
                             // Continue deleting record
                             BusyIndicator.show(0);
-                            this.oDataModel.remove(this.sPath, {
+                            oDataModel.remove(sPath, {
                                 success: function(oData, oResponse) {
                                     this.success(oData, oResponse);
                                 }.bind(context),
@@ -136,14 +135,8 @@ sap.ui.define([
                 this._controlModel.setProperty("/message/", context);
 
                 // Remove selection and then navigate to detail page
-                oItem.setSelected(false);
+                oItem.getParent().removeSelections(true);
                 this.getOwnerComponent().getRouter().navTo("message");
-            },
-        
-            // Handle load completion
-            _batchCompleteListener: function(oEvent) {
-                // Refresh and report load completion and detach
-                this.getOwnerComponent().loadComplete(this);
             },
 
             // Decode base64 to provide viewable information

@@ -44,12 +44,14 @@ sap.ui.define([
                 switch (source) {
                     case "com.at.pd.edi.attr.pdediattr.controller.MessageList":
                         this._areMessagesLoading = false;
-                    case "com.at.pd.edi.attr.pdediattr.controller.PartnerDetail":
-                        this._arePartnersLoading = false;
+                        break;
                     case "com.at.pd.edi.attr.pdediattr.controller.PartnerList":
                         this._arePartnersLoading = false;
+                        this.fireEvent("partnersloaded");
+                        break;
                     case "com.at.pd.edi.attr.pdediattr.controller.Self":
                         this._isSelfLoading = false;
+                        break;
                     default:
                 }
 
@@ -67,15 +69,29 @@ sap.ui.define([
                 switch (source) {
                     case "com.at.pd.edi.attr.pdediattr.controller.MessageList":
                         this._areMessagesLoading = true;
+                        break;
                     case "com.at.pd.edi.attr.pdediattr.controller.PartnerList":
                         this._arePartnersLoading = true;
+                        break;
                     case "com.at.pd.edi.attr.pdediattr.controller.Self":
                         this._isSelfLoading = true;
+                        break;
                     default:
                 }
 
                 // Set busy indicator
                 BusyIndicator.show(0);
+            },
+
+            // Promise for partners finished loading
+            partnersLoaded: function() {
+                return new Promise(function(resolve, reject) {
+                    const handleEvent = () => {
+                        this.detachEvent("partnersloaded", handleEvent);
+                        resolve();
+                    };
+                    this.attachEvent("partnersloaded", handleEvent);
+                }.bind(this));
             }
         });
     }

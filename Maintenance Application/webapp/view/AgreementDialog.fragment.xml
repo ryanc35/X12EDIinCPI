@@ -1,0 +1,88 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc">
+	
+	<Dialog class="dialogWidthLarge" title="{i18n>addAgreement}">
+		<content>
+			<f:Form editable="true">
+				<f:title/>
+				<f:layout>
+					<f:ResponsiveGridLayout adjustLabelSpan="false" emptySpanXL="0" columnsL="1"
+						columnsM="1" columnsXL="1" labelSpanL="4" labelSpanM="4" labelSpanS="4"
+						labelSpanXL="4" singleContainerFullSize="false" />
+				</f:layout>
+				<f:formContainers>
+					<f:FormContainer visible="{= ${control>/partners/agreements/direction} === 'inbound' }">
+						<f:formElements>
+							<f:FormElement label="{i18n>message}">
+								<f:fields>
+									<Select editable="true"
+										items="{
+											path: 'control>/partners/agreements/available/inbound'
+										}"
+										selectedKey="{control>/partners/agreements/newEntry/message}">
+										<items>
+											<core:Item key="{control>message}" text="{control>message}" />
+										</items>
+									</Select>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>extendedPreProcessing}">
+								<f:fields>
+									<Switch state="{control>/partners/agreements/newEntry/doExtendedPreProcessing}" 
+										type="AcceptReject"/>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+					<f:FormContainer visible="{= ${control>/partners/agreements/direction} === 'outbound' }">
+						<f:formElements>
+							<f:FormElement label="{i18n>message}">
+								<f:fields>
+									<Select change="onSelect" editable="true"
+										items="{
+											path: 'control>/partners/agreements/available/outbound'
+										}"
+										selectedKey="{control>/partners/agreements/newEntry/message}">
+										<items>
+											<core:Item key="{control>message}" text="{control>message}" />
+										</items>
+									</Select>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>extendedPostProcessing}">
+								<f:fields>
+									<Switch state="{control>/partners/agreements/newEntry/doExtendedPostProcessing}" 
+										type="AcceptReject" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>acknowledgementRequired}">
+								<f:fields>
+									<Switch state="{control>/partners/agreements/newEntry/acknowledgementRequired}" 
+										type="AcceptReject" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>archive}">
+								<f:fields>
+									<Switch enabled="{control>/partners/agreements/newEntry/canChangeArchive}" 
+										state="{control>/partners/agreements/newEntry/archiveMessage}" type="AcceptReject" />
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+			</f:Form>
+		</content>
+		<footer>
+			<Toolbar>
+				<content>
+					<ToolbarSpacer />
+					<Button icon="sap-icon://add"  press="onAddAgreement" />
+					<Button icon="sap-icon://cancel" press="onCloseDialog" />
+				</content>
+			</Toolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

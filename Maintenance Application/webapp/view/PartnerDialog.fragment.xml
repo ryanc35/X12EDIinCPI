@@ -1,0 +1,47 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc">
+	
+	<Dialog class="dialogWidthLarge"
+		title="{i18n>create} {= ${control>createPartnerDialog/mode} === 'self' ? 'Self' : 'Partner'}">
+		<content>
+			<f:Form editable="true">
+				<f:title/>
+				<f:layout>
+					<f:ResponsiveGridLayout adjustLabelSpan="false" emptySpanXL="0" columnsL="1"
+						columnsM="1" columnsXL="1" labelSpanL="4" labelSpanM="4" labelSpanS="4"
+						labelSpanXL="4" singleContainerFullSize="false" />
+				</f:layout>
+				<f:formContainers>
+					<f:FormContainer>
+						<f:formElements>
+							<f:FormElement label="{i18n>partner}">
+								<f:fields>
+									<Input editable="{= ${control>/createPartnerDialog/mode} === 'self' ? false : true }" 
+										placeholder="{i18n>partnerIdHint}" value="{control>/createPartnerDialog/id}"  />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>cpiClientId}">
+								<f:fields>
+									<Input placeholder="{i18n>cpiClientIdHint}" value="{control>/createPartnerDialog/clientId}" />
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+			</f:Form>
+		</content>
+		<footer>
+			<Toolbar>
+				<content>
+					<ToolbarSpacer />
+            		<Button press="onAddPartner" icon="sap-icon://save" />
+            		<Button press="onCancelAddPartner" icon="sap-icon://cancel" />
+				</content>
+			</Toolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

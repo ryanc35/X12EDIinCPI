@@ -47,14 +47,14 @@
 									<Text text="{control>x12Version}" />
 									<HBox>
 										<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
-											state="{control>DoExtendedPreProcessing}" type="AcceptReject" />
-										<u:FileUploader buttonOnly="true" change="onUploadExtended" fileType="xsl" 
+											state="{control>doExtendedPreProcessing}" type="AcceptReject" />
+										<u:FileUploader buttonOnly="true" change="onUpload" fileType="xsl" 
 											icon="sap-icon://upload" iconOnly="true" 
-											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>DoExtendedPreProcessing} }" />
+											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>doExtendedPreProcessing} }" />
 									</HBox>
 									<VBox>
 										<HBox justifyContent="End">
-											<Button binding="{control>Message}" icon="sap-icon://delete" press="onDelete" />
+											<Button binding="{control>message}" icon="sap-icon://delete" press="onDelete" />
 										</HBox>
 									</VBox>
 								</cells>
@@ -94,18 +94,18 @@
 									<Text text="{control>x12Version}" />
 									<HBox>
 										<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
-											state="{control>DoExtendedPostProcessing}" type="AcceptReject" />
-										<u:FileUploader buttonOnly="true" change="onUploadExtended" fileType="xsl" 
+											state="{control>doExtendedPostProcessing}" type="AcceptReject" />
+										<u:FileUploader buttonOnly="true" change="onUpload" fileType="xsl" 
 											icon="sap-icon://upload" iconOnly="true" 
-											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>DoExtendedPostProcessing} }" />
+											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>doExtendedPostProcessing} }" />
 									</HBox>
 									<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' &amp;&amp; ${control>canChangeArchive} }" 
-										state="{control>ArchiveMessage}" type="AcceptReject" />
+										state="{control>archiveMessage}" type="AcceptReject" />
 									<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
-										state="{control>AcknowledgementRequired}" type="AcceptReject" />
+										state="{control>acknowledgementRequired}" type="AcceptReject" />
 									<VBox>
 										<HBox justifyContent="End">
-											<Button binding="{control>Message}" icon="sap-icon://delete" press="onDelete" />
+											<Button binding="{control>message}" icon="sap-icon://delete" press="onDelete" />
 										</HBox>
 									</VBox>
 								</cells>

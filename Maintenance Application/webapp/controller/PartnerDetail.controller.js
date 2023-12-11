@@ -24,7 +24,9 @@ sap.ui.define([
                 // Get model for binding batch complete listener for late arrangement 
                 // of UI data visibility (adapter specific and missing parameters)
                 const oDataModel = this._getModel();
-                oDataModel.attachBatchRequestCompleted(this._batchCompleteListener.bind(this));
+                oDataModel.attachBatchRequestSent(function() {
+                    BusyIndicator.show(0);
+                }).attachBatchRequestCompleted(this._batchCompleteListener.bind(this));
 
                 // Instantiate dialog object for possible alternative partner updates
                 this._pDialog ??= this.loadFragment({
@@ -286,48 +288,8 @@ sap.ui.define([
 
                 // Read file stream
                 oReader.onload = function(file) {
-                    // Get core base64 content
-                    const fullCert = file.currentTarget.result,
-                        // Remove both Windows based new lines and Mac/Unix based new lines
-                        oneLineCert = fullCert.toString().replaceAll("\r\n", "").replaceAll("\n", ""),
-                        onlyBase64 = 
-                            oneLineCert.match(/(?<=-----BEGIN CERTIFICATE-----)(.+)(?=-----END CERTIFICATE-----)/)[0];
-
-                    // Get model and submit create or update
-                    const oDataModel = this.getOwnerComponent().getModel("partners"),
-                        exists = this._controlModel.getProperty("/partners/hasCertificate");
-                    if(!exists) {
-                        oDataModel.create("/BinaryParameters", {
-                            Pid: this._partners.pid,
-                            Id: "SenderPublicKey",
-                            ContentType: "crt",
-                            Value: onlyBase64
-                        }, {
-                            success: function(oData, oResponse) {
-                                this._controlModel.setProperty("/partners/hasCertificate", true);
-                                MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
-                            }.bind(this),
-                            error: function(oError) {
-                                MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
-                            }.bind(this)
-                        });
-                    } else {
-                        const key = "/BinaryParameters(Pid='" + this._partners.pid +
-                                                        "',Id='SenderPublicKey')"
-                        oDataModel.update(key, {
-                            ContentType: "crt",
-                            Value: onlyBase64
-                        }, {
-                            success: function(oData, oResponse) {
-                                this._controlModel.setProperty("/partners/hasCertificate", true);
-                                MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
-                            }.bind(this),
-                            error: function(oError) {
-                                MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
-                            }.bind(this),
-                            merge: false
-                        });
-                    }
+                    // Save certificate
+                    this._saveCertficate(file);
                 }.bind(this)
 
                 // Read file and reset value for uploader button
@@ -369,10 +331,9 @@ sap.ui.define([
                     oDataModel.submitChanges({
                         groupId: "deferred"
                     });
+                } else {
+                    BusyIndicator.hide();
                 }
-
-                // Report completion status
-                this.getOwnerComponent().loadComplete(this);
             },
 
             // Force field update based on dependency
@@ -465,9 +426,6 @@ sap.ui.define([
 
             // Load partner details
             _loadPartner: function() {
-                // Get model
-                const oDataModel = this._getModel();
-
                 // Read data and bind properties
                 for(const parameter of this._partners.stringParameters) {
                     const sPath = "/StringParameters(Pid='" + this._partners.pid + "',Id='" 
@@ -496,7 +454,7 @@ sap.ui.define([
                 }
             },
 
-            // Open dialog for alternative partner updates
+            // Open dialog for alternative partner maintenance
             _openDialog: function() {
                 // Display dialog
                 this._pDialog.then(function(oDialog) {
@@ -523,6 +481,53 @@ sap.ui.define([
                 for(const field of this._partners.resetControls) {
                     const oField = this._oView.byId(field);
                     this._populateJSONModel(oField, this._getModelConfig(oField));
+                }
+            },
+
+            // Save certificate to partner directory
+            _saveCertficate: function(file) {
+                // Get core base64 content
+                const fullCert = file.currentTarget.result,
+                    // Remove both Windows based new lines and Mac/Unix based new lines
+                    oneLineCert = fullCert.toString().replaceAll("\r\n", "").replaceAll("\n", ""),
+                    onlyBase64 = 
+                        oneLineCert.match(/(?<=-----BEGIN CERTIFICATE-----)(.+)(?=-----END CERTIFICATE-----)/)[0];
+
+                // Get model and submit create or update - partners model contains certificates 
+                // it's NOT the default model for this view
+                const oDataModel = this.getOwnerComponent().getModel("partners"),
+                    exists = this._controlModel.getProperty("/partners/hasCertificate");
+                if(!exists) {
+                    oDataModel.create("/BinaryParameters", {
+                        Pid: this._partners.pid,
+                        Id: "SenderPublicKey",
+                        ContentType: "crt",
+                        Value: onlyBase64
+                    }, {
+                        success: function(oData, oResponse) {
+                            this._controlModel.setProperty("/partners/hasCertificate", true);
+                            MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
+                        }.bind(this),
+                        error: function(oError) {
+                            MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
+                        }.bind(this)
+                    });
+                } else {
+                    const key = "/BinaryParameters(Pid='" + this._partners.pid +
+                                                    "',Id='SenderPublicKey')"
+                    oDataModel.update(key, {
+                        ContentType: "crt",
+                        Value: onlyBase64
+                    }, {
+                        success: function(oData, oResponse) {
+                            this._controlModel.setProperty("/partners/hasCertificate", true);
+                            MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
+                        }.bind(this),
+                        error: function(oError) {
+                            MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
+                        }.bind(this),
+                        merge: false
+                    });
                 }
             },
 

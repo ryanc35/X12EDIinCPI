@@ -28,6 +28,8 @@
 				<Text id="PartnerType-display" text="{partner>Value}" />
 				<Label text="{i18n>idocId}" />
 				<Text id="sap_idoc_id-display" text="{partners>Id}" />
+				<Button icon="sap-icon://edit" press="onReplaceAlternativePartnerDialog" 
+					visible="{control>/partners/alternativePartnerExists}" width="1em" />
 				<core:Title text="{i18n>x12Settings}" />
 				<Label text="{i18n>elementSeparator}" />
 				<Text id="x12_element_separator-display" text="{partner>Value}" />

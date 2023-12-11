@@ -144,6 +144,11 @@ sap.ui.define([
                 }
             },
 
+            // Trigger enter for validation to ensue
+            triggerEnterKey: function(oEvent) {
+                oEvent.getSource().onsapenter(oEvent);
+            },
+
             // Compare configurations to see if any changes have been made
             _compareConfigurations: function (current, original) {
                 return current.isInboundActive === original.isInboundActive &&

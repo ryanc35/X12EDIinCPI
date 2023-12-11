@@ -1,0 +1,148 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:u="sap.ui.unified">
+	
+	<Dialog class="dialogWidthLarge"
+		title="{= ${control>/maps/mode} === 'create' ? ${i18n>addMap} : ${i18n>updateMap} }">
+		<content>
+			<f:Form editable="true">
+				<f:title/>
+				<f:layout>
+					<f:ResponsiveGridLayout adjustLabelSpan="false" emptySpanXL="0" columnsL="1"
+						columnsM="1" columnsXL="1" labelSpanL="4" labelSpanM="4" labelSpanS="4"
+						labelSpanXL="4" singleContainerFullSize="false" />
+				</f:layout>
+				<f:formContainers>
+					<f:FormContainer visible="{= ${control>/maps/mode} === 'create' }">
+						<f:formElements>
+							<f:FormElement label="{i18n>x12Type}">
+								<f:fields>
+									<Select change="onSelectType" editable="true"
+										items="{
+											path: 'control>/maps/availableTypes'
+										}"
+										selectedKey="{control>/maps/entry/x12Type}">
+										<items>
+											<core:Item key="{control>type}" text="{control>type}" />
+										</items>
+									</Select>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>x12Version}">
+								<f:fields>
+									<Select editable="true"
+										items="{
+											path: 'control>/maps/availableVersions'
+										}"
+										selectedKey="{control>/maps/entry/x12Version}">
+										<items>
+											<core:Item key="{control>version}" text="{control>version}" />
+										</items>
+									</Select>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>target}" visible="{= ${control>/maps/direction} === 'inbound' }">
+								<f:fields>
+									<Text text="{control>/maps/entry/target}" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>source}" visible="{= ${control>/maps/direction} === 'outbound' }">
+								<f:fields>
+									<Input id="outboundSource" liveChange="triggerEnterKey" placeholder="{i18n>targetHint}" 
+										value="{
+											path: 'control>/maps/entry/source',
+											type: 'sap.ui.model.type.String',
+											constraints: {
+												search: '^\\S+$'
+											}
+										}" />
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+					<f:FormContainer visible="{= ${control>/maps/mode} === 'change' }">
+						<f:formElements>
+							<f:FormElement label="{i18n>x12Type}">
+								<f:fields>
+									<Text text="{control>/maps/entry/x12Type}" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>x12Version}">
+								<f:fields>
+									<Text text="{control>/maps/entry/x12Version}" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>target}" visible="{= ${control>/maps/direction} === 'inbound' }">
+								<f:fields>
+									<Text text="{control>/maps/entry/target}" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>source}" visible="{= ${control>/maps/direction} === 'outbound' }">
+								<f:fields>
+									<Text text="{control>/maps/entry/source}" />
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+					<f:FormContainer>
+						<f:formElements>
+							<f:FormElement label="{= ${control>/maps/direction} === 'inbound' ? ${i18n>preProcessingX12} : ${i18n>preProcessingIdoc} }">
+								<f:fields>
+									<u:FileUploader id="preProcessingUpload" change="onUpload" fileType="xsl" icon="sap-icon://upload" 
+										iconOnly="true">
+										<u:parameters>
+											<u:FileUploaderParameter name="target" value="/maps/entry/preProcessing/value" />
+										</u:parameters>
+									</u:FileUploader>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>x12Conversion}">
+								<f:fields>
+									<u:FileUploader id="conversionUpload" change="onUpload" fileType="xsd" icon="sap-icon://upload" 
+										iconOnly="true">
+										<u:parameters>
+											<u:FileUploaderParameter name="target" value="/maps/entry/conversion/value" />
+										</u:parameters>
+									</u:FileUploader>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{i18n>mapping}">
+								<f:fields>
+									<u:FileUploader id="mappingUpload" change="onUpload" fileType="xsl" icon="sap-icon://upload" 
+										iconOnly="true">
+										<u:parameters>
+											<u:FileUploaderParameter name="target" value="/maps/entry/mapping/value" />
+										</u:parameters>
+									</u:FileUploader>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{= ${control>/maps/direction} === 'inbound' ? ${i18n>postProcessingIdoc} : ${i18n>postProcessingX12} }">
+								<f:fields>
+									<u:FileUploader id="postProcessingUpload" change="onUpload" fileType="xsl" icon="sap-icon://upload" 
+										iconOnly="true">
+										<u:parameters>
+											<u:FileUploaderParameter name="target" value="/maps/entry/postProcessing/value" />
+										</u:parameters>
+									</u:FileUploader>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+			</f:Form>
+		</content>
+		<footer>
+			<Toolbar>
+				<content>
+					<ToolbarSpacer />
+					<Button icon="sap-icon://save"  press="onSave" />
+					<Button icon="sap-icon://cancel" press="onCancel" />
+				</content>
+			</Toolbar>
+		</footer>
+	</Dialog>
+</core:FragmentDefinition>

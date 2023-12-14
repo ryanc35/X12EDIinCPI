@@ -28,6 +28,7 @@ sap.ui.define([
                     this._pControlLoaded.then(function(oPromise) {
                         // Read maps during initialization and set default direction
                         this._controlModel.setProperty("/maps/direction", "inbound");
+                        this._maps = this._controlModel.getProperty("/maps");
                         this._readMaps();
                     }.bind(this));
                 }.bind(this));

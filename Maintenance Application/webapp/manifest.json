@@ -175,7 +175,7 @@
 			"targets": {
 				"home": {
 					"level": 0,
-					"name": "App"
+					"name": "Self"
 				},
 				"self": {
           "level": 1,

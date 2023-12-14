@@ -324,7 +324,7 @@ sap.ui.define([
                     const id = "ext_" + outbound.message + "_postproc",
                         key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
                         oObject = oDataModel.getObject(key);
-                    if(oObject && !inbound.doExtendedPostProcessing) {
+                    if(oObject && !outbound.doExtendedPostProcessing) {
                         deletions.push(oObject.Id);
                     }
                 }

@@ -22,7 +22,8 @@
 				<Text text="{control>/message/type}" visible="{= ${control>/message/mode} !== 'create'}" />
 				<Select id="messageType" change="onSelect" editable="true"
 					items="{
-						path: 'control>/x12/availableTypes'
+						path: 'control>/x12/availableTypes',
+						length: 350
 					}"
 					visible="{= ${control>/message/mode} === 'create'}">
 					<items>

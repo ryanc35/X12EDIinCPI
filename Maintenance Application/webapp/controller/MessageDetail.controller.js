@@ -144,6 +144,11 @@ sap.ui.define([
                 }
             },
 
+            // Trigger recording of x12 type
+            onSelect: function(oEvent) {
+                this._controlModel.setProperty("/message/type", oEvent.getParameter("selectedItem").getKey());
+            },
+
             // Trigger enter for validation to ensue
             triggerEnterKey: function(oEvent) {
                 oEvent.getSource().onsapenter(oEvent);

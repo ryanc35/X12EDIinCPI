@@ -271,7 +271,7 @@ sap.ui.define([
             // Record selection into JSON model
             onSelect: function(oEvent) {
                 const direction = this._oView.byId("agreementTabs").getSelectedKey(),
-                    key = oEvent.getParameter("selectedItem").getSelectedKey();
+                    key = oEvent.getParameter("selectedItem").getKey();
                 
                 if(direction === "outbound") {
                     const archiveActive = this._getArchiveActive(this._getX12Parts(key).x12Type);

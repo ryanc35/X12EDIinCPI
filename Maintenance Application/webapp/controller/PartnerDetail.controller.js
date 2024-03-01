@@ -114,7 +114,18 @@ sap.ui.define([
                 // reset context and navigate back
                 this._controlModel.setProperty("/partners/alternativePartnerExists", false);
                 this._controlModel.setProperty("/partners/alternativePartnerId", "");
-                this._controlModel.setProperty("/partners/agreements", {});
+                const resetConfiguration = {
+                    newEntry: {},
+                    newEntryCopy: {
+                        acknowledgementRequired: true,
+                        archiveMessage: false,
+                        canChangeArchive: false,
+                        doExtendedPostProcessing: false,
+                        doExtendedPreProcessing: false,
+                        message: ""
+                    },
+                };
+                this._controlModel.setProperty("/partners/agreements", resetConfiguration);
                 this.getOwnerComponent().getRouter().navTo("partners");
             },
 

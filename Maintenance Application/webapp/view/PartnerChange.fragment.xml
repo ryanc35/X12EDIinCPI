@@ -42,6 +42,17 @@
 						<core:Item key="FTP" text="FTP" />
 					</items>
 				</Select>
+				<Label text="{i18n>sendAcknowledgements}" />
+				<Switch id="AcknowledgementRequired-change"
+					state="{ 
+						parts: [
+							'partner>Value',
+							'control>/true'
+						],
+   						type: 'custom.model.type.StringyBoolean'
+					}"
+					type="AcceptReject">
+				</Switch>
 				<core:Title text="{i18n>idocIdentification}" />
 				<Label text="{i18n>partnerType}" />
 				<Select id="PartnerType-change" selectedKey="{partner>Value}">

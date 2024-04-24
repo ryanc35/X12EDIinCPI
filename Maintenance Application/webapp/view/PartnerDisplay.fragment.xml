@@ -23,6 +23,10 @@
 				<core:Title text="{i18n>communication}" />
 				<Label text="{i18n>adapter}" />
 				<Text id="AdapterType-display" text="{partner>Value}" />
+				<Label text="{i18n>sendAcknowledgements}" />
+				<Switch id="AcknowledgementRequired-display" enabled="false" 
+					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
+				</Switch>
 				<core:Title text="{i18n>idocIdentification}" />
 				<Label text="{i18n>partnerType}" />
 				<Text id="PartnerType-display" text="{partner>Value}" />

@@ -127,6 +127,10 @@
 					"value": "AS2"
 				},
 				{
+					"name": "AcknowledgementRequired",
+					"value": "true"
+				},
+				{
 					"name": "PartnerType",
 					"value": "KU"
 				},
@@ -255,6 +259,7 @@
 		"pid": "",
 		"resetControls": [
 			"AdapterType-change",
+			"AcknowledgementRequired-change",
 			"AS2_inbound_decrypt_message-change",
 			"SAP_AS2_Outbound_Encrypt_Message-change",
 			"SAP_AS2_Outbound_Mdn_Type-change",
@@ -287,6 +292,14 @@
 				"id": "AdapterType-change",
 				"hasTriggerKeys": [],
 				"jsonTarget": "/partners/view/adapter"
+			},
+			{
+				"name": "AcknowledgementRequired",
+				"id": "AcknowledgementRequired-display"
+			},
+			{
+				"name": "AcknowledgementRequired",
+				"id": "AcknowledgementRequired-change"
 			},
 			{
 				"name": "PartnerType",

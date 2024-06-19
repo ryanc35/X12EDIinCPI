@@ -71,6 +71,7 @@ sap.ui.define([
                     message.acknowledgementRequired = entry.acknowledgementRequired;
                     message.archiveMessage = entry.archiveMessage;
                     message.canChangeArchive = this._getArchiveActive(message.x12Type);
+                    message.filename = entry.filename;
                     configuration.outbound.push(message);
                 }
 
@@ -426,8 +427,13 @@ sap.ui.define([
                     messageUI.archiveMessage = message.ArchiveMessage === "false" 
                                                 ? false : this._getArchiveActive(messageUI.x12Type);
                     messageUI.canChangeArchive = this._getArchiveActive(messageUI.x12Type);
+                    messageUI.filename = message.Filename;
                     outboundUI.push(messageUI);
                 }
+
+                // Sort agreements by message types
+                inboundUI.sort((a, b) => a.x12Type - b.x12Type);
+                outboundUI.sort((a, b) => a.x12Type - b.x12Type);
 
                 // Record configuration into JSON model after cloning
                 const newConfiguration = {
@@ -488,7 +494,8 @@ sap.ui.define([
                         DoExtendedPostProcessing: outbound.doExtendedPostProcessing.toString(),
                         AcknowledgementRequired: outbound.acknowledgementRequired.toString(),
                         ArchiveMessage: outbound.archiveMessage ? undefined : 
-                                            outbound.archiveMessage.toString()
+                                            outbound.archiveMessage.toString(),
+                        Filename: outbound.filename != null ? outbound.filename.toString() : ""
                     };
                     payload.Agreements.Outbound.push(message);
                 }

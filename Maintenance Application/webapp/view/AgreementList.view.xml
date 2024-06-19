@@ -83,6 +83,9 @@
 								<Column>
 									<Text text="{i18n>acknowledgementRequired}" />
 								</Column>
+								<Column>
+									<Text text="{i18n>filename}" />
+								</Column>
 								<Column
 									hAlign="End">
 									<Text text="{i18n>actions}" />
@@ -103,6 +106,10 @@
 										state="{control>archiveMessage}" type="AcceptReject" />
 									<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
 										state="{control>acknowledgementRequired}" type="AcceptReject" />
+									<HBox>
+										<Text text="{control>filename}" visible="{= ${control>/partners/agreements/mode} === 'display' }" />
+										<Input liveChange="onChange" value="{control>filename}" visible="{= ${control>/partners/agreements/mode} === 'change' }" />
+									</HBox>
 									<VBox>
 										<HBox justifyContent="End">
 											<Button binding="{control>message}" icon="sap-icon://delete" press="onDelete" />

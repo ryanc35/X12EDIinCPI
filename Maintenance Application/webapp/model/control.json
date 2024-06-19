@@ -106,6 +106,7 @@
 				"canChangeArchive": false,
 				"doExtendedPostProcessing": false,
 				"doExtendedPreProcessing": false,
+				"filename": "",
 				"message": ""
 			},
 			"originalConfiguration": {}

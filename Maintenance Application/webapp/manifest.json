@@ -135,69 +135,69 @@
       "async": true,
       "id": "App"
     },
-		"routing": {
-			"config": {
-				"routerClass": "sap.m.routing.Router",
-				"path": "com.at.pd.edi.attr.pdediattr.view",
-				"controlId": "pageContainer",
-				"controlAggregation": "pages",
-				"type": "View",
-				"viewType": "XML",
-				"async": true
-			},
-			"routes": [
-				{
-					"name": "home",
-					"pattern": "",
-					"target": "home"
-				},
-				{
-					"name": "self",
-					"pattern": "self",
-					"target": "self"
-				},
-				{
-					"name": "partners",
-					"pattern": "partners",
-					"target": "partners"
-				},
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "path": "com.at.pd.edi.attr.pdediattr.view",
+        "controlId": "pageContainer",
+        "controlAggregation": "pages",
+        "type": "View",
+        "viewType": "XML",
+        "async": true
+      },
+      "routes": [
         {
-					"name": "message",
-					"pattern": "message",
-					"target": "message"
-				},
+          "name": "home",
+          "pattern": "",
+          "target": "home"
+        },
+        {
+          "name": "self",
+          "pattern": "self",
+          "target": "self"
+        },
+        {
+          "name": "partners",
+          "pattern": "partners",
+          "target": "partners"
+        },
+        {
+          "name": "message",
+          "pattern": "message",
+          "target": "message"
+        },
         {
           "name": "partner",
           "pattern": "partner",
           "target": "partner"
         }
-			],
-			"targets": {
-				"home": {
-					"level": 0,
-					"name": "Self"
-				},
-				"self": {
+      ],
+      "targets": {
+        "home": {
+          "level": 0,
+          "name": "Self"
+        },
+        "self": {
           "level": 1,
-					"name": "Self",
+          "name": "Self",
           "transition": "fade"
-				},
-				"partners": {
+        },
+        "partners": {
           "level": 1,
-					"name": "PartnerList",
+          "name": "PartnerList",
           "transition": "fade"
-				},
-				"message": {
+        },
+        "message": {
           "level": 2,
-					"name": "MessageDetail",
+          "name": "MessageDetail",
           "transition": "fade"
-				},
-				"partner": {
+        },
+        "partner": {
           "level": 2,
-					"name": "PartnerDetail",
+          "name": "PartnerDetail",
           "transition": "fade"
-				}
-			}
-		}
+        }
+      }
+    }
   }
 }

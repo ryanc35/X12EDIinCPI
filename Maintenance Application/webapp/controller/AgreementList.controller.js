@@ -495,7 +495,7 @@ sap.ui.define([
                         AcknowledgementRequired: outbound.acknowledgementRequired.toString(),
                         ArchiveMessage: outbound.archiveMessage ? undefined : 
                                             outbound.archiveMessage.toString(),
-                        Filename: outbound.filename != null ? outbound.filename.toString() : ""
+                        Filename: outbound.filename === "" ? undefined : outbound.filename.toString()
                     };
                     payload.Agreements.Outbound.push(message);
                 }

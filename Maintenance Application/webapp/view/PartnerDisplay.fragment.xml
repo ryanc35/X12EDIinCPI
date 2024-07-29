@@ -75,7 +75,7 @@
 					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
 				</Switch>
 				<Label text="{i18n>verifySignature}" />
-				<Text id="AS2_inbound_verify_signature-display" text="{ path: 'partner>Value', formatter: '._formatVerifySignature' }" />
+				<Text id="AS2_inbound_verify_signature-display" text="{ path: 'partner>Value', formatter: '._formatKey' }" />
 				<Label text="{i18n>encryptMessage}" />
 				<Switch id="SAP_AS2_Outbound_Encrypt_Message-display" enabled="false" 
 					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
@@ -109,7 +109,7 @@
 				<Switch id="SAP_AS2_Outbound_Mdn_Verify_Mic-display" enabled="false" 
 					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
 				</Switch>
-				<Label text="{i18n>mdnUrl}" visible="{= ${control>/partners/mdnType} === 'Asynchronous' }" />
+				<Label text="{i18n>mdnUrl}" visible="{= ${control>/partners/view/mdnType} === 'Asynchronous' }" />
 				<Text id="Mdn_Url-display" text="{partner>Value}"
 					visible="{= ${control>/partners/view/mdnType} === 'Asynchronous' }"/>
 			</f:content>
@@ -128,11 +128,24 @@
 				<Text id="host-display" text="{partner>Value}" />
 				<Label text="{i18n>directory}" />
 				<Text id="directory-display" text="{partner>Value}" />
-				<Label text="{i18n>credentials}" />
-				<Text id="credentials-display" text="{partner>Value}" />
-				<core:Title text="{i18n>encryption}" />
-				<Label text="{i18n>ftpEncryption}" />
-				<Text id="SAP_FtpEncryption-display" text="{= ${partner>Value} === 'ftps' ? ${i18n>implicit} : ${i18n>explicit} }" />
+				<core:Title text="{i18n>authenticationEncryption}" />
+				<Label text="{i18n>authMethod}" visible="{= ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Text id="SAP_FtpAuthMethod-display" text="{ path: 'partner>Value', formatter: '._formatKey' }" 
+					visible="{= ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Label text="{i18n>credentials}" visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'key' }" />
+				<Text id="credentials-display" text="{partner>Value}"
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'key' }" />
+				<Label text="{i18n>userText}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} === 'key' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Text id="user-display" text="{partner>Value}"
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} === 'key' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Label text="{i18n>privateKeyAlias}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'user' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Text id="privateKeyAlias-display" text="{partner>Value}"
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'user' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Label text="{i18n>ftpEncryption}" visible="{= ${control>/partners/view/adapter} === 'FTP'}" />
+				<Text id="SAP_FtpEncryption-display" text="{= ${partner>Value} === 'ftps' ? ${i18n>implicit} : ${i18n>explicit} }"
+					visible="{= ${control>/partners/view/adapter} === 'FTP'}" />
 			</f:content>
 		</f:SimpleForm>
 	</VBox>

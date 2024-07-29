@@ -234,6 +234,18 @@
 				{
 					"name": "SAP_FtpEncryption",
 					"value": "ftps"
+				},
+				{
+					"name": "SAP_FtpAuthMethod",
+					"value": "user"
+				},
+				{
+					"name": "user",
+					"value": ""
+				},
+				{
+					"name": "privateKeyAlias",
+					"value": ""
 				}
 			],
 			"binaryParameters": [
@@ -253,7 +265,9 @@
 			"PublicKeyAlias-change",
 			"host-change",
 			"directory-change",
-			"credentials-change"
+			"credentials-change",
+			"user-change",
+			"privateKeyAlias-change"
 		],
 		"list": [],
 		"mode": "",
@@ -558,6 +572,33 @@
 			{
 				"name": "credentials",
 				"id": "credentials-change"
+			},
+			{
+				"name": "SAP_FtpAuthMethod",
+				"id": "SAP_FtpAuthMethod-display"
+			},
+			{
+				"name": "SAP_FtpAuthMethod",
+				"id": "SAP_FtpAuthMethod-change",
+				"attachModelContextChange": true,
+				"hasTriggerKeys": [],
+				"jsonTarget": "/partners/view/SAP_FtpAuthMethod"
+			},
+			{
+				"name": "user",
+				"id": "user-display"
+			},
+			{
+				"name": "user",
+				"id": "user-change"
+			},
+			{
+				"name": "privateKeyAlias",
+				"id": "privateKeyAlias-display"
+			},
+			{
+				"name": "privateKeyAlias",
+				"id": "privateKeyAlias-change"
 			}
 		],
 		"view": {
@@ -567,7 +608,8 @@
 			"mdnType": "None",
 			"requestMic": false,
 			"signMdn": false,
-			"signMessage": false
+			"signMessage": false,
+			"SAP_FtpAuthMethod": "user"
 		}
 	},
 	"selectedKey": "self",

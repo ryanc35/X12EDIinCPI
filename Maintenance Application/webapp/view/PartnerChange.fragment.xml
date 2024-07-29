@@ -346,7 +346,17 @@
 							search: '^[^\\\/]+(.*)$'						
 						}
 					}" />
-				<Label text="{i18n>credentials}" />
+				<core:Title text="{i18n>authenticationEncryption}" />
+				<Label text="{i18n>authMethod}" visible="{= ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Select id="SAP_FtpAuthMethod-change" change="onSelect" selectedKey="{partner>Value}"
+					visible="{= ${control>/partners/view/adapter} === 'SFTP'}">
+					<items>
+						<core:Item key="user" text="{i18n>user}" />
+						<core:Item key="key" text="{i18n>key}" />
+						<core:Item key="dual" text="{i18n>dual}" />
+					</items>
+				</Select>
+				<Label text="{i18n>credentials}" visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'key' }" />
 				<Input id="credentials-change" liveChange="triggerEnterKey" placeholder="{i18n>credentialsHint}"
 					value="{
 						path: 'partner>Value',
@@ -354,10 +364,33 @@
 						constraints: {
 							search: '\\S+$'						
 						}
-					}" />
-				<core:Title text="{i18n>encryption}" />
-				<Label text="{i18n>ftpEncryption}" />
-				<Select id="SAP_FtpEncryption-change" selectedKey="{partner>Value}">
+					}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'key' }" />
+				<Label text="{i18n>userText}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} === 'key' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Input id="user-change" liveChange="triggerEnterKey" placeholder="{i18n>userText}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '\\S+$'						
+						}
+					}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} === 'key' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Label text="{i18n>privateKeyAlias}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'user' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Input id="privateKeyAlias-change" liveChange="triggerEnterKey" placeholder="{i18n>privateKeyAliasHint}"
+					value="{
+						path: 'partner>Value',
+						type: 'sap.ui.model.type.String',
+						constraints: {
+							search: '\\S+$'						
+						}
+					}" 
+					visible="{= ${control>/partners/view/SAP_FtpAuthMethod} !== 'user' &amp;&amp; ${control>/partners/view/adapter} === 'SFTP'}" />
+				<Label text="{i18n>ftpEncryption}" visible="{= ${control>/partners/view/adapter} === 'FTP'}" />
+				<Select id="SAP_FtpEncryption-change" selectedKey="{partner>Value}"
+					visible="{= ${control>/partners/view/adapter} === 'FTP'}">
 					<items>
 						<core:Item key="ftps" text="{i18n>implicit}" />
 						<core:Item key="ftpes" text="{i18n>explicit}" />

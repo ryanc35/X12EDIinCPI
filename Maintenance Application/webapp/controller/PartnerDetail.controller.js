@@ -371,6 +371,11 @@ sap.ui.define([
                 }
             },
 
+            // Convert key to text using i18n for translation
+            _formatKey: function(sKey) {
+                return this._i18nBundle.getText(sKey);
+            },
+
             // Convert hex encoded strings
             _formatString: function(sString) {
                 // Get hex string conversions for display
@@ -381,19 +386,6 @@ sap.ui.define([
                     sString = this._i18nBundle.getText(sString);
                 }
                 return sString;
-            },
-
-            // Convert hex encoded strings
-            _formatVerifySignature: function(sVerify) {
-                switch (sVerify) {
-                    case "notRequired":
-                    default:
-                        return "Not Required";
-                    case "trustedCertificate":
-                        return "Trusted Certificate";
-                    case "trustedRootCertificate":
-                        return "Trusted Root Certificate";
-                }
             },
 
             // Get model for view

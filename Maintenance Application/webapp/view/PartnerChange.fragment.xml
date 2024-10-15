@@ -59,7 +59,8 @@
 					<items>
 						<core:Item key="KU" text="{i18n>customer}" />
 						<core:Item key="LI" text="{i18n>supplier}" />
-						<core:Item key="BK" text="{i18n>bank}" />
+						<core:Item key="B" text="{i18n>bank}" />
+						<core:Item key="BP" text="{i18n>benefitsProvider}" />
 						<core:Item key="LS" text="{i18n>logicalSystem}" />
 					</items>
 				</Select>

@@ -485,7 +485,7 @@ sap.ui.define([
                         value1: "json"
                     })],
                     urlParameters: {
-                        "$top" : 500
+                        "$select": "Pid,Id"
                     },
                     success: function(oData, oResponse) {
                         // Parse map information

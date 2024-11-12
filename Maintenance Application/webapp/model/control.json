@@ -173,7 +173,7 @@
 				},
 				{
 					"name": "AS2_inbound_verify_signature",
-					"value": "notRequired"
+					"value": "trustedCertificate"
 				},
 				{
 					"name": "SAP_AS2_Outbound_Encrypt_Message",

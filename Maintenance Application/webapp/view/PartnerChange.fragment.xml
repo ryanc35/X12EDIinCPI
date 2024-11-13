@@ -344,7 +344,7 @@
 						path: 'partner>Value',
 						type: 'sap.ui.model.type.String',
 						constraints: {
-							search: '^[^\\\/]+(.*)$'						
+							search: '^([^\\\/]+|$)(.*)$'						
 						}
 					}" />
 				<core:Title text="{i18n>authenticationEncryption}" />

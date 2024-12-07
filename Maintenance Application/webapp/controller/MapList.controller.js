@@ -117,14 +117,14 @@ sap.ui.define([
                             oDataModel.submitChanges({
                                 groupId: "deferred",
                                 success: function(oData, oResponse) {
-                                    this.success(oData, oResponse);
-                                }.bind(this),
+                                    context.success(oData, oResponse);
+                                },
                                 error: function(oError) {
-                                    this.error(oError);
-                                }.bind(this)
+                                    context.error(oError);
+                                }
                             })
                         }
-                    }.bind(context)
+                    }
                 });
             },
 

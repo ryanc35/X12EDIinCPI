@@ -102,14 +102,14 @@ sap.ui.define([
                             BusyIndicator.show(0);
                             oDataModel.remove(sPath, {
                                 success: function(oData, oResponse) {
-                                    this.success(oData, oResponse);
-                                }.bind(context),
+                                    context.success(oData, oResponse);
+                                },
                                 error: function(oError) {
-                                    this.error(oError);
-                                }.bind(context),
+                                    context.error(oError);
+                                }
                             });
                         }
-                    }.bind(context)
+                    }
                 });
             },
 

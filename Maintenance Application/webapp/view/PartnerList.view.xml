@@ -21,13 +21,13 @@
 			</fb:FilterBar>
 			<VBox class="sapUiSmallMargin">
 				<Table id="partnerList" growing="true" growingThreshold="25" inset="false"
-        			items="{
-						path: 'control>/partners/list',
-						sorter: {
-							path: 'Pid'
-						},
-						templateShareable: false
-					}"
+        				items="{
+							path: 'control>/partners/list',
+							sorter: {
+								path: 'Pid'
+							},
+							templateShareable: false
+						}"
 					mode="SingleSelectMaster" selectionChange="onSelect">
 					<columns>
 						<Column width="20em">

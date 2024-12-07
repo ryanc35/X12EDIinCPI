@@ -81,11 +81,11 @@ sap.ui.define([
                     Pid: Pid 
                 }, {
                     success: function(oData, oError) {
-                        this.success(oData, oError);
-                    }.bind(context),
+                        context.success(oData, oError);
+                    },
                     error: function(oError) {
-                        this.success(oError);
-                    }.bind(context)
+                        context.error(oError);
+                    }
                 });
             },
 
@@ -200,11 +200,11 @@ sap.ui.define([
                 oDataModel.submitChanges({
                     groupId: "deferred",
                     success: function(oData, oResponse) {
-                        this.success(oData, oResponse);
-                    }.bind(context),
+                        context.success(oData, oResponse);
+                    },
                     error: function(oError) {
-                        this.error(oError);
-                    }.bind(context)
+                        context.error(oError);
+                    }
                 });
             },
 

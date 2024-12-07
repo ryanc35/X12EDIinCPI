@@ -115,11 +115,11 @@ sap.ui.define([
                         ContentType: "json"
                     }, {
                         success: function (oData, oResponse) {
-                            this.success(oData, oResponse);
-                        }.bind(context),
+                            context.success(oData, oResponse);
+                        },
                         error: function (oError) {
-                            this.error(oError);
-                        }.bind(context)
+                            context.error(oError);
+                        }
                     });
                 } else {
                     if (this._compareConfigurations(configuration, original)) {
@@ -134,11 +134,11 @@ sap.ui.define([
                         ContentType: "json"
                     }, {
                         success: function (oData, oResponse) {
-                            this.success(oData, oResponse);
-                        }.bind(context),
+                            context.success(oData, oResponse);
+                        },
                         error: function (oError) {
-                            this.error(oError);
-                        }.bind(context),
+                            context.error(oError);
+                        },
                         merge: false
                     });
                 }

@@ -136,7 +136,9 @@ sap.ui.define([
                             const newAgreementList = agreementList.filter(n => true);
                             this._controlModel.setProperty(path, newAgreementList);
                             this._controlModel.setProperty("/partners/agreements/hasChanges", true);
-                            deletions.push(oObject.Id);
+                            if(oObject !== undefined) {
+                                deletions.push(oObject.Id);
+                            }
                         }
                     }.bind(this)
                 });
@@ -238,11 +240,11 @@ sap.ui.define([
                     Value: payload
                 }, {
                     success: function (oData, oResponse) {
-                        this.success(oData, oResponse);
-                    }.bind(context),
+                        context.success(oData, oResponse);
+                    },
                     error: function (oError) {
-                        this.error(oError);
-                    }.bind(context),
+                        context.error(oError);
+                    },
                     groupId: haveExtraDeletions ? "deferred" : undefined,
                     merge: false
                 });
@@ -261,11 +263,11 @@ sap.ui.define([
                 oDataModel.submitChanges({
                     groupId: "deferred",
                     success: function (oData, oResponse) {
-                        this.success(oData, oResponse);
-                    }.bind(context),
+                        context.success(oData, oResponse);
+                    },
                     error: function (oError) {
-                        this.error(oError);
-                    }.bind(context),
+                        context.error(oError);
+                    },
                 });           
             },
 
@@ -519,7 +521,15 @@ sap.ui.define([
                     id = direction === "inbound" ? "ext_" + oObject.message + "_preproc" :
                                                     "ext_" + oObject.message + "_postproc",
                     key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
-                    oExtendedMap = oDataModel.getObject(key);
+                    oExtendedMap = oDataModel.getObject(key),
+                    context = {
+                        success: function(oData, oResponse) {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
+                        }.bind(this),
+                        error: function(oError) {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
+                        }.bind(this)
+                    };
                 
                 // Check if extended map exists or not for create or update
                 if(!oExtendedMap) {
@@ -529,12 +539,12 @@ sap.ui.define([
                         ContentType: "xsl",
                         Value: window.btoa(mapping)
                     }, {
-                        success: function(oData, oResonse) {
-                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
-                        }.bind(this),
+                        success: function(oData, oResponse) {
+                            context.success(oData, oResponse);
+                        },
                         error: function(oError) {
-                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
-                        }.bind(this)
+                            context.error(oError);
+                        }
                     });
                 } else {
                     oDataModel.update(key, {
@@ -542,11 +552,11 @@ sap.ui.define([
                         Value: window.btoa(mapping)
                     }, {
                         success: function(oData, oResonse) {
-                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
-                        }.bind(this),
+                            context.success(oData, oResponse);
+                        },
                         error: function(oError) {
-                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
-                        }.bind(this),
+                            context.error(oError);
+                        },
                         merge: false
                     });
                 }  

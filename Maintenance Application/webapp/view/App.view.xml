@@ -9,8 +9,12 @@
 		<tnt:header/>
 		<tnt:subHeader>
 			<tnt:ToolHeader>
-				<IconTabHeader items="{path: 'control>/navigation'}" select=".onItemSelect"
-						selectedKey="{control>/selectedKey}" mode="Inline">
+				<IconTabHeader items="{	
+									path: 'control>/navigation', 
+				                    templateShareable: false
+								}" 
+								mode="Inline"
+								select=".onItemSelect" selectedKey="{control>/selectedKey}" >
 					<layoutData>
 						<OverflowToolbarLayoutData priority="NeverOverflow" shrinkable="true" />
 					</layoutData>

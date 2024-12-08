@@ -10,20 +10,15 @@
 		<tnt:subHeader>
 			<tnt:ToolHeader>
 				<IconTabHeader items="{	
-									path: 'control>/navigation', 
-				                    templateShareable: false
-								}" 
-								mode="Inline"
+								path: 'control>/navigation',
+								templateShareable: false
+							 }" mode="Inline" 
 								select=".onItemSelect" selectedKey="{control>/selectedKey}" >
 					<layoutData>
 						<OverflowToolbarLayoutData priority="NeverOverflow" shrinkable="true" />
 					</layoutData>
 					<items>
-						<IconTabFilter items="{items}" key="{control>key}" text="{control>title}">
-							<items>
-								<IconTabFilter key="{control>key}" text="{control>title}" />
-							</items>
-						</IconTabFilter>
+						<IconTabFilter key="{control>key}" text="{control>title}" />
 					</items>
 				</IconTabHeader>
 			</tnt:ToolHeader>

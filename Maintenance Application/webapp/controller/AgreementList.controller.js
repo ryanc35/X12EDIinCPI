@@ -551,7 +551,7 @@ sap.ui.define([
                         ContentType: "xsl",
                         Value: window.btoa(mapping)
                     }, {
-                        success: function(oData, oResonse) {
+                        success: function(oData, oResponse) {
                             context.success(oData, oResponse);
                         },
                         error: function(oError) {

@@ -39,6 +39,9 @@
 				<Text id="x12_element_separator-display" text="{partner>Value}" />
 				<Label text="{i18n>segmentTerminator}" />
 				<Text id="x12_segment_terminator-display" text="{ path: 'partner>Value', formatter: '._formatString' }" />
+				<Label text="{i18n>segmentTerminatorSuffix}" />
+				<Text id="x12_segment_terminator_suffix-display" text="{ path: 'partner>Value', formatter: '._formatString' }"
+					visible="{= ${control>/partners/view/segmentTerminator} === '~' }" />
 				<Label text="{i18n>compositeSeparator}" />
 				<Text id="x12_composite_separator-display" text="{ path: 'partner>Value', formatter: '._formatString' }" />
 				<Label text="{i18n>repetitionSeparator}" />

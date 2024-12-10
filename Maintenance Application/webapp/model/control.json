@@ -15,10 +15,12 @@
 	},
 	"defaultVersion": "004010",
 	"hex": {
+		"": "none",
 		"#x09": "tab",
 		"#x0a": "lineFeed",
 		"#x0b": "verticalTab",
 		"#x0d": "carriageReturn",
+		"#x0d#x0a": "carriageReturnLineFeed",
 		"#x3c": "lessThan",
 		"#x3e": "greaterThan"
 	},
@@ -142,6 +144,10 @@
 				{
 					"name": "x12_segment_terminator",
 					"value": "~"
+				},
+				{
+					"name": "x12_segment_terminator_suffix",
+					"value": ""
 				},
 				{
 					"name": "x12_composite_separator",
@@ -338,7 +344,29 @@
 			},
 			{
 				"name": "x12_segment_terminator",
-				"id": "x12_segment_terminator-change"
+				"id": "x12_segment_terminator-change",
+				"attachModelContextChange": true,
+				"dependents": [
+					{
+						"id": "x12_segment_terminator_suffix-change",
+						"value": ""
+					}
+				],
+				"hasTriggerKeys": [
+					"#x0d",
+					"#x0a",
+					"#x09",
+					"#x0b"
+				],
+				"jsonTarget": "/partners/view/segmentTerminator"
+			},
+			{
+				"name": "x12_segment_terminator_suffix",
+				"id": "x12_segment_terminator_suffix-display"
+			},
+			{
+				"name": "x12_segment_terminator_suffix",
+				"id": "x12_segment_terminator_suffix-change"
 			},
 			{
 				"name": "x12_composite_separator",
@@ -607,6 +635,7 @@
 			"encryptMessage": false,
 			"mdnType": "None",
 			"requestMic": false,
+			"segmentTerminator": "~",
 			"signMdn": false,
 			"signMessage": false,
 			"SAP_FtpAuthMethod": "user"

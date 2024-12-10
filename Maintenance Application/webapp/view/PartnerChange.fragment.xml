@@ -83,13 +83,23 @@
 					</items>
 				</Select>
 				<Label text="{i18n>segmentTerminator}" />
-				<Select id="x12_segment_terminator-change" selectedKey="{partner>Value}">
+				<Select id="x12_segment_terminator-change" change="onSelect" selectedKey="{partner>Value}">
 					<items>
 						<core:Item key="~" text="~" />
 						<core:Item key="#x0d" text="Carriage Return" />
 						<core:Item key="#x0a" text="Line Feed" />
 						<core:Item key="#x09" text="Tab" />
 						<core:Item key="#x0b" text="Vertical Tab" />
+					</items>
+				</Select>
+				<Label text="{i18n>segmentTerminatorSuffix}" />
+				<Select id="x12_segment_terminator_suffix-change" selectedKey="{partner>Value}"
+						visible="{= ${control>/partners/view/segmentTerminator} === '~' }">
+					<items>
+						<core:Item key="" text="None" />
+						<core:Item key="#x0d" text="Carriage Return" />
+						<core:Item key="#x0a" text="Line Feed" />
+						<core:Item key="#x0d#x0a" text="Carriage Return/Line Feed" />
 					</items>
 				</Select>
 				<Label text="{i18n>compositeSeparator}" />

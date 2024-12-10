@@ -381,7 +381,7 @@ sap.ui.define([
                 // Get hex string conversions for display
                 const replacements = this._controlModel.getProperty("/hex");
 
-                if(sString && sString.startsWith("#")){
+                if((sString && sString.startsWith("#")) || sString === ""){
                     sString = replacements[sString];
                     sString = this._i18nBundle.getText(sString);
                 }

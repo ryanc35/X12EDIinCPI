@@ -350,10 +350,9 @@ sap.ui.define([
                             const JSONObject = JSON.parse(window.atob(oMessage.Value));
                             if(direction === "inbound" && JSONObject.Inbound){
                                 available.push({
-                                    type: message.type
+                                    type: message.type,
+                                    target: JSONObject.Inbound.Target
                                 });
-                                this._controlModel.setProperty("/maps/entry/target", 
-                                                                JSONObject.Inbound.Target);
                             } else if (direction === "outbound" && JSONObject.Outbound) {
                                 available.push({
                                     type: message.type
@@ -365,17 +364,17 @@ sap.ui.define([
 
                 // Get available versions for first time display
                 if(available) {
+                    // Populate select list
+                    this._controlModel.setProperty("/maps/availableTypes", available);
                     this._getAvailableVersions(available[0].type);
                     this._controlModel.setProperty("/maps/entry/x12Type", available[0].type);
                 }
-
-                // Populate select list
-                this._controlModel.setProperty("/maps/availableTypes", available);
             },
 
             // Get available versions
             _getAvailableVersions: function(type) {
                 const versions = this._controlModel.getProperty("/x12/versions").map((n) => n),
+                    available = this._controlModel.getProperty("/maps/availableTypes"),
                     maps = this._maps.direction === "inbound" ? this._maps.inbound : this._maps.outbound,
                     defaultVersion = this._controlModel.getProperty("/defaultVersion");
                     var defaultIndex = versions.map((n) => n.version).indexOf(defaultVersion);
@@ -397,6 +396,10 @@ sap.ui.define([
                 const availableVersions = versions.filter((n) => true);
                 this._controlModel.setProperty("/maps/entry/x12Version", availableVersions[defaultIndex].version);
                 this._controlModel.setProperty("/maps/availableVersions", availableVersions);
+                if(this._maps.direction === "inbound") {
+                    const selectedType = available.find((n) => n.type === type);
+                    this._controlModel.setProperty("/maps/entry/target", selectedType.target);
+                }
             },
 
             // Return formatted list item for display in UI

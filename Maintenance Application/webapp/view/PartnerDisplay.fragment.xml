@@ -32,7 +32,8 @@
 				<Text id="PartnerType-display" text="{partner>Value}" />
 				<Label text="{i18n>idocId}" />
 				<Text id="sap_idoc_id-display" text="{partners>Id}" />
-				<Button icon="sap-icon://edit" press="onReplaceAlternativePartnerDialog" 
+				<Button icon="sap-icon://edit" press="onReplaceAlternativePartnerDialog"
+					enabled="{control>/isAdmin}"
 					visible="{control>/partners/alternativePartnerExists}" width="1em" />
 				<core:Title text="{i18n>x12Settings}" />
 				<Label text="{i18n>elementSeparator}" />
@@ -66,7 +67,7 @@
 				<Text id="ReceiverUrl-display" text="{partner>Value}" />
 				<Label text="{i18n>publicKeyAlias}" />
 				<Text id="PublicKeyAlias-display" text="{partner>Value}" />
-				<u:FileUploader buttonOnly="true" change="triggerCertificateUpload" fileType="cer" icon="sap-icon://upload" 
+				<u:FileUploader buttonOnly="true" change="triggerCertificateUpload" enabled="{control>/isAdmin}" fileType="cer" icon="sap-icon://upload" 
 					iconOnly="true" />
 				<Label text="{i18n>compressMessage}" />
 				<Switch id="SAP_AS2_Outbound_Compress_Message-display" enabled="false" 

@@ -9,7 +9,7 @@
 			<OverflowToolbar style="Clear">
 				<Title text="{i18n>supportedMessages}" />
 				<ToolbarSpacer />
-				<Button icon="sap-icon://add" press="onAdd" />
+				<Button icon="sap-icon://add" enabled="{control>/isAdmin}" press="onAdd" />
 			</OverflowToolbar>
 		</headerToolbar>
 		<content>
@@ -35,7 +35,7 @@
 								text="{ path: 'messages>Value', formatter: '._formatDirection' }" />
 							<VBox>
 								<HBox justifyContent="End">
-									<Button binding="{messages>/Id}" icon="sap-icon://delete" press="onDelete" />
+									<Button binding="{messages>/Id}" icon="sap-icon://delete" enabled="{control>/isAdmin}" press="onDelete" />
 								</HBox>
 							</VBox>
 						</cells>

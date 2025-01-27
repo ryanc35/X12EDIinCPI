@@ -1,19 +1,28 @@
 {
   "xsappname": "comatpdediattrpdediattr",
   "tenant-mode": "dedicated",
-  "description": "Security profile of called application",
+  "description": "EDI Administration",
   "scopes": [
     {
-      "name": "uaa.user",
-      "description": "UAA"
+        "name": "$XSAPPNAME.Admin",
+        "description": "Admin"
     }
   ],
   "role-templates": [
     {
-      "name": "Token_Exchange",
-      "description": "UAA",
-      "scope-references": [
-        "uaa.user"
+        "name": "Admin",
+        "description": "Admin",
+        "scope-references": [
+            "$XSAPPNAME.Admin"
+        ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "EDI Administrator",
+      "description": "EDI Administration",
+      "role-template-references": [
+        "$XSAPPNAME.Admin"
       ]
     }
   ]

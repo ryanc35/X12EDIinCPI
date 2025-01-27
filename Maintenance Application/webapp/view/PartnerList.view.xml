@@ -7,7 +7,7 @@
 	<Page title="{i18n>partner} {i18n>configuration}">	
 		<headerContent>
 			<Button icon="sap-icon://refresh" press="onRefresh" />
-			<Button icon="sap-icon://add" press="onAdd" />
+			<Button icon="sap-icon://add" enabled="{control>/isAdmin}" press="onAdd" />
 		</headerContent>
 		<content>
 			<fb:FilterBar id="filterbar" filterBarExpanded="false" showFilterConfiguration="false" showGoOnFB="false" useToolbar="true">
@@ -46,7 +46,7 @@
 								<Text/>
 								<VBox>
 									<HBox justifyContent="End">
-										<Button binding="{control>/}" icon="sap-icon://delete" press="onDelete" />
+										<Button binding="{control>/}" icon="sap-icon://delete" enabled="{control>/isAdmin}" press="onDelete" />
 									</HBox>
 								</VBox>
 							</cells>

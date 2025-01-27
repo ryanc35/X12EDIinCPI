@@ -28,6 +28,14 @@ sap.ui.define([
                 // set the device model
                 this.setModel(models.createDeviceModel(), "device");
 
+                this._pUserDataLoaded ??= this.getModel("user").dataLoaded();
+                this._pUserDataLoaded.then(function(oPromise){
+                    const scopes = this.getModel("user").getProperty("/scopes"),
+                        regex = /^.*\.Admin$/,
+                        isAdmin = scopes.filter(item => regex.test(item)).length > 0;
+                    this.getModel("user").setProperty("/isAdmin", isAdmin);
+                }.bind(this));
+
 			    // Initialize router
 			    this.getRouter().initialize();
 

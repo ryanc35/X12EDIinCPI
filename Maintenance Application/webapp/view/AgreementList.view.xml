@@ -9,12 +9,12 @@
 			<OverflowToolbar style="Clear">
 				<Title text="{i18n>agreements}" />
 				<ToolbarSpacer />
-				<Button icon="sap-icon://add" press="onAdd" 
+				<Button icon="sap-icon://add" enabled="{control>/isAdmin}" press="onAdd" 
 					visible="{= ( ${control>/partners/agreements/direction} === 'inbound' &amp;&amp; ${control>/partners/agreements/available/inbound}.length > 0 ) || 
 								( ${control>/partners/agreements/direction} === 'outbound' &amp;&amp; ${control>/partners/agreements/available/outbound}.length > 0 ) }" />
-				<Button icon="sap-icon://edit" press="onEdit" visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>/partners/agreements/hasChanges} === false }" />
-				<Button icon="sap-icon://save" press="onSave" visible="{control>/partners/agreements/hasChanges}" />
-				<Button icon="sap-icon://cancel" press="onCancel" visible="{= ${control>/partners/agreements/mode} === 'change' || ${control>/partners/agreements/hasChanges} }" />
+				<Button icon="sap-icon://edit" enabled="{control>/isAdmin}" press="onEdit" visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>/partners/agreements/hasChanges} === false }" />
+				<Button icon="sap-icon://save" enabled="{control>/isAdmin}" press="onSave" visible="{control>/partners/agreements/hasChanges}" />
+				<Button icon="sap-icon://cancel" enabled="{control>/isAdmin}" press="onCancel" visible="{= ${control>/partners/agreements/mode} === 'change' || ${control>/partners/agreements/hasChanges} }" />
 			</OverflowToolbar>
 		</headerToolbar>
 		<content>
@@ -48,13 +48,14 @@
 									<HBox>
 										<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
 											state="{control>doExtendedPreProcessing}" type="AcceptReject" />
-										<u:FileUploader buttonOnly="true" change="onUpload" fileType="xsl" 
+										<u:FileUploader buttonOnly="true" change="onUpload" fileType="xsl"
+											enabled="{control>/isAdmin}"
 											icon="sap-icon://upload" iconOnly="true" 
 											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>doExtendedPreProcessing} }" />
 									</HBox>
 									<VBox>
 										<HBox justifyContent="End">
-											<Button binding="{control>message}" icon="sap-icon://delete" press="onDelete" />
+											<Button binding="{control>message}" icon="sap-icon://delete" enabled="{control>/isAdmin}" press="onDelete" />
 										</HBox>
 									</VBox>
 								</cells>
@@ -98,7 +99,8 @@
 									<HBox>
 										<Switch change="onChange" enabled="{= ${control>/partners/agreements/mode} === 'change' }"
 											state="{control>doExtendedPostProcessing}" type="AcceptReject" />
-										<u:FileUploader buttonOnly="true" change="onUpload" fileType="xsl" 
+										<u:FileUploader buttonOnly="true" change="onUpload" fileType="xsl"
+											enabled="{control>/isAdmin}"
 											icon="sap-icon://upload" iconOnly="true" 
 											visible="{= ${control>/partners/agreements/mode} === 'display' &amp;&amp; ${control>doExtendedPostProcessing} }" />
 									</HBox>
@@ -112,7 +114,7 @@
 									</HBox>
 									<VBox>
 										<HBox justifyContent="End">
-											<Button binding="{control>message}" icon="sap-icon://delete" press="onDelete" />
+											<Button binding="{control>message}" icon="sap-icon://delete" enabled="{control>/isAdmin}" press="onDelete" />
 										</HBox>
 									</VBox>
 								</cells>

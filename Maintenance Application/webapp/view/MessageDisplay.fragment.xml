@@ -12,7 +12,7 @@
 				<Toolbar>
 					<Title text="{i18n>generalSettings}"/>
 					<ToolbarSpacer />
-					<Button icon="sap-icon://edit" press="onEdit" visible="true" />
+					<Button icon="sap-icon://edit" enabled="{control>/isAdmin}" press="onEdit" visible="true" />
 				</Toolbar>
 			</f:toolbar>
 			<f:content>

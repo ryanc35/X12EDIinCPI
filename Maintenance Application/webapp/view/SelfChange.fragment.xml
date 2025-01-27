@@ -12,8 +12,8 @@
 				<Toolbar>
 					<Title text="{i18n>generalSettings}"/>
 					<ToolbarSpacer />
-					<Button icon="sap-icon://save" press="onSave" visible="true" />
-					<Button icon="sap-icon://cancel" press="onCancel" visible="true" />
+					<Button icon="sap-icon://save" enabled="{control>/isAdmin}" press="onSave" visible="true" />
+					<Button icon="sap-icon://cancel" enabled="{control>/isAdmin}" press="onCancel" visible="true" />
 				</Toolbar>
 			</f:toolbar>
 			<f:content>

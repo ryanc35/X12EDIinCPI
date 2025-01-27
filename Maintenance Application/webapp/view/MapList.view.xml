@@ -9,7 +9,7 @@
 			<OverflowToolbar style="Clear">
 				<Title text="{i18n>mapArtifacts}" />
 				<ToolbarSpacer />
-				<Button icon="sap-icon://add" press="onAdd" />
+				<Button icon="sap-icon://add" enabled="{control>/isAdmin}" press="onAdd" />
 			</OverflowToolbar>
 		</headerToolbar>
 		<content>
@@ -44,7 +44,7 @@
 									<Text text="{control>idoc}" />
 									<VBox>
 										<HBox justifyContent="End">
-											<Button binding="{control>id}" icon="sap-icon://delete" press="onDelete" />
+											<Button binding="{control>id}" icon="sap-icon://delete" enabled="{control>/isAdmin}" press="onDelete" />
 										</HBox>
 									</VBox>
 								</cells>
@@ -80,7 +80,7 @@
 									<Text text="{control>x12Version}" />
 									<VBox>
 										<HBox justifyContent="End">
-											<Button binding="{control>id}" icon="sap-icon://delete" press="onDelete" />
+											<Button binding="{control>id}" icon="sap-icon://delete" enabled="{user>/isAdmin}" press="onDelete" />
 										</HBox>
 									</VBox>
 								</cells>

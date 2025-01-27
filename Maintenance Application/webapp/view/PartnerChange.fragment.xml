@@ -67,7 +67,8 @@
 				<Label text="{i18n>idocId}" visible="{control>/partners/alternativePartnerExists}" />
 				<Text id="sap_idoc_id-change" text="{partners>Id}" visible="{control>/partners/alternativePartnerExists}" />
 				<Label text="{i18n>idocId}" visible="{= ${control>/partners/alternativePartnerExists} === false }" />
-				<Button icon="sap-icon://add" press="onAddAlternativePartnerDialog" 
+				<Button icon="sap-icon://add" press="onAddAlternativePartnerDialog"
+					enabled="{control>/isAdmin}"
 					visible="{= ${control>/partners/alternativePartnerExists} === false }" width="1em" />
 				<core:Title text="{i18n>x12Settings}" />
 				<Label text="{i18n>elementSeparator}" />

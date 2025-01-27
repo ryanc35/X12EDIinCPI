@@ -9,9 +9,9 @@
 		navButtonPress="onBack">
 
 		<headerContent>
-			<Button icon="sap-icon://edit" press="onEdit" visible="{= ${control>/partners/mode} === 'display'}" />
-			<Button icon="sap-icon://save" press="onSave" visible="{= ${control>/partners/mode} === 'change'}" />
-			<Button icon="sap-icon://cancel" press="onCancel" visible="{= ${control>/partners/mode} === 'change'}" />
+			<Button icon="sap-icon://edit" enabled="{control>/isAdmin}" press="onEdit" visible="{= ${control>/partners/mode} === 'display'}" />
+			<Button icon="sap-icon://save" enabled="{control>/isAdmin}" press="onSave" visible="{= ${control>/partners/mode} === 'change'}" />
+			<Button icon="sap-icon://cancel" enabled="{control>/isAdmin}" press="onCancel" visible="{= ${control>/partners/mode} === 'change'}" />
 		</headerContent>
 		<content>
         	<core:Fragment fragmentName="com.at.pd.edi.attr.pdediattr.view.PartnerDisplay" type="XML" />

@@ -24,6 +24,7 @@
 		"#x3c": "lessThan",
 		"#x3e": "greaterThan"
 	},
+	"isAdmin": false,
 	"maps": {
 		"availableTypes": [],
 		"availableVersions": [],

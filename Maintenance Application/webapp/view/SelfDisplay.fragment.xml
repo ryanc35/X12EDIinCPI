@@ -12,8 +12,11 @@
 				<Toolbar>
 					<Title text="{i18n>generalSettings}"/>
 					<ToolbarSpacer />
-					<Button icon="sap-icon://add" press="onAdd"  visible="{= ${control>/self/exists} === false}" />
-					<Button icon="sap-icon://edit" press="onEdit" 
+					<Button icon="sap-icon://add" press="onAdd"  
+						enabled="{control>/isAdmin}"
+						visible="{= ${control>/self/exists} === false}" />
+					<Button icon="sap-icon://edit" press="onEdit"
+						enabled="{control>/isAdmin}"
 						visible="{= ${control>/self/mode} === 'display' &amp;&amp; ${control>/self/exists} === true}" />
 				</Toolbar>
 			</f:toolbar>

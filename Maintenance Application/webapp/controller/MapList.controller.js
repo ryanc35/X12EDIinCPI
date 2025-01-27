@@ -224,15 +224,21 @@ sap.ui.define([
                     sPath = oItem.getBindingContext("control").getPath(),
                     id = this._controlModel.getProperty(sPath).id,
                     item = this._getListItem(this._maps.direction, id),
-                    entry = JSON.parse(JSON.stringify(this._controlModel.getProperty("/maps/entryCopy")));
+                    entry = JSON.parse(JSON.stringify(this._controlModel.getProperty("/maps/entryCopy"))),
+                    isAdmin = this.getOwnerComponent().getModel("user").getProperty("/isAdmin");
+
+                if(!isAdmin) {
+                    oItem.getParent().removeSelections(true);
+                    return;
+                }
 
                 // pre-populate dialog based off map and direction context
                 entry.x12Type = item.x12Type;
                 entry.x12Version = item.x12Version;
                 if(this._maps.direction === "inbound") {
-                    entry.target = item.idoc
+                    entry.target = item.idoc;
                 } else {
-                    entry.source = item.idoc
+                    entry.source = item.idoc;
                 }
                 this._controlModel.setProperty("/maps/entry", entry);
                 this._controlModel.setProperty("/maps/mode", "change");

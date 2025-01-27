@@ -28,6 +28,10 @@
       "control": {
         "uri": "model/control.json",
         "type": "JSON"
+      },
+      "user": {
+        "uri": "user-api/currentUser",
+        "type": "JSON"
       }
     }
   },
@@ -79,6 +83,10 @@
       },
       "control": {
         "dataSource": "control",
+        "type": "sap.ui.model.json.JSONModel"
+      },
+      "user": {
+        "dataSource": "user",
         "type": "sap.ui.model.json.JSONModel"
       },
       "messages": {

@@ -26,35 +26,38 @@ sap.ui.define([
                 }.bind(this)).attachBatchRequestCompleted(function() {
                     this.getOwnerComponent().loadComplete(this);
                 }.bind(this));
-                this._pMetadataLoaded ??= oDataModel.metadataLoaded();
-                this._pMetadataLoaded.then(function(oPromise) {
-                    this._pControlLoaded ??= this._controlModel.dataLoaded();
-                    this._pControlLoaded.then(function(oPromise) {
-                        // Bind items in list
-                        this._id = this._controlModel.getProperty("/self/pid");
-                        this._oList = this._oView.byId("messageList");
-                        const oTemplate = this.oView.byId("messageItemTemplate"),
-                            sorters = [new Sorter({
-                                path: "Id"
-                            })],
-                            filters = [new Filter({
-                                path: "Pid",
-                                operator: FilterOperator.EQ,
-                                value1: "'" + this._id + "'"
-                            }), new Filter({
-                                path: "ContentType",
-                                operator: FilterOperator.EQ,
-                                value1: "json"
-                            })];
-                        this._oList.bindItems({
-                            path: "messages>/BinaryParameters",
-                            template: oTemplate,
-                            templateShareable: false,
-                            sorter: sorters,
-                            filters: filters
-                        });
-                    }.bind(this));
-                }.bind(this));
+
+                // Update list items
+                const pMetadataLoaded = oDataModel.metadataLoaded(),
+                    pControlLoaded = this._controlModel.dataLoaded();
+                Promise.all([
+                    pMetadataLoaded,
+                    pControlLoaded
+                ]).then((oPromise) => {
+                    // Bind items in list
+                    this._id = this._controlModel.getProperty("/self/pid");
+                    this._oList = this._oView.byId("messageList");
+                    const oTemplate = this.oView.byId("messageItemTemplate"),
+                        sorters = [new Sorter({
+                            path: "Id"
+                        })],
+                        filters = [new Filter({
+                            path: "Pid",
+                            operator: FilterOperator.EQ,
+                            value1: "'" + this._id + "'"
+                        }), new Filter({
+                            path: "ContentType",
+                            operator: FilterOperator.EQ,
+                            value1: "json"
+                        })];
+                    this._oList.bindItems({
+                        path: "messages>/BinaryParameters",
+                        template: oTemplate,
+                        templateShareable: false,
+                        sorter: sorters,
+                        filters: filters
+                    });
+                });
             },
 
             // Add message
@@ -80,17 +83,7 @@ sap.ui.define([
                 // Get identifying context for removal
                 const oContext = oEvent.getSource().getObjectBinding("messages")
                                         .getContext(),
-                    oDataModel = this._getModel(),
-                    sPath = oContext.getPath(),
-                    context = {
-                        success: function(oData, oResponse) {
-                            BusyIndicator.hide();
-                        },
-                        error: function(oError) {
-                            BusyIndicator.hide();
-                            MessageToast.show(this._i18nBundle.getText("messageDeletionFailed"))
-                        }.bind(this)
-                    };
+                    sPath = oContext.getPath();
                 
                 // Confirm deletion first
                 MessageBox.warning(this._i18nBundle.getText("sureQuestion"), {
@@ -100,16 +93,14 @@ sap.ui.define([
                         if(sAction !== MessageBox.Action.CANCEL) {
                             // Continue deleting record
                             BusyIndicator.show(0);
-                            oDataModel.remove(sPath, {
-                                success: function(oData, oResponse) {
-                                    context.success(oData, oResponse);
-                                },
-                                error: function(oError) {
-                                    context.error(oError);
-                                }
+                            this._delete(sPath).then((oData, oResponse) => {
+                                BusyIndicator.hide();
+                            }).catch((oError) => {
+                                BusyIndicator.hide();
+                                MessageToast.show(this._i18nBundle.getText("messageDeletionFailed"));
                             });
                         }
-                    }
+                    }.bind(this)
                 });
             },
 
@@ -137,6 +128,20 @@ sap.ui.define([
                 // Remove selection and then navigate to detail page
                 oItem.getParent().removeSelections(true);
                 this.getOwnerComponent().getRouter().navTo("message");
+            },
+
+            // Delete message
+            _delete: function(key) {
+                return new Promise((resolve, reject) => {
+                    this._getModel().remove(key, {
+                        success: function(oData, oResponse) {
+                            resolve(oData, oResponse);
+                        },
+                        error: function(oError) {
+                            reject(oError);
+                        }
+                    });
+                });
             },
 
             // Decode base64 to provide viewable information

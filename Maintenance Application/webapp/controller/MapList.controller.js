@@ -22,16 +22,18 @@ sap.ui.define([
                 // Get model and load properties
                 const oDataModel = this._getModel();
                 oDataModel.setDeferredGroups(["changes", "deferred"]);
-                this._metadataLoaded ??= oDataModel.metadataLoaded();
-                this._metadataLoaded.then(function(oPromise) {
-                    this._pControlLoaded ??= this._controlModel.dataLoaded();
-                    this._pControlLoaded.then(function(oPromise) {
-                        // Read maps during initialization and set default direction
-                        this._controlModel.setProperty("/maps/direction", "inbound");
-                        this._maps = this._controlModel.getProperty("/maps");
-                        this._readMaps();
-                    }.bind(this));
-                }.bind(this));
+
+                //Read maps during initialization and set default direction
+                const pMetadataLoaded = oDataModel.metadataLoaded(),
+                    pControlLoaded = this._controlModel.dataLoaded();
+                Promise.all([
+                    pMetadataLoaded,
+                    pControlLoaded
+                ]).then((oPromise) => {
+                    this._controlModel.setProperty("/maps/direction", "inbound");
+                    this._maps = this._controlModel.getProperty("/maps");
+                    this._readMaps();
+                });
 
                 // Instantiate dialog object for possible alternative partner creation flow
                 this._pDialog ??= this.loadFragment({
@@ -65,8 +67,7 @@ sap.ui.define([
             // Delete map
             onDelete: function(oEvent) {
                 // Get identifying context for removal
-                const oContext = oEvent.getSource().getObjectBinding("control")
-                                        .getContext(),
+                const oContext = oEvent.getSource().getObjectBinding("control").getContext(),
                     sPath = oContext.getPath(),
                     pid = this._controlModel.getProperty("/self/pid"),
                     id = this._controlModel.getProperty(sPath).id,
@@ -83,17 +84,6 @@ sap.ui.define([
                 updateInfo = this._determineExtraDeletions(deletions, inbound, outbound, item);
                 deletions = updateInfo.deletions;
                 list = updateInfo.list;
-                    
-                const context = {
-                    success: function(oData, oResponse) {
-                        this._controlModel.setProperty("/maps/" + this._maps.direction, list);
-                        BusyIndicator.hide();
-                    }.bind(this),
-                    error: function(oError) {
-                        BusyIndicator.hide();
-                        MessageToast.show(this._i18nBundle.getText("mapDeletionFailed"))
-                    }.bind(this)
-                };
                 
                 // Confirm deletion first
                 const oDataModel = this._getModel();
@@ -114,17 +104,15 @@ sap.ui.define([
                             }
 
                             // Submit changes
-                            oDataModel.submitChanges({
-                                groupId: "deferred",
-                                success: function(oData, oResponse) {
-                                    context.success(oData, oResponse);
-                                },
-                                error: function(oError) {
-                                    context.error(oError);
-                                }
-                            })
+                            this._submit().then((oData, oResponse) => {
+                                this._controlModel.setProperty("/maps/" + this._maps.direction, list);
+                                BusyIndicator.hide();
+                            }).catch((oError) => {
+                                BusyIndicator.hide();
+                                MessageToast.show(this._i18nBundle.getText("mapDeletionFailed"))
+                            });
                         }
-                    }
+                    }.bind(this)
                 });
             },
 
@@ -189,31 +177,27 @@ sap.ui.define([
 
                 // Submit batch if pending changes exist
                 if(oDataModel.hasPendingChanges(true)) {
-                    oDataModel.submitChanges({
-                        groupId: "deferred",
-                        success: function (oData, oResponse) {
-                            // Check if map was created - if so, populate JSON model for UI display
-                            for(const response of oData.__batchResponses[0].__changeResponses) {
-                                if(response.statusCode === "201" && response.data.Id.includes("_to")) {
-                                    const direction = this._maps.direction,
-                                        list = this._controlModel.getProperty("/maps/" + direction).map((n) => n),
-                                        item = this._getListItem(direction, response.data.Id);
-                                    list.push(item);
-                                    this._controlModel.setProperty("/maps/" + direction, list);
-                                }
+                    this._submit().then((oData, oResponse) => {
+                        // Check if map was created - if so, populate JSON model for UI display
+                        for(const response of oData.__batchResponses[0].__changeResponses) {
+                            if(response.statusCode === "201" && response.data.Id.includes("_to")) {
+                                const direction = this._maps.direction,
+                                    list = this._controlModel.getProperty("/maps/" + direction).map((n) => n),
+                                    item = this._getListItem(direction, response.data.Id);
+                                list.push(item);
+                                this._controlModel.setProperty("/maps/" + direction, list);
                             }
+                        }
 
-                            // Reset uploader controls and close dialog
-                            this._resetUploadValues();
-                            this._closeDialog();
-                        }.bind(this),
-                        error: function (oError) {
-                            // Reset uploader controls, close dialog and display error
-                            this._resetUploadValues();
-                            this._closeDialog();
-                            MessageToast.show(this._i18nBundle.getText("mapUpdateFailed"));
-                        }.bind(this),
-                    }); 
+                        // Reset uploader controls and close dialog
+                        this._resetUploadValues();
+                        this._closeDialog();
+                    }).catch((oError) => {
+                        // Reset uploader controls, close dialog and display error
+                        this._resetUploadValues();
+                        this._closeDialog();
+                        MessageToast.show(this._i18nBundle.getText("mapUpdateFailed"));
+                    });
                 }
             },
 
@@ -529,6 +513,21 @@ sap.ui.define([
                     const oUploader = this._oView.byId(uploader);
                     oUploader.setValue("");
                 }
+            },
+
+            // Submit changes
+            _submit: function() {
+                return new Promise((resolve, reject) => {
+                    this._getModel().submitChanges({
+                        groupId: "deferred",
+                        success: function(oData, oResponse) {
+                            resolve(oData, oResponse);
+                        },
+                        error: function(oError) {
+                            reject(oError);
+                        }
+                    });
+                });
             },
 
             // To base64

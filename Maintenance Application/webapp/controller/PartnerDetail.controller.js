@@ -47,7 +47,7 @@ sap.ui.define([
                 }
                 
                 // Generate context for entity creation
-                const oDataModel = this.getOwnerComponent().getModel("partners"),
+                const oDataModel = this._getModel(),
                     id = this._partners.alternativePartnerId,
                     Pid = this._partners.pid,
                     alternativeKeys = this._controlModel.getProperty("/alternativePartners"),
@@ -156,32 +156,13 @@ sap.ui.define([
                 }
 
                 // Generate context for entity delete and following create
-                const oDataModel = this.getOwnerComponent().getModel("partners"),
+                const oDataModel = this._getModel(),
                     id = this._partners.alternativePartnerId,
                     Pid = this._partners.pid,
                     alternativeKeys = this._controlModel.getProperty("/alternativePartners"),
-                    context = {
-                        success: function(oData, oResponse) {
-                            this._controlModel.setProperty("/partners/alternativePartnerExists", true);
-                            const key = oDataModel.createKey("/AlternativePartners", {
-                                Hexagency: oData.__batchResponses[0].__changeResponses[1].data.Hexagency,
-                                Hexscheme: oData.__batchResponses[0].__changeResponses[1].data.Hexscheme,
-                                Hexid: oData.__batchResponses[0].__changeResponses[1].data.Hexid,
-                            });
-                            for(const element of alternativeKeys.elements) {
-                                const oField = this._oView.byId(element);
-                                oField.bindElement("partners>" + key);
-                            }
-                            this._oDialog.close();
-                        }.bind(this),
-                        error: function(oError) {
-                            this._oDialog.close();
-                            MessageToast.show(this._i18nBundle.getText("idocIdUpdateFailed"));
-                        }.bind(this)
-                    }
+                    sPath = this._oView.byId("sap_idoc_id-change").getBindingContext("partners").getPath();
 
-                // Get entity context and initiate delete
-                const sPath = this._oView.byId("sap_idoc_id-change").getBindingContext("partners").getPath();
+                // Initiate delete
                 oDataModel.remove(sPath, {
                     groupId: "deferred"
                 });
@@ -197,14 +178,21 @@ sap.ui.define([
                 });
 
                 // Submit updates
-                oDataModel.submitChanges({
-                    groupId: "deferred",
-                    success: function(oData, oResponse) {
-                        context.success(oData, oResponse);
-                    },
-                    error: function(oError) {
-                        context.error(oError);
+                this._submit("deferred").then((oData, oResponse) => {
+                    this._controlModel.setProperty("/partners/alternativePartnerExists", true);
+                    const key = oDataModel.createKey("/AlternativePartners", {
+                        Hexagency: oData.__batchResponses[0].__changeResponses[1].data.Hexagency,
+                        Hexscheme: oData.__batchResponses[0].__changeResponses[1].data.Hexscheme,
+                        Hexid: oData.__batchResponses[0].__changeResponses[1].data.Hexid,
+                    });
+                    for(const element of alternativeKeys.elements) {
+                        const oField = this._oView.byId(element);
+                        oField.bindElement("partners>" + key);
                     }
+                    this._oDialog.close();
+                }).catch((oError) => {
+                    this._oDialog.close();
+                    MessageToast.show(this._i18nBundle.getText("idocIdUpdateFailed"));
                 });
             },
 
@@ -264,16 +252,12 @@ sap.ui.define([
                 }
 
                 // Submit updates if they exist
-                const oDataModel = this._getModel();
-                if(oDataModel.hasPendingChanges()) {
-                    oDataModel.submitChanges({
-                        success: function(oData, oResponse) {
-                            this._toggleMode();
-                        }.bind(this),
-                        error: function(oError) {
-                            this._toggleMode();
-                            MessageToast.show(this._i18nBundle.getText("partnerUpdateFailed"));
-                        }.bind(this)
+                if(this._getModel().hasPendingChanges()) {
+                    this._submit().then((oData, oResponse) => {
+                        this._toggleMode();
+                    }).catch((oError) => {
+                        this._toggleMode();
+                        MessageToast.show(this._i18nBundle.getText("partnerUpdateFailed"));
                     });
                 } else {
                     // Nothing pending so switch mode to display
@@ -532,6 +516,21 @@ sap.ui.define([
                         merge: false
                     });
                 }
+            },
+
+            // Submit changes
+            _submit: function(groupId) {
+                return new Promise((resolve, reject) => {
+                    this._getModel().submitChanges({
+                        groupId: groupId,
+                        success: function(oData, oResponse) {
+                            resolve(oData, oResponse);
+                        },
+                        error: function(oError) {
+                            reject(oError);
+                        }
+                    });
+                });
             },
 
             // Toggle display/change mode

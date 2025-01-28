@@ -55,17 +55,17 @@ sap.ui.define([
 
                 // Handle promise evaluation for metadata, control model, and
                 // partner data load completion
-                this._pMetadataLoaded ??= oDataModel.metadataLoaded();
-                this._pMetadataLoaded.then(function(oPromise) {
-                    this._pControlLoaded ??= this._controlModel.dataLoaded();
-                    this._pControlLoaded.then(function(oPromise) {
-                        this._self = this._controlModel.getProperty("/self");
-                        this._pPartnersLoaded = this.getOwnerComponent().partnersLoaded();
-                        this._pPartnersLoaded.then(function(oPromise) {
-                            this._doElementBinding();
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
+                const pMetadataLoaded = oDataModel.metadataLoaded(),
+                    pControlLoaded = this._controlModel.dataLoaded(),
+                    pPartnersLoaded = this.getOwnerComponent().partnersLoaded();
+                Promise.all([
+                    pMetadataLoaded,
+                    pControlLoaded,
+                    pPartnersLoaded
+                ]).then((oPromise) => {
+                    this._self = this._controlModel.getProperty("/self");
+                    this._doElementBinding();
+                })
 
                 // Instantiate dialog object in case partner information isn't created yet
                 this._pDialog ??= this.loadFragment({
@@ -96,20 +96,7 @@ sap.ui.define([
             // Add self partner to directory
             onAddPartner: function() {
                 const oDataModel = this._getModel(),
-                    dialogEntry = this._controlModel.getProperty("/createPartnerDialog"),
-                    context = {
-                        success: function(oData, oError) {
-                            this._controlModel.setProperty("/self/exists", true);
-                            this._doElementBinding();
-                            BusyIndicator.hide();
-                            this._oDialog.close();
-                        }.bind(this),
-                        error: function(oError) {
-                            BusyIndicator.hide();
-                            this._oDialog.close();
-                            MessageToast.show(this._i18nBundle.getText("selfCreationFailed"))
-                        }.bind(this)
-                    }
+                    dialogEntry = this._controlModel.getProperty("/createPartnerDialog");
 
                 // Add authorized user
                 oDataModel.create("/AuthorizedUsers", {
@@ -133,15 +120,16 @@ sap.ui.define([
 
                 // Submit changes
                 BusyIndicator.show(0);
-                oDataModel.submitChanges({
-                    groupId: "deferred",
-                    success: function(oData, oResponse) {
-                        context.success(oData, oResponse);
-                    },
-                    error: function(oError) {
-                        context.error(oError);
-                    }
-                })                    
+                this._submit("deferred").then((oData, oResponse) => {
+                    this._controlModel.setProperty("/self/exists", true);
+                    this._doElementBinding();
+                    BusyIndicator.hide();
+                    this._oDialog.close();
+                }).catch((oError) => {
+                    BusyIndicator.hide();
+                    this._oDialog.close();
+                    MessageToast.show(this._i18nBundle.getText("selfCreationFailed"));
+                });                   
             },
 
             // Reject pending changes
@@ -185,19 +173,15 @@ sap.ui.define([
                 }
 
                 // Submit updates if they exist
-                const oDataModel = this._getModel();
-                if(oDataModel.hasPendingChanges()) {
+                if(this._getModel().hasPendingChanges()) {
                     BusyIndicator.show(0);
-                    oDataModel.submitChanges({
-                        success: function(oData, oResponse) {
-                            this._toggleMode();
-                            BusyIndicator.hide();
-                        }.bind(this),
-                        error: function(oError) {
-                            this._toggleMode();
-                            BusyIndicator.hide();
-                            MessageToast.show(this._i18nBundle.getText("ownPropertiesUpdateFailed"));
-                        }.bind(this)
+                    this._submit().then((oData, oError) => {
+                        this._toggleMode();
+                        BusyIndicator.hide();
+                    }).catch((oError) => {
+                        this._toggleMode();
+                        BusyIndicator.hide();
+                        MessageToast.show(this._i18nBundle.getText("ownPropertiesUpdateFailed"));
                     });
                 } else {
                     // Nothing pending so switch mode to display
@@ -236,6 +220,21 @@ sap.ui.define([
                     }
                 }
                 return false;
+            },
+
+            // Submit changes
+            _submit: function(groupId) {
+                return new Promise((resolve, reject) => {
+                    this._getModel().submitChanges({
+                        groupId: groupId,
+                        success: function(oData, oResponse) {
+                            resolve(oData, oResponse);
+                        },
+                        error: function(oError) {
+                            reject(oError);
+                        }
+                    });
+                });
             },
             
             // Toggle display/change mode

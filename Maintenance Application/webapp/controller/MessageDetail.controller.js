@@ -100,8 +100,7 @@ sap.ui.define([
                     } : undefined,
                     Outbound: configuration.isOutboundActive ? {
                         ArchiveMessage: configuration.enableArchive.toString()
-                    } : undefined
-                },
+                    } : undefined },
                     value = window.btoa(JSON.stringify(JSONObject));
 
                 // Generate create/update requests in OData model
@@ -131,7 +130,7 @@ sap.ui.define([
                     const key = "/BinaryParameters(Pid='" + selfId + "',Id='" + type + "')";
                     oDataModel.update(key, {
                         Value: value,
-                        ContentType: "json"
+                        ContentType: "json" 
                     }, {
                         success: function (oData, oResponse) {
                             context.success(oData, oResponse);
@@ -181,7 +180,6 @@ sap.ui.define([
                     context.error = function(oError) {
                         BusyIndicator.hide();
                         MessageToast.show(this._i18nBundle.getText("messageCreationFailed"));
-
                     }.bind(this);
                 } else {
                     context.success = function(oData, oResponse) {

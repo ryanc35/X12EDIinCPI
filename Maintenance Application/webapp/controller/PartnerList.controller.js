@@ -30,7 +30,20 @@ sap.ui.define([
                 this._metadataLoaded ??= oDataModel.metadataLoaded();
                 this._metadataLoaded.then(function(oPromise) {
                     // Trigger partner load
-                    this._loadPartners();
+                    this._loadPartners().then((oData, oResponse) => {
+                        // Check for matching self Id
+                        const pid = this._controlModel.getProperty("/self/pid");
+                        for (let i = 0; i < oData.results.length; i++) {
+                            if (oData.results[i].Pid === pid) {
+                                this._controlModel.setProperty("/self/exists", true);
+                                break;
+                            }
+                        }
+
+                        this._controlModel.setProperty("/partners/list", oData.results);
+                    }).catch((oError) => {
+                        MessageToast.show(this._i18nBundle.getText("partnerLoadFailed"));
+                    });
                 
                     // Read list of alternative partners and agreements
                     this._getModel().read("/AlternativePartners");
@@ -70,7 +83,9 @@ sap.ui.define([
                     context = {
                         success: function(oData, oResponse) {
                             this._oDialog.close();
-                            this._loadPartners();
+                            this._loadPartners().then((oData, oResponse) => {
+                                this._controlModel.setProperty("/partners/list", oData.results);
+                            });
                         }.bind(this),
                         error: function(oError) {
                             this._oDialog.close();
@@ -130,8 +145,7 @@ sap.ui.define([
             // Delete partner
             onDelete: function (oEvent) {
                 // Get identifying context for removal
-                const oContext = oEvent.getSource().getObjectBinding("control")
-                    .getContext(),
+                const oContext = oEvent.getSource().getObjectBinding("control").getContext(),
                     oDataModel = this._getModel(),
                     pid = oContext.getObject().Pid,
                     sPath = oContext.getPath();
@@ -147,20 +161,17 @@ sap.ui.define([
                             const key = oDataModel.createKey("/Partners", {
                                 Pid: pid
                             });
-                            oDataModel.remove(key, {
-                                success: function (oData, oResponse) {
-                                    const path = sPath.match(/.*(?=\/.*$)/)[0],
-                                        index = sPath.match(/[^\/]+$/)[0],
-                                        partners = this._controlModel.getProperty(path).map((n) => n);
-                                    delete partners[index];
-                                    const newPartners = partners.filter(n => true);
-                                    this._controlModel.setProperty(path, newPartners);
-                                    BusyIndicator.hide();
-                                }.bind(this),
-                                error: function (oError) {
-                                    BusyIndicator.hide();
-                                    MessageToast.show(this._i18nBundle.getText("partnerDeletionFailed"));
-                                }.bind(this)
+                            this._delete(key).then((oData, oResponse) => {
+                                const path = sPath.match(/.*(?=\/.*$)/)[0],
+                                    index = sPath.match(/[^\/]+$/)[0],
+                                    partners = this._controlModel.getProperty(path).map((n) => n);
+                                delete partners[index];
+                                const newPartners = partners.filter(n => true);
+                                this._controlModel.setProperty(path, newPartners);
+                                BusyIndicator.hide();
+                            }).catch((oError) => {
+                                BusyIndicator.hide();
+                                MessageToast.show(this._i18nBundle.getText("partnerDeletionFailed"));
                             });
                         }
                     }.bind(this)
@@ -203,6 +214,20 @@ sap.ui.define([
                 this.getOwnerComponent().getRouter().navTo("partner");
             },
 
+            // Delete partner
+            _delete: function(key) {
+                return new Promise((resolve, reject) => {
+                    this._getModel().remove(key, {
+                        success: function(oData, oResponse) {
+                            resolve(oData, oResponse);
+                        },
+                        error: function(oError) {
+                            reject(oError);
+                        }
+                    });
+                });
+            },
+
             // Get model for view
             _getModel: function () {
                 return this.getOwnerComponent().getModel("partners");
@@ -210,38 +235,16 @@ sap.ui.define([
 
             // Load partner into model
             _loadPartners: function () {
-                // Get model
-                const oDataModel = this._getModel(),
-                    pid = this._controlModel.getProperty("/self/pid");
-
-                // Prepare binding context
-                const context = {
-                    oDataModel: oDataModel,
-                    success: function (oData, oResponse) {
-                        // Check for matching self Id
-                        for (let i = 0; i < oData.results.length; i++) {
-                            if (oData.results[i].Pid === pid) {
-                                this._controlModel.setProperty("/self/exists", true);
-                                break;
-                            }
+                return new Promise((resolve, reject) => {
+                    // Explicit read because /Partners returns all records ALWAYS
+                    this._getModel().read("/Partners", {
+                        success: function(oData, oResponse) {
+                            resolve(oData, oResponse);
+                        },
+                        error: function(oError) {
+                            reject(oError);
                         }
-
-                        this._controlModel.setProperty("/partners/list", oData.results);
-                    }.bind(this),
-                    error: function (oError) {                
-                        MessageToast.show(this._i18nBundle.getText("partnerLoadFailed"));
-                    }.bind(this)
-                };
-                this._context = context;
-
-                // Explicit read because /Partners returns all records ALWAYS
-                oDataModel.read("/Partners", {
-                    success: function (oData, oResponse) {
-                        this.success(oData, oResponse);
-                    }.bind(context),
-                    error: function (oError) {
-                        this.error(oError);
-                    }.bind(context)
+                    });
                 });
             },
 

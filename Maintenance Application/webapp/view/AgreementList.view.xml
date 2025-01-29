@@ -110,7 +110,8 @@
 										state="{control>acknowledgementRequired}" type="AcceptReject" />
 									<HBox>
 										<Text text="{control>filename}" visible="{= ${control>/partners/agreements/mode} === 'display' }" />
-										<Input liveChange="onChange" value="{control>filename}" visible="{= ${control>/partners/agreements/mode} === 'change' }" />
+										<Input liveChange="onChange" placeholder="{i18n>filenameHint}" value="{control>filename}" 
+											visible="{= ${control>/partners/agreements/mode} === 'change' }" width="15em"/>
 									</HBox>
 									<VBox>
 										<HBox justifyContent="End">

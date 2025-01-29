@@ -79,19 +79,7 @@ sap.ui.define([
             // Add partner to directory
             onAddPartner: function() {
                 const oDataModel = this._getModel(),
-                    dialogEntry = this._controlModel.getProperty("/createPartnerDialog"),
-                    context = {
-                        success: function(oData, oResponse) {
-                            this._oDialog.close();
-                            this._loadPartners().then((oData, oResponse) => {
-                                this._controlModel.setProperty("/partners/list", oData.results);
-                            });
-                        }.bind(this),
-                        error: function(oError) {
-                            this._oDialog.close();
-                            MessageToast.show(this._i18nBundle.getText("partnerCreationFailed"))
-                        }.bind(this)
-                    }
+                    dialogEntry = this._controlModel.getProperty("/createPartnerDialog");
 
                 // Add authorized user
                 oDataModel.create("/AuthorizedUsers", {
@@ -128,11 +116,15 @@ sap.ui.define([
                 // Submit updates
                 oDataModel.submitChanges({
                     groupId: "deferred",
-                    success: function(oData, oResponse) {
-                        context.success(oData, oResponse);
+                    success: (oData, oResponse) => {
+                        this._oDialog.close();
+                        this._loadPartners().then((oData, oResponse) => {
+                            this._controlModel.setProperty("/partners/list", oData.results);
+                        });
                     },
-                    error: function(oError) {
-                        context.error(oError);
+                    error: (oError) => {
+                        this._oDialog.close();
+                        MessageToast.show(this._i18nBundle.getText("partnerCreationFailed"));
                     }
                 });
             },
@@ -154,7 +146,7 @@ sap.ui.define([
                 MessageBox.warning(this._i18nBundle.getText("partnerDeleteQuestion"), {
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                     emphasizedAction: MessageBox.Action.OK,
-                    onClose: function (sAction) {
+                    onClose: (sAction) => {
                         if (sAction !== MessageBox.Action.CANCEL) {
                             // Continue deleting record
                             BusyIndicator.show(0);
@@ -174,7 +166,7 @@ sap.ui.define([
                                 MessageToast.show(this._i18nBundle.getText("partnerDeletionFailed"));
                             });
                         }
-                    }.bind(this)
+                    }
                 });
             },
 

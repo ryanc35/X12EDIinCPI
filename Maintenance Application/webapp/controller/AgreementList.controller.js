@@ -117,7 +117,7 @@ sap.ui.define([
                 MessageBox.warning(this._i18nBundle.getText("sureQuestion"), {
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                     emphasizedAction: MessageBox.Action.OK,
-                    onClose: function (sAction) {
+                    onClose: (sAction) => {
                         if (sAction !== MessageBox.Action.CANCEL) {
                             // Get parameter for processing
                             const agreementList = this._controlModel.getProperty(path),
@@ -140,7 +140,7 @@ sap.ui.define([
                                 deletions.push(oObject.Id);
                             }
                         }
-                    }.bind(this)
+                    }
                 });
             },
 
@@ -160,12 +160,12 @@ sap.ui.define([
                 const oDataModel = this._getModel();
                 oDataModel.read("/BinaryParameters(Pid='" + 
                         this._controlModel.getProperty("/partners/pid") + "',Id='Agreements')", {
-                    success: function(oData, oResponse) {
+                    success: (oData, oResponse) => {
                         this._controlModel.setProperty("/partners/agreements/direction", "inbound");
                         const JSONObject = JSON.parse(window.atob(oData.Value));
                         this._parseAgreements(JSONObject);
-                    }.bind(this),
-                    error: function(oError) {
+                    },
+                    error: (oError) => {
                         // Entry is missing so create it
                         const partners = this._controlModel.getProperty("/partners"),
                             defaults = partners.defaults.binaryParameters.find((n) => n.name === "Agreements"),
@@ -176,14 +176,14 @@ sap.ui.define([
                             ContentType: defaults.contentType,
                             Value: window.btoa(defaults.value)
                         }, {
-                            success: function(oData, oResponse) {
+                            success: (oData, oResponse) => {
                                 this._parseAgreements(JSON.parse(window.atob(oData.Value)));
-                            }.bind(this),
-                            error: function(oError) {
+                            },
+                            error: (oError) => {
                                 MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
-                            }.bind(this)
+                            }
                         });
-                    }.bind(this)
+                    }
                 })
 
                 // Read any possible pre/post processing maps
@@ -212,15 +212,15 @@ sap.ui.define([
                     pid = this._controlModel.getProperty("/partners/pid"),
                     key = "/BinaryParameters(Pid='" + pid + "',Id='Agreements')",
                     context = {
-                        success: function(oData, oResponse) {
+                        success: (oData, oResponse) => {
                             const configuration = JSON.parse(JSON.stringify(this._agreements.newConfiguration));
                             this._controlModel.setProperty("/partners/agreements/originalConfiguration", configuration);
                             this._controlModel.setProperty("/partners/agreements/hasChanges", false);
                             this._resetDeletions();
                             this._populateAvailableAgreements();
                             this._controlModel.setProperty("/partners/agreements/mode", "display");
-                        }.bind(this),
-                        error: function(oError) {
+                        },
+                        error: (oError) => {
                             const original = JSON.parse(JSON.stringify(this._agreements.originalConfiguration));
                             this._controlModel.setProperty("/partners/agreements/newConfiguration", original);
                             this._controlModel.setProperty("/partners/agreements/hasChanges", false);
@@ -228,7 +228,7 @@ sap.ui.define([
                             this._populateAvailableAgreements();
                             this._controlModel.setProperty("/partners/agreements/mode", "display");
                             MessageToast.show(this._i18nBundle.getText("agreementUpdateFailed"));
-                        }.bind(this)
+                        }
                     };
 
                 // Evaluate if any extra deletions are required
@@ -239,10 +239,10 @@ sap.ui.define([
                     ContentType: "json",
                     Value: payload
                 }, {
-                    success: function (oData, oResponse) {
+                    success: (oData, oResponse) => {
                         context.success(oData, oResponse);
                     },
-                    error: function (oError) {
+                    error: (oError) => {
                         context.error(oError);
                     },
                     groupId: haveExtraDeletions ? "deferred" : undefined,
@@ -262,10 +262,10 @@ sap.ui.define([
                 // Submit changes
                 oDataModel.submitChanges({
                     groupId: "deferred",
-                    success: function (oData, oResponse) {
+                    success: (oData, oResponse) => {
                         context.success(oData, oResponse);
                     },
-                    error: function (oError) {
+                    error: (oError) => {
                         context.error(oError);
                     },
                 });           
@@ -401,10 +401,10 @@ sap.ui.define([
             // Open dialog for agreement maintenance
             _openDialog: function() {
                 // Display dialog
-                this._pDialog.then(function(oDialog) {
+                this._pDialog.then((oDialog) => {
                     this._oDialog = oDialog;
                     this._oDialog.open();
-                }.bind(this));
+                });
             },
 
             // Parse agreements data for display in UI
@@ -497,7 +497,7 @@ sap.ui.define([
                         AcknowledgementRequired: outbound.acknowledgementRequired.toString(),
                         ArchiveMessage: outbound.archiveMessage ? undefined : 
                                             outbound.archiveMessage.toString(),
-                        Filename: outbound.filename === "" ? undefined : outbound.filename.toString()
+                        Filename: outbound.filename
                     };
                     payload.Agreements.Outbound.push(message);
                 }
@@ -521,15 +521,7 @@ sap.ui.define([
                     id = direction === "inbound" ? "ext_" + oObject.message + "_preproc" :
                                                     "ext_" + oObject.message + "_postproc",
                     key = "/BinaryParameters(Pid='" + pid + "',Id='" + id + "')",
-                    oExtendedMap = oDataModel.getObject(key),
-                    context = {
-                        success: function(oData, oResponse) {
-                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
-                        }.bind(this),
-                        error: function(oError) {
-                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
-                        }.bind(this)
-                    };
+                    oExtendedMap = oDataModel.getObject(key);
                 
                 // Check if extended map exists or not for create or update
                 if(!oExtendedMap) {
@@ -539,11 +531,11 @@ sap.ui.define([
                         ContentType: "xsl",
                         Value: window.btoa(mapping)
                     }, {
-                        success: function(oData, oResponse) {
-                            context.success(oData, oResponse);
+                        success: (oData, oResponse) => {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
                         },
-                        error: function(oError) {
-                            context.error(oError);
+                        error: (oError) => {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
                         }
                     });
                 } else {
@@ -551,11 +543,11 @@ sap.ui.define([
                         ContentType: "xsl",
                         Value: window.btoa(mapping)
                     }, {
-                        success: function(oData, oResponse) {
-                            context.success(oData, oResponse);
+                        success: (oData, oResponse) => {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateSuccessful"));
                         },
-                        error: function(oError) {
-                            context.error(oError);
+                        error: (oError) => {
+                            MessageToast.show(this._i18nBundle.getText("extendedMapUpdateFailed"));
                         },
                         merge: false
                     });
@@ -572,10 +564,10 @@ sap.ui.define([
             // Read file information and upload extended map
             _uploadExtendedMap: function(file, oObject) {
                 const oReader = new FileReader();
-                oReader.onload = function(file) {
+                oReader.onload = (file) => {
                     // Save extended map
                     this._saveExtendedMap(file, oObject);
-                }.bind(this)
+                }
 
                 // Read file and reset value for uploader button
                 oReader.readAsText(file);

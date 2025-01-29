@@ -480,7 +480,7 @@ sap.ui.define([
                     urlParameters: {
                         "$select": "Pid,Id"
                     },
-                    success: function(oData, oResponse) {
+                    success: (oData, oResponse) => {
                         // Parse map information
                         const inbound = [],
                             outbound = [];
@@ -502,7 +502,7 @@ sap.ui.define([
                         // Store into JSON model for display
                         this._controlModel.setProperty("/maps/inbound", inbound);
                         this._controlModel.setProperty("/maps/outbound", outbound);
-                    }.bind(this)
+                    }
                 })
             },
 

@@ -89,7 +89,7 @@ sap.ui.define([
                 MessageBox.warning(this._i18nBundle.getText("sureQuestion"), {
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                     emphasizedAction: MessageBox.Action.OK,
-                    onClose: function (sAction) {
+                    onClose: (sAction) => {
                         if(sAction !== MessageBox.Action.CANCEL) {
                             // Continue deleting record
                             BusyIndicator.show(0);
@@ -100,7 +100,7 @@ sap.ui.define([
                                 MessageToast.show(this._i18nBundle.getText("messageDeletionFailed"));
                             });
                         }
-                    }.bind(this)
+                    }
                 });
             },
 

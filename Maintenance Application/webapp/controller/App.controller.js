@@ -11,13 +11,13 @@ sap.ui.define(
             const controlModel = this.getOwnerComponent().getModel("control");
             this._userModel = this.getOwnerComponent().getModel("user");
             this._pUserDataLoaded ??= this._userModel.dataLoaded();
-            this._pUserDataLoaded.then(function(oPromise){
+            this._pUserDataLoaded.then((oPromise) => {
               const scopes = this._userModel.getProperty("/scopes"),
                 regex = /^.*\.Admin$/,
                 isAdmin = scopes.filter(item => regex.test(item)).length > 0;
                 controlModel.setProperty("/isAdmin", isAdmin);
                 this._userModel = null;
-            }.bind(this));
+            });
         },
 
         onItemSelect: function (oEvent) {

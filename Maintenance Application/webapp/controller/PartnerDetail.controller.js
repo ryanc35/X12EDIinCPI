@@ -50,28 +50,7 @@ sap.ui.define([
                 const oDataModel = this._getModel(),
                     id = this._partners.alternativePartnerId,
                     Pid = this._partners.pid,
-                    alternativeKeys = this._controlModel.getProperty("/alternativePartners"),
-                    context = {
-                        success: function(oData, oResponse) {
-                            this._controlModel.setProperty("/partners/alternativePartnerExists", true);
-                            const key = oDataModel.createKey("/AlternativePartners", {
-                                Hexagency: oData.Hexagency,
-                                Hexscheme: oData.Hexscheme,
-                                Hexid: oData.Hexid
-                            });
-                            for(const element of alternativeKeys.elements) {
-                                const oField = this._oView.byId(element);
-                                oField.bindElement("partners>" + key);
-                            }
-                            this._oDialog.close();
-                            BusyIndicator.hide();
-                        }.bind(this),
-                        error: function(oError) {
-                            this._oDialog.close();
-                            BusyIndicator.hide();
-                            MessageToast.show(this._i18nBundle.getText("idocIdCreationFailed"));
-                        }.bind(this)
-                    }
+                    alternativeKeys = this._controlModel.getProperty("/alternativePartners");
 
                 // Submit creation
                 oDataModel.create("/AlternativePartners", {
@@ -80,11 +59,24 @@ sap.ui.define([
                     Id: id,
                     Pid: Pid 
                 }, {
-                    success: function(oData, oError) {
-                        context.success(oData, oError);
+                    success: (oData, oError) => {
+                        this._controlModel.setProperty("/partners/alternativePartnerExists", true);
+                        const key = oDataModel.createKey("/AlternativePartners", {
+                            Hexagency: oData.Hexagency,
+                            Hexscheme: oData.Hexscheme,
+                            Hexid: oData.Hexid
+                        });
+                        for(const element of alternativeKeys.elements) {
+                            const oField = this._oView.byId(element);
+                            oField.bindElement("partners>" + key);
+                        }
+                        this._oDialog.close();
+                        BusyIndicator.hide();
                     },
-                    error: function(oError) {
-                        context.error(oError);
+                    error: (oError) => {
+                        this._oDialog.close();
+                        BusyIndicator.hide();
+                        MessageToast.show(this._i18nBundle.getText("idocIdCreationFailed"));
                     }
                 });
             },
@@ -491,13 +483,13 @@ sap.ui.define([
                         ContentType: "crt",
                         Value: onlyBase64
                     }, {
-                        success: function(oData, oResponse) {
+                        success: (oData, oResponse) => {
                             this._controlModel.setProperty("/partners/hasCertificate", true);
                             MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
-                        }.bind(this),
-                        error: function(oError) {
+                        },
+                        error: (oError) => {
                             MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
-                        }.bind(this)
+                        }
                     });
                 } else {
                     const key = "/BinaryParameters(Pid='" + this._partners.pid +
@@ -506,13 +498,13 @@ sap.ui.define([
                         ContentType: "crt",
                         Value: onlyBase64
                     }, {
-                        success: function(oData, oResponse) {
+                        success: (oData, oResponse) => {
                             this._controlModel.setProperty("/partners/hasCertificate", true);
                             MessageToast.show(this._i18nBundle.getText("certificateUpdateSuccessful"));
-                        }.bind(this),
-                        error: function(oError) {
+                        },
+                        error: (oError) => {
                             MessageToast.show(this._i18nBundle.getText("certificateUpdateFailed"));
-                        }.bind(this),
+                        },
                         merge: false
                     });
                 }

@@ -104,7 +104,6 @@ sap.ui.define([
                     value = window.btoa(JSON.stringify(JSONObject));
 
                 // Generate create/update requests in OData model
-                const context = this._getSaveContext(mode, type, configuration, original);
                 if (mode === "create") {
                     BusyIndicator.show(0);
                     oDataModel.create("/BinaryParameters", {
@@ -113,11 +112,16 @@ sap.ui.define([
                         Value: value,
                         ContentType: "json"
                     }, {
-                        success: function (oData, oResponse) {
-                            context.success(oData, oResponse);
+                        success: (oData, oResponse) => {
+                            this._controlModel.setProperty("/message/type", type);
+                            // Clone to avoid direct reference
+                            this._swapConfiguration("/message/originalConfiguration", configuration);
+                            this._toggleMode();
+                            BusyIndicator.hide();
                         },
-                        error: function (oError) {
-                            context.error(oError);
+                        error: (oError) => {
+                            BusyIndicator.hide();
+                            MessageToast.show(this._i18nBundle.getText("messageCreationFailed"));
                         }
                     });
                 } else {
@@ -132,11 +136,18 @@ sap.ui.define([
                         Value: value,
                         ContentType: "json" 
                     }, {
-                        success: function (oData, oResponse) {
-                            context.success(oData, oResponse);
+                        success: (oData, oResponse) => {
+                            // Clone to avoid direct reference
+                            this._swapConfiguration("/message/originalConfiguration", configuration);
+                            this._toggleMode();
+                            BusyIndicator.hide();
                         },
-                        error: function (oError) {
-                            context.error(oError);
+                        error: (oError) => {
+                            // Clone to avoid direct reference
+                            this._swapConfiguration("/message/newConfiguration", original);
+                            this._toggleMode();
+                            BusyIndicator.hide();
+                            MessageToast.show(this._i18nBundle.getText("messageUpdateFailed"));
                         },
                         merge: false
                     });
@@ -164,39 +175,6 @@ sap.ui.define([
             // Get model for view
             _getModel: function () {
                 return this.getOwnerComponent().getModel("messages");
-            },
-
-            // Get save context
-            _getSaveContext: function (mode, type, configuration, original) {
-                var context = {};
-                if (mode === "create") {
-                    context.success = function(oData, oResponse) {
-                        this._controlModel.setProperty("/message/type", type);
-                        // Clone to avoid direct reference
-                        this._swapConfiguration("/message/originalConfiguration", configuration);
-                        this._toggleMode();
-                        BusyIndicator.hide();
-                    }.bind(this);
-                    context.error = function(oError) {
-                        BusyIndicator.hide();
-                        MessageToast.show(this._i18nBundle.getText("messageCreationFailed"));
-                    }.bind(this);
-                } else {
-                    context.success = function(oData, oResponse) {
-                        // Clone to avoid direct reference
-                        this._swapConfiguration("/message/originalConfiguration", configuration);
-                        this._toggleMode();
-                        BusyIndicator.hide();
-                    }.bind(this);
-                    context.error = function(oError) {
-                        // Clone to avoid direct reference
-                        this._swapConfiguration("/message/newConfiguration", original);
-                        this._toggleMode();
-                        BusyIndicator.hide();
-                        MessageToast.show(this._i18nBundle.getText("messageUpdateFailed"));
-                    }.bind(this);
-                }
-                return context;
             },
 
             // Swap configuration

@@ -209,7 +209,7 @@ sap.ui.define([
                     id = this._controlModel.getProperty(sPath).id,
                     item = this._getListItem(this._maps.direction, id),
                     entry = JSON.parse(JSON.stringify(this._controlModel.getProperty("/maps/entryCopy"))),
-                    isAdmin = this.getOwnerComponent().getModel("user").getProperty("/isAdmin");
+                    isAdmin = this.getOwnerComponent().getModel("control").getProperty("/isAdmin");
 
                 if(!isAdmin) {
                     oItem.getParent().removeSelections(true);

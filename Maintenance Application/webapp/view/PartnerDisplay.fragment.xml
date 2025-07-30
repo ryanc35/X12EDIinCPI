@@ -67,6 +67,7 @@
 				<Text id="ReceiverUrl-display" text="{partner>Value}" />
 				<Label text="{i18n>publicKeyAlias}" />
 				<Text id="PublicKeyAlias-display" text="{partner>Value}" />
+				<Label text="{i18n>senderPublicKey}" />
 				<u:FileUploader buttonOnly="true" change="triggerCertificateUpload" enabled="{control>/isAdmin}" fileType="cer" icon="sap-icon://upload" 
 					iconOnly="true" />
 				<Label text="{i18n>compressMessage}" />

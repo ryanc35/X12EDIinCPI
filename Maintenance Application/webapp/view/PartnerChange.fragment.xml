@@ -115,6 +115,8 @@
 						<core:Item key=";" text=";" />
 						<core:Item key="#x3c" text="&lt;" />
 						<core:Item key="#x3e" text="&gt;" />
+						<core:Item key="#x7b" text="\{" />
+						<core:Item key="#x7d" text="\}" />
 					</items>
 				</Select>
 				<Label text="{i18n>repetitionSeparator}" />

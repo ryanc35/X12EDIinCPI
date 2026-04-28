@@ -22,7 +22,9 @@
 		"#x0d": "carriageReturn",
 		"#x0d#x0a": "carriageReturnLineFeed",
 		"#x3c": "lessThan",
-		"#x3e": "greaterThan"
+		"#x3e": "greaterThan",
+		"#x7b": "{",
+		"#x7d": "}"
 	},
 	"isAdmin": false,
 	"maps": {

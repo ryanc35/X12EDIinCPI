@@ -51,9 +51,8 @@
 		</f:SimpleForm>
 	</VBox>
 	<VBox class="sapUiSmallMargin" visible="{= ${control>/partners/mode} === 'display'}">
-		<f:SimpleForm adjustLabelSpan="false" columnsL="3" columnsM="2" columnsXL="3"
-			emptySpanXL="0" editable="true" labelSpanM="12" labelSpanXL="4" layout="ColumnLayout"
-			visible="{= ${control>/partners/view/adapter} === 'AS2'}">
+		<f:SimpleForm columnsL="3" columnsM="3" columnsXL="3" editable="true" 
+			layout="ColumnLayout" visible="{= ${control>/partners/view/adapter} === 'AS2'}">
 			<f:toolbar>
 				<Toolbar>
 					<Title text="{i18n>communicationSettings}"/>
@@ -69,7 +68,7 @@
 				<Text id="PublicKeyAlias-display" text="{partner>Value}" />
 				<Label text="{i18n>senderPublicKey}" />
 				<u:FileUploader buttonOnly="true" change="triggerCertificateUpload" enabled="{control>/isAdmin}" fileType="cer" icon="sap-icon://upload" 
-					iconOnly="true" />
+					iconOnly="true" width="2em" />
 				<Label text="{i18n>compressMessage}" />
 				<Switch id="SAP_AS2_Outbound_Compress_Message-display" enabled="false" 
 					state="{= ${partner>Value} === 'true' ? true : false }" type="AcceptReject">
@@ -119,9 +118,8 @@
 					visible="{= ${control>/partners/view/mdnType} === 'Asynchronous' }"/>
 			</f:content>
 		</f:SimpleForm>
-		<f:SimpleForm adjustLabelSpan="false" columnsM="2" columnsL="2" columnsXL="2" editable="true" 
-			emptySpanXL="0"  labelSpanM="12" labelSpanXL="4" layout="ColumnLayout" 
-			singleContainerFullSize="false" visible="{= ${control>/partners/view/adapter} !== 'AS2'}">
+		<f:SimpleForm columnsM="2" columnsL="2" columnsXL="2" editable="true" 
+			layout="ColumnLayout" visible="{= ${control>/partners/view/adapter} !== 'AS2'}">
 			<f:toolbar>
 				<Toolbar>
 					<Title text="{i18n>communicationSettings}"/>
